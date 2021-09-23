@@ -98,6 +98,7 @@ double Electron_dz[MPSIZE];
 double Electron_EnergySC[MPSIZE]; //no muon
 double Electron_etSC[MPSIZE]; //no muon
 bool Electron_passMediumID[MPSIZE];
+double _prefiringweight;
 double eMass = 0.000510998;
 int HLT_ntrig;
 int HLT_trigType[MPSIZE];
@@ -321,6 +322,8 @@ void analyzeData(TString fileName)
 	chain->SetBranchAddress("vtxTrkNdof",&pvtxTrkNdof);
 
 	if(isMC){
+		chain->SetBranchAddress("_prefiringweight", &_prefiringweight,
+					&b__prefiringweight);
 		chain->SetBranchAddress("GENnPair", &GENnPair, &b_GENnPair);
 		chain->SetBranchAddress("GENLepton_eta", &GENLepton_eta, 
 					&b_GENLepton_eta);
@@ -444,6 +447,7 @@ void analyzeData(TString fileName)
 		double sfWeight = 1.0;
 		double pvzWeight = 1.0;
 		double puWeight = 1.0;
+		double prefireWeight = 1.0;
 		// NOTE: Fakes do not get Scale Factors; need to ensure this is the case when it is implemented
 		if(isMC){
 			// Get Scale factors
@@ -475,6 +479,9 @@ void analyzeData(TString fileName)
 
 			// Pileup weight
 			puWeight = hPileup->GetBinContent(hPileup->FindBin(nPileUp));
+
+			// Prefire weight
+			prefireWeight = _prefiringweight;
 		}
 		double weight = xSecWeight*genWeight*sfWeight*pvzWeight*puWeight;
 		if(!isMC) weight = 1.0;
