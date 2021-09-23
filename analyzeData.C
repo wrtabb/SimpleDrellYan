@@ -270,6 +270,9 @@ void analyzeData(TString fileName)
 
 	TChain*chain;
 	TH1D*hInvMass;
+	TH1D*hRapidity;
+	TH1D*hPtLead;
+	TH1D*hPtSub;
 
 	// Get histograms needed for weights and scale factors
 	TFile*fRecoSF  = new TFile("data/Reco_SF.root");
@@ -290,9 +293,19 @@ void analyzeData(TString fileName)
 	chain = new TChain(treeName);
 	chain->Add(loadFile);
 	
+	// Define histograms
 	TString histName = "hist";
 	histName += fileName;	
-	hInvMass = new TH1D(histName,"",nMassBins,massbins);
+	TString histNameInvMass = histName+"InvMass";
+	TString histNameRapidity = histName+"Rapidity";
+	TString histNamePtLead = histName+"PtLead";
+	TString histNamePtSub = histName+"PtSub";
+
+	hInvMass = new TH1D(histNameInvMass,"",nMassBins,massbins);
+	hRapidity = new TH1D(histNameRapidity,"",100,-2.5,2.5);
+	hPtLead = new TH1D(histNamePtLead,"",100,0,500);
+	hPtSub = new TH1D(histNamePtSub,"",100,0,500);
+
 	Long64_t nEntries = chain->GetEntries();
 	cout << "Loading " << fileName << endl;
 	cout << nEntries << " entries loaded. " << endl;
@@ -439,10 +452,14 @@ void analyzeData(TString fileName)
 		if(!((ptLead>ptLow && ptSub>ptHigh) || 
 		     (ptLead>ptHigh && ptSub>ptLow))) continue;
 
-		double invMassReco;
 		v1.SetPtEtaPhiM(ptLead,etaLead,phiLead,eMass);
 		v2.SetPtEtaPhiM(ptSub,etaSub,phiSub,eMass);
-		invMassReco = (v1+v2).M();
+
+		// dielectron invariant mass
+		double invMassReco = (v1+v2).M();
+		
+		// dielectron rapidity
+		double rapidity = (v1+v2).Rapidity();
 
 		double sfWeight = 1.0;
 		double pvzWeight = 1.0;
@@ -486,6 +503,9 @@ void analyzeData(TString fileName)
 		double weight = xSecWeight*genWeight*sfWeight*pvzWeight*puWeight;
 		if(!isMC) weight = 1.0;
 		hInvMass->Fill(invMassReco,weight);
+		hRapidity->Fill(rapidity,weight);
+		hPtLead->Fill(ptLead,weight);
+		hPtSub->Fill(ptSub,weight);
 
 	}// end loop over entries
 	TString saveName = "output_data/saveFile";
