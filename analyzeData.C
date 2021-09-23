@@ -501,7 +501,7 @@ void analyzeData(TString fileName)
 			trigName = pHLT_trigName->at(iHLT);
 			if(((trigName.CompareTo(muonTrigger1)==0)||
 			    (trigName.CompareTo(muonTrigger2)==0)) && 
-			     HLT_trigFired[iHLT])==1{
+			     HLT_trigFired[iHLT]==1){
 				passHLT = true;
 				break;
 			} // end if trigName
