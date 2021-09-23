@@ -587,7 +587,7 @@ void analyzeData(TString fileName)
 		hPtSub->Fill(ptSub,weight);
 
 	}// end loop over entries
-	TString saveName = "output_data/saveFile";
+	TString saveName = "output_data/saveFile_EE_";
 	saveName += fileName;
 	saveName += ".root";
 	TFile*file;
