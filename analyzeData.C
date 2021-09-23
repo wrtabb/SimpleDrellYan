@@ -11,6 +11,7 @@
 
 TString base_directory = "root://xrootd-local.unl.edu///store/user/wtabb/DrellYan_13TeV_2016/v2p6/skims/skims_EE/";
 vector<TString> files= {
+	// Data
 	"crab_DoubleEG_RunB",		// 0
 	"crab_DoubleEG_RunC",		// 1
 	"crab_DoubleEG_RunD",		// 2
@@ -19,6 +20,8 @@ vector<TString> files= {
 	"crab_DoubleEG_RunG",		// 5
 	"crab_DoubleEG_RunHver2",	// 6
 	"crab_DoubleEG_RunHver3",	// 7
+
+	// MC Signal
 	"DYLL_M10to50_EE",		// 8
 	"DYLL_M50to100_EE",		// 9
 	"DYLL_M100to200_EE",		// 10
@@ -29,22 +32,68 @@ vector<TString> files= {
 	"DYLL_M800to1000_EE",		// 15
 	"DYLL_M1000to1500_EE",		// 16
 	"DYLL_M1500to2000_EE",		// 17
-	"DYLL_M2000to3000_EE"		// 18
+	"DYLL_M2000to3000_EE",		// 18
+
+	// Tops
+	"ST_tW",			// 19
+	"ST_tbarW",			// 20
+	"ttbar_truncated_M0To700",	// 21
+	"ttbar_M700to1000",		// 22
+	"ttbar_M1000toInf",		// 23
+
+	// EW
+	"WW",				// 24
+	"WZ",				// 25
+	"ZZ",				// 26
+	"DYLL_M10to50_TauTau",		// 27
+	"DYLL_M50to100_TauTau",		// 28
+	"DYLL_M100to200_TauTau",	// 29
+	"DYLL_M200to400_TauTau",	// 30
+	"DYLL_M400to500_TauTau",	// 31
+	"DYLL_M500to700_TauTau",	// 32
+	"DYLL_M700to800_TauTau",	// 33
+	"DYLL_M800to1000_TauTau",	// 34
+	"DYLL_M1000to1500_TauTau",	// 35
+	"DYLL_M1500to2000_TauTau",	// 36
+	"DYLL_M2000to3000_TauTau",	// 37
+
+	// Fakes
+	"WJetsToLNu_amcatnlo"		// 38	
 };
 TString treeName = "recoTree/DYTree";
 vector<double> xSecVec = {
 	1,1,1,1,1,1,1,1,//Data
-	18610.0/3,        //DYLL_10to50 v1,v2,ext1v1 combined (NLO)
-	1923.26,      //DYLL_50to100(NNLO)
-	78.1258,      //DYLL_100to200(NNLO)
-	2.73309,      //DYLL_200to400(NNLO) 
-	0.142945,     //DYLL_400to500(NNLO)
-	0.0809755,    //DYLL_500to700(NNLO)
-	0.0125589,    //DYLL_700to800(NNLO)
-	0.0105845,    //DYLL_800to1000(NNLO)
-	0.00556507,   //DYLL_1000to1500(NNLO)
-	0.000730495,  //DYLL_1500to2000(NNLO)
-	0.00016844    //DYLL_2000to3000(NNLO)
+	18610.0/3,      //DYLL_10to50 v1,v2,ext1v1 combined (NLO)
+	1923.26,	//DYLL_50to100(NNLO)
+	78.1258,	//DYLL_100to200(NNLO)
+	2.73309,	//DYLL_200to400(NNLO) 
+	0.142945,	//DYLL_400to500(NNLO)
+	0.0809755,	//DYLL_500to700(NNLO)
+	0.0125589,	//DYLL_700to800(NNLO)
+	0.0105845,	//DYLL_800to1000(NNLO)
+	0.00556507,	//DYLL_1000to1500(NNLO)
+	0.000730495,	//DYLL_1500to2000(NNLO)
+	0.00016844,	//DYLL_2000to3000(NNLO)
+	35.85,		//ST_tW
+	35.85,		//ST_tbarW
+	728.74,		//ttbar_M0to700
+	76.605,		//ttbar_M700to1000
+	20.578,		//ttbar_M1000toInf
+	118.7,		//WW
+	47.13,		//WZ
+	16.523,		//ZZ
+	18610.0/3.0,	//10to50 (NLO)
+	1923.26,	//50to100 (NNLO)
+	78.1258,	//100to200 (NNLO)
+	2.73309,	//200to400 (NNLO)
+	0.142945,	//400to500 (NNLO)
+	0.0809755,	//500to700 (NNLO)
+	0.0125589,	//700to800 (NNLO)
+	0.0105845,	//800to1000 (NNLO)
+	0.00556507,	//1000to1500 (NNLO)
+	0.000730495,	//1500to2000 (NNLO)
+	0.00016844,	//2000to3000 ((NNLO)
+	61526.7		//WJetsToLNu (NNLO)
 };
 int dataLuminosity = 35867;
 const TString electronTrigger = "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*";
@@ -248,6 +297,8 @@ void analyzeData(TString fileName)
 
 	// Get cross section for sample
 	double xSec = 1.0;
+	bool isFake = false;
+	// Data
 	if(fileName.CompareTo(files.at(0))==0) xSec = xSecVec.at(0);
 	else if(fileName.CompareTo(files.at(1))==0) xSec = xSecVec.at(1);
 	else if(fileName.CompareTo(files.at(2))==0) xSec = xSecVec.at(2);
@@ -256,6 +307,7 @@ void analyzeData(TString fileName)
 	else if(fileName.CompareTo(files.at(5))==0) xSec = xSecVec.at(5);
 	else if(fileName.CompareTo(files.at(6))==0) xSec = xSecVec.at(6);
 	else if(fileName.CompareTo(files.at(7))==0) xSec = xSecVec.at(7);
+	// MC Signal
 	else if(fileName.CompareTo(files.at(8))==0) xSec = xSecVec.at(8);
 	else if(fileName.CompareTo(files.at(9))==0) xSec = xSecVec.at(9);
 	else if(fileName.CompareTo(files.at(10))==0) xSec = xSecVec.at(10);
@@ -267,6 +319,32 @@ void analyzeData(TString fileName)
 	else if(fileName.CompareTo(files.at(16))==0) xSec = xSecVec.at(16);
 	else if(fileName.CompareTo(files.at(17))==0) xSec = xSecVec.at(17);
 	else if(fileName.CompareTo(files.at(18))==0) xSec = xSecVec.at(18);
+	//Tops
+	else if(fileName.CompareTo(files.at(19))==0) xSec = xSecVec.at(19);
+	else if(fileName.CompareTo(files.at(20))==0) xSec = xSecVec.at(20);
+	else if(fileName.CompareTo(files.at(21))==0) xSec = xSecVec.at(21);
+	else if(fileName.CompareTo(files.at(22))==0) xSec = xSecVec.at(22);
+	else if(fileName.CompareTo(files.at(23))==0) xSec = xSecVec.at(23);
+	// EW
+	else if(fileName.CompareTo(files.at(24))==0) xSec = xSecVec.at(24);
+	else if(fileName.CompareTo(files.at(25))==0) xSec = xSecVec.at(25);
+	else if(fileName.CompareTo(files.at(26))==0) xSec = xSecVec.at(26);
+	else if(fileName.CompareTo(files.at(27))==0) xSec = xSecVec.at(27);
+	else if(fileName.CompareTo(files.at(28))==0) xSec = xSecVec.at(28);
+	else if(fileName.CompareTo(files.at(29))==0) xSec = xSecVec.at(29);
+	else if(fileName.CompareTo(files.at(30))==0) xSec = xSecVec.at(30);
+	else if(fileName.CompareTo(files.at(31))==0) xSec = xSecVec.at(31);
+	else if(fileName.CompareTo(files.at(32))==0) xSec = xSecVec.at(32);
+	else if(fileName.CompareTo(files.at(33))==0) xSec = xSecVec.at(33);
+	else if(fileName.CompareTo(files.at(34))==0) xSec = xSecVec.at(34);
+	else if(fileName.CompareTo(files.at(35))==0) xSec = xSecVec.at(35);
+	else if(fileName.CompareTo(files.at(36))==0) xSec = xSecVec.at(36);
+	else if(fileName.CompareTo(files.at(37))==0) xSec = xSecVec.at(37);
+	// Fakes
+	else if(fileName.CompareTo(files.at(38))==0){
+		xSec = xSecVec.at(38);
+		isFake = true;
+	}
 
 	TChain*chain;
 	TH1D*hInvMass;
@@ -465,7 +543,6 @@ void analyzeData(TString fileName)
 		double pvzWeight = 1.0;
 		double puWeight = 1.0;
 		double prefireWeight = 1.0;
-		// NOTE: Fakes do not get Scale Factors; need to ensure this is the case when it is implemented
 		if(isMC){
 			// Get Scale factors
 			if(ptLead>ptBinHigh) ptLead = ptBinHigh;
@@ -475,6 +552,7 @@ void analyzeData(TString fileName)
 			if(etaLead<etaBinLow) etaLead = etaBinLow;
 			if(etaSub<etaBinLow) etaSub = etaBinLow;
 
+			if(!isFake){
 			double sfReco1 = 
 				hRecoSF->GetBinContent(hRecoSF->FindBin(etaLead,ptLead));
 			double sfReco2 = 
@@ -487,6 +565,7 @@ void analyzeData(TString fileName)
 				(hLeg2SF->GetBinContent(hLeg2SF->FindBin(etaLead,ptLead)))*
 				 (hLeg2SF->GetBinContent(hLeg2SF->FindBin(etaLead,ptLead)));
 			sfWeight = sfReco1*sfReco2*sfID1*sfID2*sfHLT;
+			}// end isFake
 
 			// Get gen weight
 			genWeight = (GENEvt_weight/fabs(GENEvt_weight))/sumGenWeight;
