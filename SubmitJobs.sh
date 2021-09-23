@@ -1,27 +1,28 @@
 #!/bin/bash
 
 files_to_load=(
-        crab_DoubleEG_RunB           # 0
-        crab_DoubleEG_RunC           # 1
-        crab_DoubleEG_RunD           # 2
-        crab_DoubleEG_RunE           # 3
-        crab_DoubleEG_RunF           # 4
-        crab_DoubleEG_RunG           # 5
-        crab_DoubleEG_RunHver2       # 6
-        crab_DoubleEG_RunHver3       # 7
+	# Data
+        SingleMuon_Run2016B          # 0
+        SingleMuon_Run2016C          # 1
+        SingleMuon_Run2016D          # 2
+        SingleMuon_Run2016E          # 3
+        SingleMuon_Run2016F          # 4
+        SingleMuon_Run2016G          # 5
+        SingleMuon_Run2016Hver2      # 6
+        SingleMuon_Run2016Hver3      # 7		
 
         # MC Signal
-        DYLL_M10to50_EE              # 8
-        DYLL_M50to100_EE             # 9
-        DYLL_M100to200_EE            # 10
-        DYLL_M200to400_EE            # 11
-        DYLL_M400to500_EE            # 12
-        DYLL_M500to700_EE            # 13
-        DYLL_M700to800_EE            # 14
-        DYLL_M800to1000_EE           # 15
-        DYLL_M1000to1500_EE          # 16
-        DYLL_M1500to2000_EE          # 17
-        DYLL_M2000to3000_EE          # 18
+        DYLL_M10to50_MuMu              # 8
+        DYLL_M50to100_MuMu             # 9
+        DYLL_M100to200_MuMu            # 10
+        DYLL_M200to400_MuMu            # 11
+        DYLL_M400to500_MuMu            # 12
+        DYLL_M500to700_MuMu            # 13
+        DYLL_M700to800_MuMu            # 14
+        DYLL_M800to1000_MuMu           # 15
+        DYLL_M1000to1500_MuMu          # 16
+        DYLL_M1500to2000_MuMu          # 17
+        DYLL_M2000to3000_MuMu          # 18
 
         # Tops
         ST_tW                        # 19

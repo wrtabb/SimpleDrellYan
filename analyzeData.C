@@ -9,30 +9,38 @@
 #include <TH1F.h>
 #include <iostream>
 
-TString base_directory = "root://xrootd-local.unl.edu///store/user/wtabb/DrellYan_13TeV_2016/v2p6/skims/skims_EE/";
+TString base_directory = "root://xrootd-local.unl.edu///store/user/wtabb/DrellYan_13TeV_2016/v2p6/skims/skims_MuMu/";
+
+
+
+
+
+
+
+
 vector<TString> files= {
 	// Data
-	"crab_DoubleEG_RunB",		// 0
-	"crab_DoubleEG_RunC",		// 1
-	"crab_DoubleEG_RunD",		// 2
-	"crab_DoubleEG_RunE",		// 3
-	"crab_DoubleEG_RunF",		// 4
-	"crab_DoubleEG_RunG",		// 5
-	"crab_DoubleEG_RunHver2",	// 6
-	"crab_DoubleEG_RunHver3",	// 7
+	"SingleMuon_Run2016B",		// 0
+	"SingleMuon_Run2016C",		// 1
+	"SingleMuon_Run2016D",		// 2
+	"SingleMuon_Run2016E",		// 3
+	"SingleMuon_Run2016F",		// 4
+	"SingleMuon_Run2016G",		// 5
+	"SingleMuon_Run2016Hver2",	// 6
+	"SingleMuon_Run2016Hver3",	// 7
 
 	// MC Signal
-	"DYLL_M10to50_EE",		// 8
-	"DYLL_M50to100_EE",		// 9
-	"DYLL_M100to200_EE",		// 10
-	"DYLL_M200to400_EE",		// 11
-	"DYLL_M400to500_EE",		// 12
-	"DYLL_M500to700_EE",		// 13
-	"DYLL_M700to800_EE",		// 14
-	"DYLL_M800to1000_EE",		// 15
-	"DYLL_M1000to1500_EE",		// 16
-	"DYLL_M1500to2000_EE",		// 17
-	"DYLL_M2000to3000_EE",		// 18
+	"DYLL_M10to50_MuMu",		// 8
+	"DYLL_M50to100_MuMu",		// 9
+	"DYLL_M100to200_MuMu",		// 10
+	"DYLL_M200to400_MuMu",		// 11
+	"DYLL_M400to500_MuMu",		// 12
+	"DYLL_M500to700_MuMu",		// 13
+	"DYLL_M700to800_MuMu",		// 14
+	"DYLL_M800to1000_MuMu",		// 15
+	"DYLL_M1000to1500_MuMu",		// 16
+	"DYLL_M1500to2000_MuMu",		// 17
+	"DYLL_M2000to3000_MuMu",		// 18
 
 	// Tops
 	"ST_tW",			// 19
@@ -96,7 +104,8 @@ vector<double> xSecVec = {
 	61526.7		//WJetsToLNu (NNLO)
 };
 int dataLuminosity = 35867;
-const TString electronTrigger = "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*";
+const TString muonTrigger1 = "HLT_IsoMu24_v*";
+const TString muonTrigger2 = "HLT_IsoTkMu24_v*";
 const double etaGapLow = 1.4442;
 const double etaGapHigh = 1.566;
 const double etaHigh = 2.4;
@@ -131,24 +140,25 @@ double GenOthers_E[MPSIZE];
 int GenOthers_ID[MPSIZE];
 int GenOthers_isHardProcess[MPSIZE];
 int GenOthers_isPromptFinalState[MPSIZE];
-int Nelectrons;
-double Electron_Energy[MPSIZE];  //no muon
-double Electron_pT[MPSIZE];
-double Electron_Px[MPSIZE];
-double Electron_Py[MPSIZE];
-double Electron_Pz[MPSIZE];
-double Electron_eta[MPSIZE];
-double Electron_phi[MPSIZE];
-int Electron_charge[MPSIZE];
-double Electron_etaSC[MPSIZE]; //no muon
-double Electron_phiSC[MPSIZE]; //no muon
-double Electron_dxy[MPSIZE];
-double Electron_dz[MPSIZE];
-double Electron_EnergySC[MPSIZE]; //no muon
-double Electron_etSC[MPSIZE]; //no muon
-bool Electron_passMediumID[MPSIZE];
+int nMuon;
+int Nmuons;
+double Muon_pT[MPSIZE];
+double Muon_Px[MPSIZE];
+double Muon_Py[MPSIZE];
+double Muon_Pz[MPSIZE];
+double Muon_eta[MPSIZE];
+double Muon_phi[MPSIZE];
+int Muon_charge[MPSIZE];
+double Muon_dxy[MPSIZE];
+double Muon_dz[MPSIZE];
+bool Muon_passTightID[MPSIZE];
+double Muon_PfChargedHadronIsoR04[MPSIZE];
+double Muon_PfNeutralHadronIsoR04[MPSIZE];
+double Muon_PfGammaIsoR04[MPSIZE];
+double Muon_PFSumPUIsoR04[MPSIZE];
+double Muon_trkiso[MPSIZE];
 double _prefiringweight;
-double eMass = 0.000510998;
+double muMass = 0.1056583715;
 int HLT_ntrig;
 int HLT_trigType[MPSIZE];
 int HLT_trigFired[MPSIZE];
@@ -183,21 +193,23 @@ TBranch*b__prefiringweightdown;
 TBranch*b_HLT_ntrig;
 TBranch*b_HLT_trigType;
 TBranch*b_HLT_trigFired;
-TBranch*b_Electron_Energy;
-TBranch*b_Electron_pT;
-TBranch*b_Electron_Px;
-TBranch*b_Electron_Py;
-TBranch*b_Electron_Pz;
-TBranch*b_Electron_eta;
-TBranch*b_Electron_phi;
-TBranch*b_Electron_charge;
-TBranch*b_Electron_etaSC;
-TBranch*b_Electron_phiSC;
-TBranch*b_Electron_dxy;
-TBranch*b_Electron_dz;
-TBranch*b_Electron_EnergySC;
-TBranch*b_Electron_etSC;
-TBranch*b_Electron_passMediumID;
+TBranch*b_nMuon;
+TBranch*b_Nmuons;
+TBranch*b_Muon_pT;
+TBranch*b_Muon_Px;
+TBranch*b_Muon_Py;
+TBranch*b_Muon_Pz;
+TBranch*b_Muon_eta;
+TBranch*b_Muon_phi;
+TBranch*b_Muon_charge;
+TBranch*b_Muon_dxy;
+TBranch*b_Muon_dz;
+TBranch*b_Muon_passTightID;
+TBranch*b_Muon_PfChargedHadronIsoR04;
+TBranch*b_Muon_PfNeutralHadronIsoR04;
+TBranch*b_Muon_PfGammaIsoR04;
+TBranch*b_Muon_PFSumPUIsoR04;
+TBranch*b_Muon_trkiso;
 TBranch*b_GENnPair;
 TBranch*b_GENLepton_phi;
 TBranch*b_GENLepton_eta;
@@ -394,12 +406,25 @@ void analyzeData(TString fileName)
 	if(!testBranch) isMC = false;
 
 	// Define branches
-	chain->SetBranchAddress("Nelectrons",&Nelectrons,&b_Nelectrons);
-	chain->SetBranchAddress("Electron_pT",&Electron_pT,&b_Electron_pT);
-	chain->SetBranchAddress("Electron_eta",&Electron_eta,&b_Electron_eta);
-	chain->SetBranchAddress("Electron_phi",&Electron_phi,&b_Electron_phi);
-	chain->SetBranchAddress("Electron_passMediumID",&Electron_passMediumID,
-				 &b_Electron_passMediumID);
+	chain->SetBranchAddress("nMuon",&nMuon,&b_nMuon);
+	chain->SetBranchAddress("Muon_pT",&Muon_pT,&b_Muon_pT);
+	chain->SetBranchAddress("Muon_eta",&Muon_eta,&b_Muon_eta);
+	chain->SetBranchAddress("Muon_phi",&Muon_phi,&b_Muon_phi);
+	chain->SetBranchAddress("Muon_passTightID",&Muon_passTightID,
+				&b_Muon_passTightID);
+	chain->SetBranchAddress("Muon_charge",&Muon_charge,&b_Muon_charge);
+	chain->SetBranchAddress("Muon_PfChargedHadronIsoR04",
+				&Muon_PfChargedHadronIsoR04,
+				&b_Muon_PfChargedHadronIsoR04);
+	chain->SetBranchAddress("Muon_PfNeutralHadronIsoR04",
+				&Muon_PfNeutralHadronIsoR04,
+				&b_Muon_PfNeutralHadronIsoR04);
+	chain->SetBranchAddress("Muon_PfGammaIsoR04",
+				&Muon_PfGammaIsoR04,
+				&b_Muon_PfGammaIsoR04);
+	chain->SetBranchAddress("Muon_PFSumPUIsoR04",
+				&Muon_PFSumPUIsoR04,
+				&b_Muon_PFSumPUIsoR04);
 	chain->SetBranchAddress("HLT_ntrig",&HLT_ntrig,&b_HLT_ntrig);
 	chain->SetBranchAddress("HLT_trigType",&HLT_trigType,&b_HLT_trigType);
 	chain->SetBranchAddress("HLT_trigFired",&HLT_trigFired,&b_HLT_trigFired);
@@ -471,7 +496,7 @@ void analyzeData(TString fileName)
 	// Loop over events
 	for(Long64_t iEntry=0;iEntry<nEntries;iEntry++){
 		chain->GetEntry(iEntry);
-		if(Nelectrons<2) continue;
+		if(nMuon<2) continue;
 
 		// Check if event passes HLT cut
 		TString trigName;
@@ -479,7 +504,9 @@ void analyzeData(TString fileName)
 		bool passHLT = false;
 		for(int iHLT=0;iHLT<trigNameSize;iHLT++){
 			trigName = pHLT_trigName->at(iHLT);
-			if(trigName.CompareTo(electronTrigger) && HLT_trigFired[iHLT]==1){
+			if((trigName.CompareTo(muonTrigger1)==0)||
+			   (trigName.CompareTo(muonTrigger2)==0) && 
+			    HLT_trigFired[iHLT]==1){
 				passHLT = true;
 				break;
 			} // end if trigName
@@ -487,7 +514,7 @@ void analyzeData(TString fileName)
 
 		if(!passHLT) continue;
 
-		// Get Reco Electrons
+		// Get Reco Muons
 		double ptLead = -1000;
 		double ptSub = -1000;
 		double etaLead = -1000;
@@ -498,29 +525,32 @@ void analyzeData(TString fileName)
 		int idxLead = -1;
 		int idxSub = -1;
 
-		// Find lead pT electron
-		for(int iEle=0;iEle<Nelectrons;iEle++){
-			if(!Electron_passMediumID[iEle]) continue;
-			if(Electron_pT[iEle] > ptLead){
-				ptLead = Electron_pT[iEle];
-				etaLead = Electron_eta[iEle];
-				phiLead = Electron_phi[iEle];
-				idxLead = iEle;
+		// Find lead pT muon
+		// NOTE: Need to choose two muons by smallest vertex chi2
+		// Choosing highest two pT is a temporary placeholder 
+		for(int iMu=0;iMu<nMuon;iMu++){
+			if(!Muon_passTightID[iMu]) continue;
+			// need to add pfIso/pt still
+			if(Muon_pT[iMu] > ptLead){
+				ptLead = Muon_pT[iMu];
+				etaLead = Muon_eta[iMu];
+				phiLead = Muon_phi[iMu];
+				idxLead = iMu;
 			}
 		}// end lead pt Loop
 
-		// Find subleading pT electron
-		for(int iEle=0;iEle<Nelectrons;iEle++) {
-			if(!Electron_passMediumID[iEle]) continue;
-			if(Electron_pT[iEle] > ptSub && Electron_pT[iEle] < ptLead){
-				ptSub = Electron_pT[iEle];
-				etaSub = Electron_eta[iEle];
-				phiSub = Electron_phi[iEle];
-				idxSub = iEle;
+		// Find subleading pT muon
+		for(int iMu=0;iMu<nMuon;iMu++) {
+			if(!Muon_passTightID[iMu]) continue;
+			if(Muon_pT[iMu] > ptSub && Muon_pT[iMu] < ptLead){
+				ptSub = Muon_pT[iMu];
+				etaSub = Muon_eta[iMu];
+				phiSub = Muon_phi[iMu];
+				idxSub = iMu;
 			}
 		}//end sub pt loop
 
-		// If either lead or subleading electron not defined, skip to next event
+		// If either lead or subleading muon not defined, skip to next event
 		if(idxLead<0 || idxSub<0) continue;
 
 		// Kinematic cuts
@@ -532,16 +562,17 @@ void analyzeData(TString fileName)
 		v1.SetPtEtaPhiM(ptLead,etaLead,phiLead,eMass);
 		v2.SetPtEtaPhiM(ptSub,etaSub,phiSub,eMass);
 
-		// dielectron invariant mass
+		// dimuon invariant mass
 		double invMassReco = (v1+v2).M();
 		
-		// dielectron rapidity
+		// dimuon rapidity
 		double rapidity = (v1+v2).Rapidity();
 
 		double sfWeight = 1.0;
-		double pvzWeight = 1.0;
 		double puWeight = 1.0;
 		double prefireWeight = 1.0;
+
+		// Need Rochester correction for muons for data and MC
 		if(isMC){
 			// Get Scale factors
 			if(ptLead>ptBinHigh) ptLead = ptBinHigh;
@@ -563,14 +594,12 @@ void analyzeData(TString fileName)
 			double sfHLT = 
 				(hLeg2SF->GetBinContent(hLeg2SF->FindBin(etaLead,ptLead)))*
 				 (hLeg2SF->GetBinContent(hLeg2SF->FindBin(etaLead,ptLead)));
-			sfWeight = sfReco1*sfReco2*sfID1*sfID2*sfHLT;
+			// Need to acquire muon SFs before adding this
+			sfWeight = 1.0;
 			}// end isFake
 
 			// Get gen weight
 			genWeight = (GENEvt_weight/fabs(GENEvt_weight))/sumGenWeight;
-
-			// PVz weight
-			pvzWeight = hPVzSF->GetBinContent(hPVzSF->FindBin(PVz));
 
 			// Pileup weight
 			puWeight = hPileup->GetBinContent(hPileup->FindBin(nPileUp));
@@ -587,7 +616,7 @@ void analyzeData(TString fileName)
 		hPtSub->Fill(ptSub,weight);
 
 	}// end loop over entries
-	TString saveName = "output_data/saveFile";
+	TString saveName = "output_data/saveFile_MuMu_";
 	saveName += fileName;
 	saveName += ".root";
 	TFile*file;
