@@ -527,8 +527,7 @@ void analyzeData(TString fileName)
 		if(abs(etaLead)>etaGapLow && abs(etaLead)<etaGapHigh) continue;
 		if(abs(etaSub)>etaGapLow && abs(etaSub)<etaGapHigh) continue;
 		if(abs(etaLead)>etaHigh||abs(etaSub)>etaHigh) continue;
-		if(!((ptLead>ptLow && ptSub>ptHigh) || 
-		     (ptLead>ptHigh && ptSub>ptLow))) continue;
+		if(!(ptLead>ptHigh && ptSub>ptLow)) continue;
 
 		v1.SetPtEtaPhiM(ptLead,etaLead,phiLead,eMass);
 		v2.SetPtEtaPhiM(ptSub,etaSub,phiSub,eMass);
@@ -579,6 +578,7 @@ void analyzeData(TString fileName)
 			// Prefire weight
 			prefireWeight = _prefiringweight;
 		}
+
 		double weight = xSecWeight*genWeight*sfWeight*pvzWeight*puWeight;
 		if(!isMC) weight = 1.0;
 		hInvMass->Fill(invMassReco,weight);
