@@ -34,17 +34,17 @@ vector<TString> files= {
 TString treeName = "recoTree/DYTree";
 vector<double> xSecVec = {
 	1,1,1,1,1,1,1,1,//Data
-	18610.0,        //DYLL_10to50 v1,v2,ext1v1 combined (NLO)
-	1923.26*3,      //DYLL_50to100(NNLO)
-	78.1258*3,      //DYLL_100to200(NNLO)
-	2.73309*3,      //DYLL_200to400(NNLO) 
-	0.142945*3,     //DYLL_400to500(NNLO)
-	0.0809755*3,    //DYLL_500to700(NNLO)
-	0.0125589*3,    //DYLL_700to800(NNLO)
-	0.0105845*3,    //DYLL_800to1000(NNLO)
-	0.00556507*3,   //DYLL_1000to1500(NNLO)
-	0.000730495*3,  //DYLL_1500to2000(NNLO)
-	0.00016844*3    //DYLL_2000to3000(NNLO)
+	18610.0/3,        //DYLL_10to50 v1,v2,ext1v1 combined (NLO)
+	1923.26,      //DYLL_50to100(NNLO)
+	78.1258,      //DYLL_100to200(NNLO)
+	2.73309,      //DYLL_200to400(NNLO) 
+	0.142945,     //DYLL_400to500(NNLO)
+	0.0809755,    //DYLL_500to700(NNLO)
+	0.0125589,    //DYLL_700to800(NNLO)
+	0.0105845,    //DYLL_800to1000(NNLO)
+	0.00556507,   //DYLL_1000to1500(NNLO)
+	0.000730495,  //DYLL_1500to2000(NNLO)
+	0.00016844    //DYLL_2000to3000(NNLO)
 };
 int dataLuminosity = 35867;
 const TString electronTrigger = "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*";
@@ -514,6 +514,9 @@ void analyzeData(TString fileName)
 	TFile*file;
 	file = new TFile(saveName,"recreate");
 	hInvMass->Write();
+	hRapidity->Write();
+	hPtLead->Write();
+	hPtSub->Write();
 	file->Close();
 
 }
