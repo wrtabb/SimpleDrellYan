@@ -1,0 +1,7 @@
+*.d
+*.so
+*.pcm
+*.png
+*.root
+.nfs*
+./logs
