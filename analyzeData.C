@@ -479,7 +479,7 @@ void analyzeData(TString fileName)
 		bool passHLT = false;
 		for(int iHLT=0;iHLT<trigNameSize;iHLT++){
 			trigName = pHLT_trigName->at(iHLT);
-			if(trigName.CompareTo(electronTrigger) && HLT_trigFired[iHLT]==1){
+			if(trigName.CompareTo(electronTrigger==0) && HLT_trigFired[iHLT]==1){
 				passHLT = true;
 				break;
 			} // end if trigName
