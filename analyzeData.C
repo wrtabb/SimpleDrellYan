@@ -11,13 +11,6 @@
 
 TString base_directory = "root://xrootd-local.unl.edu///store/user/wtabb/DrellYan_13TeV_2016/v2p6/skims/skims_MuMu/";
 
-
-
-
-
-
-
-
 vector<TString> files= {
 	// Data
 	"SingleMuon_Run2016B",		// 0
@@ -308,6 +301,7 @@ void analyzeData(TString fileName)
 	// Get cross section for sample
 	double xSec = 1.0;
 	bool isFake = false;
+
 	// Data
 	if(fileName.CompareTo(files.at(0))==0) xSec = xSecVec.at(0);
 	else if(fileName.CompareTo(files.at(1))==0) xSec = xSecVec.at(1);
@@ -374,6 +368,8 @@ void analyzeData(TString fileName)
 	TH1F*hPileup  = (TH1F*)fPileup->Get("hPileupRatio");
 
 	// Load trees
+	cout << "Loadig tree from file: " << fileName << endl;
+	cout << "From directory: " << base_directory << endl;
 	TString loadFile = base_directory+fileName;
 	loadFile += ".root";
 	chain = new TChain(treeName);
