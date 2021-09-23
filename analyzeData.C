@@ -443,6 +443,7 @@ void analyzeData(TString fileName)
 
 		double sfWeight = 1.0;
 		double pvzWeight = 1.0;
+		double puWeight = 1.0;
 		// NOTE: Fakes do not get Scale Factors; need to ensure this is the case when it is implemented
 		if(isMC){
 			// Get Scale factors
@@ -453,12 +454,17 @@ void analyzeData(TString fileName)
 			if(etaLead<etaBinLow) etaLead = etaBinLow;
 			if(etaSub<etaBinLow) etaSub = etaBinLow;
 
-			double sfReco1 = hRecoSF->GetBinContent(hRecoSF->FindBin(etaLead,ptLead));
-			double sfReco2 = hRecoSF->GetBinContent(hRecoSF->FindBin(etaSub,ptSub));
-			double sfID1   = hMedIDSF->GetBinContent(hMedIDSF->FindBin(etaLead,ptLead));
-			double sfID2   = hMedIDSF->GetBinContent(hMedIDSF->FindBin(etaSub,ptSub));
-			double sfHLT   = (hLeg2SF->GetBinContent(hLeg2SF->FindBin(etaLead,ptLead)))*
-					 (hLeg2SF->GetBinContent(hLeg2SF->FindBin(etaLead,ptLead)));
+			double sfReco1 = 
+				hRecoSF->GetBinContent(hRecoSF->FindBin(etaLead,ptLead));
+			double sfReco2 = 
+				hRecoSF->GetBinContent(hRecoSF->FindBin(etaSub,ptSub));
+			double sfID1 = 
+				hMedIDSF->GetBinContent(hMedIDSF->FindBin(etaLead,ptLead));
+			double sfID2 = 
+				hMedIDSF->GetBinContent(hMedIDSF->FindBin(etaSub,ptSub));
+			double sfHLT = 
+				(hLeg2SF->GetBinContent(hLeg2SF->FindBin(etaLead,ptLead)))*
+				 (hLeg2SF->GetBinContent(hLeg2SF->FindBin(etaLead,ptLead)));
 			sfWeight = sfReco1*sfReco2*sfID1*sfID2*sfHLT;
 
 			// Get gen weight
@@ -466,8 +472,11 @@ void analyzeData(TString fileName)
 
 			// PVz weight
 			pvzWeight = hPVzSF->GetBinContent(hPVzSF->FindBin(PVz));
+
+			// Pileup weight
+			puWeight = hPileup->GetBinContent(hPileup->FindBin(nPileUp));
 		}
-		double weight = xSecWeight*genWeight*sfWeight*pvzWeight;
+		double weight = xSecWeight*genWeight*sfWeight*pvzWeight*puWeight;
 		if(!isMC) weight = 1.0;
 		hInvMass->Fill(invMassReco,weight);
 
