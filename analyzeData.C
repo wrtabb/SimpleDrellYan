@@ -166,7 +166,6 @@ std::vector<std::string> HLT_trigName;
 std::vector<std::string> *pHLT_trigName = &HLT_trigName;
 int nVertices;
 int nPileUp;
-double PVz;
 std::vector<double> vtxTrkCkt1Pt;
 std::vector<double>*pvtxTrkCkt1Pt = &vtxTrkCkt1Pt;
 
@@ -185,7 +184,6 @@ TBranch*b_PUweight;
 TBranch*b_Nelectrons;
 TBranch*b_nVertices;
 TBranch*b_nPileUp;
-TBranch*b_PVz;
 
 TBranch*b__prefiringweight;
 TBranch*b__prefiringweightup;
@@ -369,13 +367,11 @@ void analyzeData(TString fileName)
 	TFile*fMedIDSF = new TFile("data/MediumID_SF.root");
 	TFile*fLeg2SF  = new TFile("data/Leg2_SF.root");
 	TFile*fPileup  = new TFile("data/pileup.root");
-	TFile*fPVzSF   = new TFile("data/PVz.root");
 
 	TH2F*hRecoSF  = (TH2F*)fRecoSF->Get("EGamma_SF2D");
 	TH2F*hMedIDSF = (TH2F*)fMedIDSF->Get("EGamma_SF2D");
 	TH2F*hLeg2SF  = (TH2F*)fLeg2SF->Get("EGamma_SF2D");
 	TH1F*hPileup  = (TH1F*)fPileup->Get("hPileupRatio");
-	TH1D*hPVzSF   = (TH1D*)fPVzSF->Get("PVz_SF");
 
 	// Load trees
 	TString loadFile = base_directory+fileName;
@@ -429,7 +425,6 @@ void analyzeData(TString fileName)
 	chain->SetBranchAddress("HLT_trigType",&HLT_trigType,&b_HLT_trigType);
 	chain->SetBranchAddress("HLT_trigFired",&HLT_trigFired,&b_HLT_trigFired);
 	chain->SetBranchAddress("HLT_trigName",&pHLT_trigName);
-	chain->SetBranchAddress("PVz",&PVz,&b_PVz);
 	chain->SetBranchAddress("nVertices",&nVertices,&b_nVertices);
 	chain->SetBranchAddress("nPileUp",&nPileUp,&b_nPileUp);
 	chain->SetBranchAddress("vtxTrkCkt1Pt",&pvtxTrkCkt1Pt);
@@ -504,9 +499,9 @@ void analyzeData(TString fileName)
 		bool passHLT = false;
 		for(int iHLT=0;iHLT<trigNameSize;iHLT++){
 			trigName = pHLT_trigName->at(iHLT);
-			if((trigName.CompareTo(muonTrigger1)==0)||
-			   (trigName.CompareTo(muonTrigger2)==0) && 
-			    HLT_trigFired[iHLT]==1){
+			if(((trigName.CompareTo(muonTrigger1)==0)||
+			    (trigName.CompareTo(muonTrigger2)==0)) && 
+			     HLT_trigFired[iHLT])==1{
 				passHLT = true;
 				break;
 			} // end if trigName
@@ -559,8 +554,8 @@ void analyzeData(TString fileName)
 		if(abs(etaLead)>etaHigh||abs(etaSub)>etaHigh) continue;
 		if(!(ptLead>ptHigh && ptSub>ptLow)) continue;
 
-		v1.SetPtEtaPhiM(ptLead,etaLead,phiLead,eMass);
-		v2.SetPtEtaPhiM(ptSub,etaSub,phiSub,eMass);
+		v1.SetPtEtaPhiM(ptLead,etaLead,phiLead,muMass);
+		v2.SetPtEtaPhiM(ptSub,etaSub,phiSub,muMass);
 
 		// dimuon invariant mass
 		double invMassReco = (v1+v2).M();
@@ -608,7 +603,7 @@ void analyzeData(TString fileName)
 			prefireWeight = _prefiringweight;
 		}
 
-		double weight = xSecWeight*genWeight*sfWeight*pvzWeight*puWeight;
+		double weight = xSecWeight*genWeight*sfWeight*puWeight;
 		if(!isMC) weight = 1.0;
 		hInvMass->Fill(invMassReco,weight);
 		hRapidity->Fill(rapidity,weight);
