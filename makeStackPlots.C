@@ -1,83 +1,83 @@
 
 vector<TString> file_data = {
-	"output_data/saveFilecrab_DoubleEG_RunB.root",           // 0
-	"output_data/saveFilecrab_DoubleEG_RunC.root",           // 1
-	"output_data/saveFilecrab_DoubleEG_RunD.root",           // 2
-	"output_data/saveFilecrab_DoubleEG_RunE.root",           // 3
-	"output_data/saveFilecrab_DoubleEG_RunF.root",           // 4
-	"output_data/saveFilecrab_DoubleEG_RunG.root",           // 5
-	"output_data/saveFilecrab_DoubleEG_RunHver2.root",       // 6
-	"output_data/saveFilecrab_DoubleEG_RunHver3.root"       // 7
+	"output_data/saveFile_MuMu_SingleMuon_Run2016B.root",           // 0
+	"output_data/saveFile_MuMu_SingleMuon_Run2016C.root",           // 1
+	"output_data/saveFile_MuMu_SingleMuon_Run2016D.root",           // 2
+	"output_data/saveFile_MuMu_SingleMuon_Run2016E.root",           // 3
+	"output_data/saveFile_MuMu_SingleMuon_Run2016F.root",           // 4
+	"output_data/saveFile_MuMu_SingleMuon_Run2016G.root",           // 5
+	"output_data/saveFile_MuMu_SingleMuon_Run2016Hver2.root",       // 6
+	"output_data/saveFile_MuMu_SingleMuon_Run2016Hver3.root"       // 7
 };
 
 vector<TString> file_diboson = {
-	"output_data/saveFileWW.root",
-	"output_data/saveFileWZ.root",
-	"output_data/saveFileZZ.root"
+	"output_data/saveFile_MuMu_WW.root",
+	"output_data/saveFile_MuMu_WZ.root",
+	"output_data/saveFile_MuMu_ZZ.root"
 };
 
 vector<TString> file_taus = {
-	"output_data/saveFileDYLL_M10to50_TauTau.root",
-	"output_data/saveFileDYLL_M50to100_TauTau.root",
-	"output_data/saveFileDYLL_M100to200_TauTau.root",
-	"output_data/saveFileDYLL_M200to400_TauTau.root",
-	"output_data/saveFileDYLL_M400to500_TauTau.root",
-	"output_data/saveFileDYLL_M500to700_TauTau.root",
-	"output_data/saveFileDYLL_M700to800_TauTau.root",
-	"output_data/saveFileDYLL_M800to1000_TauTau.root"
-	"output_data/saveFileDYLL_M1000to1500_TauTau.root",
-	"output_data/saveFileDYLL_M1500to2000_TauTau.root",
-	"output_data/saveFileDYLL_M2000to3000_TauTau.root",
+	"output_data/saveFile_MuMu_DYLL_M10to50_TauTau.root",
+	"output_data/saveFile_MuMu_DYLL_M50to100_TauTau.root",
+	"output_data/saveFile_MuMu_DYLL_M100to200_TauTau.root",
+	"output_data/saveFile_MuMu_DYLL_M200to400_TauTau.root",
+	"output_data/saveFile_MuMu_DYLL_M400to500_TauTau.root",
+	"output_data/saveFile_MuMu_DYLL_M500to700_TauTau.root",
+	"output_data/saveFile_MuMu_DYLL_M700to800_TauTau.root",
+	"output_data/saveFile_MuMu_DYLL_M800to1000_TauTau.root",
+	"output_data/saveFile_MuMu_DYLL_M1000to1500_TauTau.root",
+	"output_data/saveFile_MuMu_DYLL_M1500to2000_TauTau.root",
+	"output_data/saveFile_MuMu_DYLL_M2000to3000_TauTau.root"
 };
 
 vector<TString> file_DYLL = {
-	"output_data/saveFileDYLL_M10to50_EE.root",
-	"output_data/saveFileDYLL_M50to100_EE.root",
-	"output_data/saveFileDYLL_M100to200_EE.root",
-	"output_data/saveFileDYLL_M200to400_EE.root",
-	"output_data/saveFileDYLL_M400to500_EE.root",
-	"output_data/saveFileDYLL_M500to700_EE.root",
-	"output_data/saveFileDYLL_M700to800_EE.root",
-	"output_data/saveFileDYLL_M800to1000_EE.root",
-	"output_data/saveFileDYLL_M1000to1500_EE.root",
-	"output_data/saveFileDYLL_M1500to2000_EE.root",
-	"output_data/saveFileDYLL_M2000to3000_EE.root"
+	"output_data/saveFile_MuMu_DYLL_M10to50_MuMu.root",
+	"output_data/saveFile_MuMu_DYLL_M50to100_MuMu.root",
+	"output_data/saveFile_MuMu_DYLL_M100to200_MuMu.root",
+	"output_data/saveFile_MuMu_DYLL_M200to400_MuMu.root",
+	"output_data/saveFile_MuMu_DYLL_M400to500_MuMu.root",
+	"output_data/saveFile_MuMu_DYLL_M500to700_MuMu.root",
+	"output_data/saveFile_MuMu_DYLL_M700to800_MuMu.root",
+	"output_data/saveFile_MuMu_DYLL_M800to1000_MuMu.root",
+	"output_data/saveFile_MuMu_DYLL_M1000to1500_MuMu.root",
+	"output_data/saveFile_MuMu_DYLL_M1500to2000_MuMu.root",
+	"output_data/saveFile_MuMu_DYLL_M2000to3000_MuMu.root"
 };
 
 vector<TString> file_top = {
-	"output_data/saveFileST_tW.root",
-	"output_data/saveFileST_tbarW.root",
-	"output_data/saveFilettbar_M0to700.root",
-	"output_data/saveFilettbar_M700to1000.root",
-	"output_data/saveFilettbar_M1000toInf.root"
+	"output_data/saveFile_MuMu_ST_tW.root",
+	"output_data/saveFile_MuMu_ST_tbarW.root",
+	"output_data/saveFile_MuMu_ttbar_M0to700.root",
+	"output_data/saveFile_MuMu_ttbar_M700to1000.root",
+	"output_data/saveFile_MuMu_ttbar_M1000toInf.root"
 };
 
 vector<TString> file_Fake = {
-	"output_data/saveFileWJetsToLNu_amcatnlo.root"
+	"output_data/saveFile_MuMu_WJetsToLNu_amcatnlo.root"
 };
 
 vector<TString> hist_data = {
-        "crab_DoubleEG_RunB",           // 0
-        "crab_DoubleEG_RunC",           // 1
-        "crab_DoubleEG_RunD",           // 2
-        "crab_DoubleEG_RunE",           // 3
-        "crab_DoubleEG_RunF",           // 4
-        "crab_DoubleEG_RunG",           // 5
-        "crab_DoubleEG_RunHver2",       // 6
-        "crab_DoubleEG_RunHver3"        // 7
+	"SingleMuon_Run2016B",           // 0
+	"SingleMuon_Run2016C",           // 1
+	"SingleMuon_Run2016D",           // 2
+	"SingleMuon_Run2016E",           // 3
+	"SingleMuon_Run2016F",           // 4
+	"SingleMuon_Run2016G",           // 5
+	"SingleMuon_Run2016Hver2",       // 6
+	"SingleMuon_Run2016Hver3"       // 7
 };
 vector<TString> hist_DYLL = {
-        "DYLL_M10to50_EE",              // 8
-        "DYLL_M50to100_EE",             // 9
-        "DYLL_M100to200_EE",            // 10
-        "DYLL_M200to400_EE",            // 11
-        "DYLL_M400to500_EE",            // 12
-        "DYLL_M500to700_EE",            // 13
-        "DYLL_M700to800_EE",            // 14
-        "DYLL_M800to1000_EE",           // 15
-        "DYLL_M1000to1500_EE",          // 16
-        "DYLL_M1500to2000_EE",          // 17
-        "DYLL_M2000to3000_EE"           // 18
+        "DYLL_M10to50_MuMu",              // 8
+        "DYLL_M50to100_MuMu",             // 9
+        "DYLL_M100to200_MuMu",            // 10
+        "DYLL_M200to400_MuMu",            // 11
+        "DYLL_M400to500_MuMu",            // 12
+        "DYLL_M500to700_MuMu",            // 13
+        "DYLL_M700to800_MuMu",            // 14
+        "DYLL_M800to1000_MuMu",           // 15
+        "DYLL_M1000to1500_MuMu",          // 16
+        "DYLL_M1500to2000_MuMu",          // 17
+        "DYLL_M2000to3000_MuMu"           // 18
 };
 
 vector<TString> hist_top = {
@@ -113,7 +113,7 @@ TH1D*GetHistogram(vector<TString> filesvector,vector<TString> histvector,TString
 
 void makeStackPlots()
 {
-	//gROOT->SetBatch(true);
+	gROOT->SetBatch(true);
 	TCanvas*c1 = new TCanvas("c1","",0,0,1000,1000);
 	c1->SetGrid();
 	c1->SetLogx();
@@ -150,7 +150,7 @@ void makeStackPlots()
 	hStackInvMass->Draw("hist");
 	hDataInvMass->Draw("pe,same");
 	hStackInvMass->GetXaxis()->SetTitle("invariant mass [GeV]");
-	hStackInvMass->SetTitle("Dielectron invariant mass");
+	hStackInvMass->SetTitle("Dimuon invariant mass");
 	hStackInvMass->GetXaxis()->SetMoreLogLabels();
 	hStackInvMass->GetXaxis()->SetNoExponent();
 	c1->Update();
@@ -165,7 +165,7 @@ void makeStackPlots()
 	legend->AddEntry(hMassFake,"W+Jets");
 	legend->Draw("same");
 
-	c1->SaveAs("plots/dataVsMC_InvMass.png");
+	c1->SaveAs("plots/dataVsMC_MuMu_InvMass.png");
 
 	// Rapidity
 	TCanvas*c2 = new TCanvas("c2","",0,0,1000,1000);
@@ -203,8 +203,8 @@ void makeStackPlots()
 	hStackRapidity->SetMinimum(0.01);
 	hStackRapidity->Draw("hist");
 	hRapidityData->Draw("pe,same");
-	hStackRapidity->GetXaxis()->SetTitle("Dielectron rapidity");
-	hStackRapidity->SetTitle("Dielectron rapidity");
+	hStackRapidity->GetXaxis()->SetTitle("Dimuon rapidity");
+	hStackRapidity->SetTitle("Dimuon rapidity");
 	c2->Update();
 
 	TLegend*legend2 = new TLegend(0.65,0.9,0.9,0.75);
@@ -217,7 +217,7 @@ void makeStackPlots()
 	legend2->AddEntry(hRapidityFake,"W+Jets");
 	legend2->Draw("same");
 
-	c2->SaveAs("plots/dataVsMC_Rapidity.png");
+	c2->SaveAs("plots/dataVsMC_MuMu_Rapidity.png");
 
 	// pT Lead
 	TCanvas*c3 = new TCanvas("c3","",0,0,1000,1000);
@@ -256,7 +256,7 @@ void makeStackPlots()
 	hStackPtLead->Draw("hist");
 	hPtLeadData->Draw("pe,same");
 
-	hStackPtLead->SetTitle("Leading electron p_{T}");
+	hStackPtLead->SetTitle("Leading muon p_{T}");
 	hStackPtLead->GetXaxis()->SetTitle("p_{T} [GeV]");
 	c3->Update();
 
@@ -270,7 +270,7 @@ void makeStackPlots()
 	legend3->AddEntry(hPtLeadFake,"W+Jets");
 	legend3->Draw("same");
 
-	c3->SaveAs("plots/dataVsMC_PtLead.png");
+	c3->SaveAs("plots/dataVsMC_MuMu_PtLead.png");
 
 	// pT Sublead
 	TCanvas*c4 = new TCanvas("c4","",0,0,1000,1000);
@@ -308,7 +308,7 @@ void makeStackPlots()
 	hStackPtSub->SetMinimum(0.01);
 	hStackPtSub->Draw("hist");
 	hPtSubData->Draw("pe,same");
-	hStackPtSub->SetTitle("Sub-leading electron p_{T}");
+	hStackPtSub->SetTitle("Sub-leading muon p_{T}");
 	hStackPtSub->GetXaxis()->SetTitle("p_{T} [GeV]");
 	c4->Update();
 
@@ -322,7 +322,7 @@ void makeStackPlots()
 	legend4->AddEntry(hPtSubFake,"W+Jets");
 	legend4->Draw("same");
 
-	c4->SaveAs("plots/dataVsMC_PtSub.png");
+	c4->SaveAs("plots/dataVsMC_MuMu_PtSub.png");
 	
 }
 
