@@ -542,30 +542,28 @@ void analyzeData(TString fileName)
 		double puWeight = 1.0;
 		double prefireWeight = 1.0;
 
-		// This section needs to be fixed
-		// Changing pT before putting into histograms and this is screwing up my 
-		// Pt plots!!!!!!!!!!!!!!!!
+		double pt1 = ptLead;
+		double pt2 = ptSub;
+		double eta1 = etaLead;
+		double eta2 = etaSub;
+
 		if(isMC){
 			// Get Scale factors
-			if(ptLead>ptBinHigh) ptLead = ptBinHigh;
-			if(ptSub>ptBinHigh) ptSub = ptBinHigh;
-			if(etaLead>etaBinHigh) etaLead = etaBinHigh;
-			if(etaSub>etaBinHigh) etaSub = etaBinHigh;
-			if(etaLead<etaBinLow) etaLead = etaBinLow;
-			if(etaSub<etaBinLow) etaSub = etaBinLow;
+			if(pt1>ptBinHigh) pt1 = ptBinHigh;
+			if(pt2>ptBinHigh) pt2 = ptBinHigh;
 
 			if(!isFake){
 			double sfReco1 = 
-				hRecoSF->GetBinContent(hRecoSF->FindBin(etaLead,ptLead));
+				hRecoSF->GetBinContent(hRecoSF->FindBin(eta1,pt1));
 			double sfReco2 = 
-				hRecoSF->GetBinContent(hRecoSF->FindBin(etaSub,ptSub));
+				hRecoSF->GetBinContent(hRecoSF->FindBin(eta2,pt2));
 			double sfID1 = 
-				hMedIDSF->GetBinContent(hMedIDSF->FindBin(etaLead,ptLead));
+				hMedIDSF->GetBinContent(hMedIDSF->FindBin(eta1,pt1));
 			double sfID2 = 
-				hMedIDSF->GetBinContent(hMedIDSF->FindBin(etaSub,ptSub));
+				hMedIDSF->GetBinContent(hMedIDSF->FindBin(eta2,pt2));
 			double sfHLT = 
-				(hLeg2SF->GetBinContent(hLeg2SF->FindBin(etaLead,ptLead)))*
-				 (hLeg2SF->GetBinContent(hLeg2SF->FindBin(etaLead,ptLead)));
+				(hLeg2SF->GetBinContent(hLeg2SF->FindBin(eta1,pt1)))*
+				 (hLeg2SF->GetBinContent(hLeg2SF->FindBin(eta1,pt1)));
 			sfWeight = sfReco1*sfReco2*sfID1*sfID2*sfHLT;
 			}// end isFake
 
