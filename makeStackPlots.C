@@ -1,59 +1,59 @@
 
 vector<TString> file_data = {
-	"output_data/saveFilecrab_DoubleEG_RunB.root",           // 0
-	"output_data/saveFilecrab_DoubleEG_RunC.root",           // 1
-	"output_data/saveFilecrab_DoubleEG_RunD.root",           // 2
-	"output_data/saveFilecrab_DoubleEG_RunE.root",           // 3
-	"output_data/saveFilecrab_DoubleEG_RunF.root",           // 4
-	"output_data/saveFilecrab_DoubleEG_RunG.root",           // 5
-	"output_data/saveFilecrab_DoubleEG_RunHver2.root",       // 6
-	"output_data/saveFilecrab_DoubleEG_RunHver3.root"       // 7
+	"output_data/saveFile_EE_crab_DoubleEG_RunB.root",           // 0
+	"output_data/saveFile_EE_crab_DoubleEG_RunC.root",           // 1
+	"output_data/saveFile_EE_crab_DoubleEG_RunD.root",           // 2
+	"output_data/saveFile_EE_crab_DoubleEG_RunE.root",           // 3
+	"output_data/saveFile_EE_crab_DoubleEG_RunF.root",           // 4
+	"output_data/saveFile_EE_crab_DoubleEG_RunG.root",           // 5
+	"output_data/saveFile_EE_crab_DoubleEG_RunHver2.root",       // 6
+	"output_data/saveFile_EE_crab_DoubleEG_RunHver3.root"       // 7
 };
 
 vector<TString> file_diboson = {
-	"output_data/saveFileWW.root",
-	"output_data/saveFileWZ.root",
-	"output_data/saveFileZZ.root"
+	"output_data/saveFile_EE_WW.root",
+	"output_data/saveFile_EE_WZ.root",
+	"output_data/saveFile_EE_ZZ.root"
 };
 
 vector<TString> file_taus = {
-	"output_data/saveFileDYLL_M10to50_TauTau.root",
-	"output_data/saveFileDYLL_M50to100_TauTau.root",
-	"output_data/saveFileDYLL_M100to200_TauTau.root",
-	"output_data/saveFileDYLL_M200to400_TauTau.root",
-	"output_data/saveFileDYLL_M400to500_TauTau.root",
-	"output_data/saveFileDYLL_M500to700_TauTau.root",
-	"output_data/saveFileDYLL_M700to800_TauTau.root",
-	"output_data/saveFileDYLL_M800to1000_TauTau.root"
-	"output_data/saveFileDYLL_M1000to1500_TauTau.root",
-	"output_data/saveFileDYLL_M1500to2000_TauTau.root",
-	"output_data/saveFileDYLL_M2000to3000_TauTau.root",
+	"output_data/saveFile_EE_DYLL_M10to50_TauTau.root",
+	"output_data/saveFile_EE_DYLL_M50to100_TauTau.root",
+	"output_data/saveFile_EE_DYLL_M100to200_TauTau.root",
+	"output_data/saveFile_EE_DYLL_M200to400_TauTau.root",
+	"output_data/saveFile_EE_DYLL_M400to500_TauTau.root",
+	"output_data/saveFile_EE_DYLL_M500to700_TauTau.root",
+	"output_data/saveFile_EE_DYLL_M700to800_TauTau.root",
+	"output_data/saveFile_EE_DYLL_M800to1000_TauTau.root"
+	"output_data/saveFile_EE_DYLL_M1000to1500_TauTau.root",
+	"output_data/saveFile_EE_DYLL_M1500to2000_TauTau.root",
+	"output_data/saveFile_EE_DYLL_M2000to3000_TauTau.root",
 };
 
 vector<TString> file_DYLL = {
-	"output_data/saveFileDYLL_M10to50_EE.root",
-	"output_data/saveFileDYLL_M50to100_EE.root",
-	"output_data/saveFileDYLL_M100to200_EE.root",
-	"output_data/saveFileDYLL_M200to400_EE.root",
-	"output_data/saveFileDYLL_M400to500_EE.root",
-	"output_data/saveFileDYLL_M500to700_EE.root",
-	"output_data/saveFileDYLL_M700to800_EE.root",
-	"output_data/saveFileDYLL_M800to1000_EE.root",
-	"output_data/saveFileDYLL_M1000to1500_EE.root",
-	"output_data/saveFileDYLL_M1500to2000_EE.root",
-	"output_data/saveFileDYLL_M2000to3000_EE.root"
+	"output_data/saveFile_EE_DYLL_M10to50_EE.root",
+	"output_data/saveFile_EE_DYLL_M50to100_EE.root",
+	"output_data/saveFile_EE_DYLL_M100to200_EE.root",
+	"output_data/saveFile_EE_DYLL_M200to400_EE.root",
+	"output_data/saveFile_EE_DYLL_M400to500_EE.root",
+	"output_data/saveFile_EE_DYLL_M500to700_EE.root",
+	"output_data/saveFile_EE_DYLL_M700to800_EE.root",
+	"output_data/saveFile_EE_DYLL_M800to1000_EE.root",
+	"output_data/saveFile_EE_DYLL_M1000to1500_EE.root",
+	"output_data/saveFile_EE_DYLL_M1500to2000_EE.root",
+	"output_data/saveFile_EE_DYLL_M2000to3000_EE.root"
 };
 
 vector<TString> file_top = {
-	"output_data/saveFileST_tW.root",
-	"output_data/saveFileST_tbarW.root",
-	"output_data/saveFilettbar_M0to700.root",
-	"output_data/saveFilettbar_M700to1000.root",
-	"output_data/saveFilettbar_M1000toInf.root"
+	"output_data/saveFile_EE_ST_tW.root",
+	"output_data/saveFile_EE_ST_tbarW.root",
+	"output_data/saveFile_EE_ttbar_M0to700.root",
+	"output_data/saveFile_EE_ttbar_M700to1000.root",
+	"output_data/saveFile_EE_ttbar_M1000toInf.root"
 };
 
 vector<TString> file_Fake = {
-	"output_data/saveFileWJetsToLNu_amcatnlo.root"
+	"output_data/saveFile_EE_WJetsToLNu_amcatnlo.root"
 };
 
 vector<TString> hist_data = {
@@ -165,7 +165,7 @@ void makeStackPlots()
 	legend->AddEntry(hMassFake,"W+Jets");
 	legend->Draw("same");
 
-	c1->SaveAs("plots/dataVsMC_InvMass.png");
+	c1->SaveAs("plots/dataVsMC_EE_InvMass.png");
 
 	// Rapidity
 	TCanvas*c2 = new TCanvas("c2","",0,0,1000,1000);
@@ -217,7 +217,7 @@ void makeStackPlots()
 	legend2->AddEntry(hRapidityFake,"W+Jets");
 	legend2->Draw("same");
 
-	c2->SaveAs("plots/dataVsMC_Rapidity.png");
+	c2->SaveAs("plots/dataVsMC_EE_Rapidity.png");
 
 	// pT Lead
 	TCanvas*c3 = new TCanvas("c3","",0,0,1000,1000);
@@ -270,7 +270,7 @@ void makeStackPlots()
 	legend3->AddEntry(hPtLeadFake,"W+Jets");
 	legend3->Draw("same");
 
-	c3->SaveAs("plots/dataVsMC_PtLead.png");
+	c3->SaveAs("plots/dataVsMC_EE_PtLead.png");
 
 	// pT Sublead
 	TCanvas*c4 = new TCanvas("c4","",0,0,1000,1000);
@@ -322,7 +322,7 @@ void makeStackPlots()
 	legend4->AddEntry(hPtSubFake,"W+Jets");
 	legend4->Draw("same");
 
-	c4->SaveAs("plots/dataVsMC_PtSub.png");
+	c4->SaveAs("plots/dataVsMC_EE_PtSub.png");
 	
 }
 
