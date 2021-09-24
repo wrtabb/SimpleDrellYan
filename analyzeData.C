@@ -524,7 +524,7 @@ void analyzeData(TString fileName)
 		if(idxLead<0 || idxSub<0) continue;
 
 		// Kinematic cuts
-		if((abs(etaLead)>etaGapLow && abs(etaLead)<etaGapHigh)) || (abs(etaSub)>etaGapLow && abs(etaSub)<etaGapHigh) continue;
+		if((abs(etaLead)>etaGapLow && abs(etaLead)<etaGapHigh) || (abs(etaSub)>etaGapLow && abs(etaSub)<etaGapHigh)) continue;
 		if(abs(etaLead)>etaHigh||abs(etaSub)>etaHigh) continue;
 		if(ptLead<ptHigh || ptSub<ptLow) continue;
 
@@ -541,6 +541,10 @@ void analyzeData(TString fileName)
 		double pvzWeight = 1.0;
 		double puWeight = 1.0;
 		double prefireWeight = 1.0;
+
+		// This section needs to be fixed
+		// Changing pT before putting into histograms and this is screwing up my 
+		// Pt plots!!!!!!!!!!!!!!!!
 		if(isMC){
 			// Get Scale factors
 			if(ptLead>ptBinHigh) ptLead = ptBinHigh;
