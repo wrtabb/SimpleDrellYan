@@ -471,7 +471,7 @@ void analyzeData(TString fileName)
 	// Loop over events
 	for(Long64_t iEntry=0;iEntry<nEntries;iEntry++){
 		chain->GetEntry(iEntry);
-		if(Nelectrons<2) continue;
+		if(Nelectrons!=2) continue;
 
 		// Check if event passes HLT cut
 		TString trigName;
