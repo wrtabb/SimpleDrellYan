@@ -113,7 +113,7 @@ TH1D*GetHistogram(vector<TString> filesvector,vector<TString> histvector,TString
 
 void makeStackPlots()
 {
-	gROOT->SetBatch(true);
+	//gROOT->SetBatch(true);
 	TCanvas*c1 = new TCanvas("c1","",0,0,1000,1000);
 	c1->SetGrid();
 	c1->SetLogx();
