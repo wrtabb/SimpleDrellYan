@@ -21,7 +21,7 @@ vector<TString> file_ew= {
 	"output_data/saveFile_MuMu_DYLL_M400to500_TauTau.root",
 	"output_data/saveFile_MuMu_DYLL_M500to700_TauTau.root",
 	"output_data/saveFile_MuMu_DYLL_M700to800_TauTau.root",
-	"output_data/saveFile_MuMu_DYLL_M800to1000_TauTau.root"
+	"output_data/saveFile_MuMu_DYLL_M800to1000_TauTau.root",
 	"output_data/saveFile_MuMu_DYLL_M1000to1500_TauTau.root",
 	"output_data/saveFile_MuMu_DYLL_M1500to2000_TauTau.root",
 	"output_data/saveFile_MuMu_DYLL_M2000to3000_TauTau.root"
@@ -210,7 +210,7 @@ void MakePlots(Variable var)
 	TLegend*legend = new TLegend(0.65,0.9,0.9,0.75);
 	legend->SetTextSize(0.02);
 	legend->AddEntry(hData,"Data");
-	legend->AddEntry(hDYLL,"#gamma^{*}/Z #rightarrow e^{-}e^{+}");
+	legend->AddEntry(hDYLL,"#gamma^{*}/Z #rightarrow #mu^{-}#mu^{+}");
 	legend->AddEntry(hTops,"t#bar{t}+tW+#bar{t}W");
 	legend->AddEntry(hEW,"diboson + #gamma^{*}/Z #rightarrow #tau^{-}#tau^{+}");
 	legend->AddEntry(hFake,"W+Jets");
