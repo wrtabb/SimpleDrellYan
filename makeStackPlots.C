@@ -250,7 +250,7 @@ void MakePlots(Variable var)
 	hRatio->GetXaxis()->SetMoreLogLabels();
 	hRatio->SetMaximum(1.3);
 	hRatio->SetMinimum(0.7);
-	hRatio->GetXaxis()->SetTitle(plotProperties.at(1));
+	hRatio->GetXaxis()->SetTitle(plotProperties.at(2));
 	hRatio->Draw("PE");
 	line->Draw("same");
 	canvas->Update();
