@@ -80,7 +80,7 @@ vector<TString> hist_DYLL = {
 vector<TString> hist_top = {
         "ST_tW",                        // 19
         "ST_tbarW",                     // 20
-        "ttbar_truncated_M0To700",      // 21
+        "ttbar_M0To700",      // 21
         "ttbar_M700to1000",             // 22
         "ttbar_M1000toInf"              // 23
 };
