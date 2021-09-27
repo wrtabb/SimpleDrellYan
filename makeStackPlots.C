@@ -21,7 +21,7 @@ vector<TString> file_ew= {
 	"output_data/saveFile_EE_DYLL_M400to500_TauTau.root",
 	"output_data/saveFile_EE_DYLL_M500to700_TauTau.root",
 	"output_data/saveFile_EE_DYLL_M700to800_TauTau.root",
-	"output_data/saveFile_EE_DYLL_M800to1000_TauTau.root"
+	"output_data/saveFile_EE_DYLL_M800to1000_TauTau.root",
 	"output_data/saveFile_EE_DYLL_M1000to1500_TauTau.root",
 	"output_data/saveFile_EE_DYLL_M1500to2000_TauTau.root",
 	"output_data/saveFile_EE_DYLL_M2000to3000_TauTau.root"
@@ -120,12 +120,12 @@ void MakePlots(Variable var);
 
 void makeStackPlots()
 {
-	//gROOT->SetBatch(true);
+	gROOT->SetBatch(true);
 	gStyle->SetOptStat(0);
 	MakePlots(INV_MASS);
-	MakePlots(RAPIDITY);
-	MakePlots(PT_LEAD);
-	MakePlots(PT_SUB);
+	//MakePlots(RAPIDITY);
+	//MakePlots(PT_LEAD);
+	//MakePlots(PT_SUB);
 
 }
 
