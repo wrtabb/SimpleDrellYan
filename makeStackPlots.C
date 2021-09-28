@@ -80,7 +80,7 @@ vector<TString> hist_DYLL = {
 vector<TString> hist_top = {
         "ST_tW",                        // 19
         "ST_tbarW",                     // 20
-        "ttbar_M0To700",      // 21
+        "ttbar_M0to700",      // 21
         "ttbar_M700to1000",             // 22
         "ttbar_M1000toInf"              // 23
 };
@@ -120,7 +120,7 @@ void MakePlots(Variable var);
 
 void makeStackPlots()
 {
-	gROOT->SetBatch(true);
+	//gROOT->SetBatch(true);
 	gStyle->SetOptStat(0);
 	MakePlots(INV_MASS);
 	//MakePlots(RAPIDITY);
