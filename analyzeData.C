@@ -388,7 +388,7 @@ void analyzeData(TString fileName)
 	hInvMass_GenPVzWeight = new TH1D(histNameGenPVzWeight,"",nMassBins,massbins);
 	hInvMass_GenPVzPUWeight = new TH1D(histNameGenPVzPUWeight,"",nMassBins,massbins);
 	hInvMass_GenPVzPUPrefireWeight = new TH1D(histNameGenPVzPUPrefireWeight,"",nMassBins,massbins);
-	hInvMass_GenPVzPUPrefireSF = new TH1D(histNameGenPVzPUPrefireSFWeight,"",nMassBins,massbins);
+	hInvMass_GenPVzPUPrefireSFWeight = new TH1D(histNameGenPVzPUPrefireSFWeight,"",nMassBins,massbins);
 
 	Long64_t nEntries = chain->GetEntries();
 	cout << "Loading " << fileName << endl;
@@ -551,6 +551,7 @@ void analyzeData(TString fileName)
 		double pvzWeight = 1.0;
 		double puWeight = 1.0;
 		double prefireWeight = 1.0;
+		genWeight = 1.0;
 
 		// Define pt and eta values from lead sublead electrons
 		// To get scale factors with
@@ -594,12 +595,12 @@ void analyzeData(TString fileName)
 
 		double weight = xSecWeight*genWeight*sfWeight*pvzWeight*puWeight*prefireWeight;
 		if(!isMC) weight = 1.0;
-		hInvMass_NoWeight->Fill(invMass,xSecWeight);
-		hInvMass_GenWeight->Fill(invMass,xSecWeight*genWeight);
-		hInvMass_GenPVzWeight->Fill(invMass,xSecWeight*genWeight*pvzWeight);
-		hInvMass_GenPVzPUWeight->Fill(invMass,xSecWeight*genWeight*pvzWeight*puWeight);
-		hInvMass_GenPVzPUPrefireWeight->Fill(invMass,xSecWeight*genWeight*pvzWeight*puWeight*prefireWeight);
-		hInvMass_GenPVzPUPrefireSFWeight->Fill(invMass,xSecWeight*genWeight*pvzWeight*puWeight*prefireWeight*sfWeight);
+		hInvMass_NoWeight->Fill(invMassReco,xSecWeight);
+		hInvMass_GenWeight->Fill(invMassReco,xSecWeight*genWeight);
+		hInvMass_GenPVzWeight->Fill(invMassReco,xSecWeight*genWeight*pvzWeight);
+		hInvMass_GenPVzPUWeight->Fill(invMassReco,xSecWeight*genWeight*pvzWeight*puWeight);
+		hInvMass_GenPVzPUPrefireWeight->Fill(invMassReco,xSecWeight*genWeight*pvzWeight*puWeight*prefireWeight);
+		hInvMass_GenPVzPUPrefireSFWeight->Fill(invMassReco,xSecWeight*genWeight*pvzWeight*puWeight*prefireWeight*sfWeight);
 	}// end loop over entries
 	TString saveName = "output_data/testFile_EE_DiffWeights_";
 	saveName += fileName;

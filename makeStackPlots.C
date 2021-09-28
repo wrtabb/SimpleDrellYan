@@ -1,56 +1,56 @@
 
 vector<TString> file_data = {
-	"output_data/saveFile_EE_crab_DoubleEG_RunB.root",           // 0
-	"output_data/saveFile_EE_crab_DoubleEG_RunC.root",           // 1
-	"output_data/saveFile_EE_crab_DoubleEG_RunD.root",           // 2
-	"output_data/saveFile_EE_crab_DoubleEG_RunE.root",           // 3
-	"output_data/saveFile_EE_crab_DoubleEG_RunF.root",           // 4
-	"output_data/saveFile_EE_crab_DoubleEG_RunG.root",           // 5
-	"output_data/saveFile_EE_crab_DoubleEG_RunHver2.root",       // 6
-	"output_data/saveFile_EE_crab_DoubleEG_RunHver3.root"       // 7
+	"output_data/testFile_EE_DiffWeights_crab_DoubleEG_RunB.root",           // 0
+	"output_data/testFile_EE_DiffWeights_crab_DoubleEG_RunC.root",           // 1
+	"output_data/testFile_EE_DiffWeights_crab_DoubleEG_RunD.root",           // 2
+	"output_data/testFile_EE_DiffWeights_crab_DoubleEG_RunE.root",           // 3
+	"output_data/testFile_EE_DiffWeights_crab_DoubleEG_RunF.root",           // 4
+	"output_data/testFile_EE_DiffWeights_crab_DoubleEG_RunG.root",           // 5
+	"output_data/testFile_EE_DiffWeights_crab_DoubleEG_RunHver2.root",       // 6
+	"output_data/testFile_EE_DiffWeights_crab_DoubleEG_RunHver3.root"       // 7
 };
 
 vector<TString> file_ew= {
-	"output_data/saveFile_EE_WW.root",
-	"output_data/saveFile_EE_WZ.root",
-	"output_data/saveFile_EE_ZZ.root",
-	"output_data/saveFile_EE_DYLL_M10to50_TauTau.root",
-	"output_data/saveFile_EE_DYLL_M50to100_TauTau.root",
-	"output_data/saveFile_EE_DYLL_M100to200_TauTau.root",
-	"output_data/saveFile_EE_DYLL_M200to400_TauTau.root",
-	"output_data/saveFile_EE_DYLL_M400to500_TauTau.root",
-	"output_data/saveFile_EE_DYLL_M500to700_TauTau.root",
-	"output_data/saveFile_EE_DYLL_M700to800_TauTau.root",
-	"output_data/saveFile_EE_DYLL_M800to1000_TauTau.root",
-	"output_data/saveFile_EE_DYLL_M1000to1500_TauTau.root",
-	"output_data/saveFile_EE_DYLL_M1500to2000_TauTau.root",
-	"output_data/saveFile_EE_DYLL_M2000to3000_TauTau.root"
+	"output_data/testFile_EE_DiffWeights_WW.root",
+	"output_data/testFile_EE_DiffWeights_WZ.root",
+	"output_data/testFile_EE_DiffWeights_ZZ.root",
+	"output_data/testFile_EE_DiffWeights_DYLL_M10to50_TauTau.root",
+	"output_data/testFile_EE_DiffWeights_DYLL_M50to100_TauTau.root",
+	"output_data/testFile_EE_DiffWeights_DYLL_M100to200_TauTau.root",
+	"output_data/testFile_EE_DiffWeights_DYLL_M200to400_TauTau.root",
+	"output_data/testFile_EE_DiffWeights_DYLL_M400to500_TauTau.root",
+	"output_data/testFile_EE_DiffWeights_DYLL_M500to700_TauTau.root",
+	"output_data/testFile_EE_DiffWeights_DYLL_M700to800_TauTau.root",
+	"output_data/testFile_EE_DiffWeights_DYLL_M800to1000_TauTau.root",
+	"output_data/testFile_EE_DiffWeights_DYLL_M1000to1500_TauTau.root",
+	"output_data/testFile_EE_DiffWeights_DYLL_M1500to2000_TauTau.root",
+	"output_data/testFile_EE_DiffWeights_DYLL_M2000to3000_TauTau.root"
 };
 
 vector<TString> file_DYLL = {
-	"output_data/saveFile_EE_DYLL_M10to50_EE.root",
-	"output_data/saveFile_EE_DYLL_M50to100_EE.root",
-	"output_data/saveFile_EE_DYLL_M100to200_EE.root",
-	"output_data/saveFile_EE_DYLL_M200to400_EE.root",
-	"output_data/saveFile_EE_DYLL_M400to500_EE.root",
-	"output_data/saveFile_EE_DYLL_M500to700_EE.root",
-	"output_data/saveFile_EE_DYLL_M700to800_EE.root",
-	"output_data/saveFile_EE_DYLL_M800to1000_EE.root",
-	"output_data/saveFile_EE_DYLL_M1000to1500_EE.root",
-	"output_data/saveFile_EE_DYLL_M1500to2000_EE.root",
-	"output_data/saveFile_EE_DYLL_M2000to3000_EE.root"
+	"output_data/testFile_EE_DiffWeights_DYLL_M10to50_EE.root",
+	"output_data/testFile_EE_DiffWeights_DYLL_M50to100_EE.root",
+	"output_data/testFile_EE_DiffWeights_DYLL_M100to200_EE.root",
+	"output_data/testFile_EE_DiffWeights_DYLL_M200to400_EE.root",
+	"output_data/testFile_EE_DiffWeights_DYLL_M400to500_EE.root",
+	"output_data/testFile_EE_DiffWeights_DYLL_M500to700_EE.root",
+	"output_data/testFile_EE_DiffWeights_DYLL_M700to800_EE.root",
+	"output_data/testFile_EE_DiffWeights_DYLL_M800to1000_EE.root",
+	"output_data/testFile_EE_DiffWeights_DYLL_M1000to1500_EE.root",
+	"output_data/testFile_EE_DiffWeights_DYLL_M1500to2000_EE.root",
+	"output_data/testFile_EE_DiffWeights_DYLL_M2000to3000_EE.root"
 };
 
 vector<TString> file_top = {
-	"output_data/saveFile_EE_ST_tW.root",
-	"output_data/saveFile_EE_ST_tbarW.root",
-	"output_data/saveFile_EE_ttbar_M0to700.root",
-	"output_data/saveFile_EE_ttbar_M700to1000.root",
-	"output_data/saveFile_EE_ttbar_M1000toInf.root"
+	"output_data/testFile_EE_DiffWeights_ST_tW.root",
+	"output_data/testFile_EE_DiffWeights_ST_tbarW.root",
+	"output_data/testFile_EE_DiffWeights_ttbar_M0to700.root",
+	"output_data/testFile_EE_DiffWeights_ttbar_M700to1000.root",
+	"output_data/testFile_EE_DiffWeights_ttbar_M1000toInf.root"
 };
 
 vector<TString> file_Fake = {
-	"output_data/saveFile_EE_WJetsToLNu_amcatnlo.root"
+	"output_data/testFile_EE_DiffWeights_WJetsToLNu_amcatnlo.root"
 };
 
 vector<TString> hist_data = {
@@ -114,39 +114,44 @@ enum Variable{
 	ERR
 };
 
-TH1D*GetHistogram(vector<TString> filesvector,vector<TString> histvector,TString variable);
+TH1D*GetHistogram(vector<TString> filesvector,vector<TString> histvector,TString variable,TString weights);
 vector<TString> GetPlotProperties(Variable var);
-void MakePlots(Variable var);
+void MakePlots(Variable var,TString weights);
 
 void makeStackPlots()
 {
 	//gROOT->SetBatch(true);
 	gStyle->SetOptStat(0);
-	MakePlots(INV_MASS);
+	MakePlots(INV_MASS,"NoWeight");
+	MakePlots(INV_MASS,"GenWeight");
+	MakePlots(INV_MASS,"GenPVzWeight");
+	MakePlots(INV_MASS,"GenPVzPUWeight");
+	MakePlots(INV_MASS,"GenPVzPUPrefireWeight");
+	MakePlots(INV_MASS,"GenPVzPUPrefireSFWeight");
 	//MakePlots(RAPIDITY);
 	//MakePlots(PT_LEAD);
 	//MakePlots(PT_SUB);
 
 }
 
-void MakePlots(Variable var)
+void MakePlots(Variable var,TString weights)
 {
 	vector<TString> plotProperties = GetPlotProperties(var);
 
 	// MC Signal
-	TH1D*hDYLL = GetHistogram(file_DYLL,hist_DYLL,plotProperties.at(0));
+	TH1D*hDYLL = GetHistogram(file_DYLL,hist_DYLL,plotProperties.at(0),weights);
 	hDYLL->SetFillColor(kOrange-2);
 	hDYLL->SetLineColor(kOrange+3);
 	// Top quarks
-	TH1D*hTops = GetHistogram(file_top,hist_top,plotProperties.at(0));
+	TH1D*hTops = GetHistogram(file_top,hist_top,plotProperties.at(0),weights);
 	hTops->SetFillColor(kBlue+2);
 	hTops->SetLineColor(kBlue+3);
 	// W+Jets
-	TH1D*hFake = GetHistogram(file_Fake,hist_Fake,plotProperties.at(0));
+	TH1D*hFake = GetHistogram(file_Fake,hist_Fake,plotProperties.at(0),weights);
 	hFake->SetFillColor(kViolet+5);
 	hFake->SetLineColor(kViolet+3);
 	// EW
-	TH1D*hEW = GetHistogram(file_ew,hist_ew,plotProperties.at(0));
+	TH1D*hEW = GetHistogram(file_ew,hist_ew,plotProperties.at(0),weights);
 	hEW->SetFillColor(kRed+2);
 	hEW->SetLineColor(kRed+4);
 
@@ -168,7 +173,7 @@ void MakePlots(Variable var)
 	hStack->Add(hDYLL);
 	
 	// Data
-	TH1D*hData = GetHistogram(file_data,hist_data,plotProperties.at(0));
+	TH1D*hData = GetHistogram(file_data,hist_data,plotProperties.at(0),weights);
 	hData->SetMarkerStyle(20);
 	hData->SetMarkerColor(kBlack);
 
@@ -257,6 +262,7 @@ void MakePlots(Variable var)
 
 	TString saveName = "plots/dataVsMC_EE_";
 	saveName += plotProperties.at(0);
+	saveName += weights;
 	saveName += ".png";
 	canvas->SaveAs(saveName);
 }
@@ -311,7 +317,7 @@ vector<TString> GetPlotProperties(Variable var)
 	return properties;	
 }
 
-TH1D*GetHistogram(vector<TString> filesvector,vector<TString> histvector,TString variable)
+TH1D*GetHistogram(vector<TString> filesvector,vector<TString> histvector,TString variable,TString weights)
 {
 	int nFiles = filesvector.size();
 	TString loadFile;
@@ -323,7 +329,7 @@ TH1D*GetHistogram(vector<TString> filesvector,vector<TString> histvector,TString
 		loadFile = filesvector.at(i);
 		loadHist = "hist";
 		loadHist += histvector.at(i);
-		loadHist += variable;
+		loadHist += weights;
 		cout << "********************************************" << endl;
 		cout << "Loading histogram: " << loadHist << endl;
 		cout << "From file: " << loadFile << endl; 
