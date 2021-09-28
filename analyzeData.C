@@ -347,10 +347,12 @@ void analyzeData(TString fileName)
 	}
 
 	TChain*chain;
-	TH1D*hInvMass;
-	TH1D*hRapidity;
-	TH1D*hPtLead;
-	TH1D*hPtSub;
+	TH1D*hInvMass_NoWeight;
+	TH1D*hInvMass_GenWeight;
+	TH1D*hInvMass_GenPVzWeight;
+	TH1D*hInvMass_GenPVzPUWeight;
+	TH1D*hInvMass_GenPVzPUPrefireWeight;
+	TH1D*hInvMass_GenPVzPUPrefireSFWeight;
 
 	// Get histograms needed for weights and scale factors
 	TFile*fRecoSF  = new TFile("data/Reco_SF.root");
@@ -374,15 +376,19 @@ void analyzeData(TString fileName)
 	// Define histograms
 	TString histName = "hist";
 	histName += fileName;	
-	TString histNameInvMass = histName+"InvMass";
-	TString histNameRapidity = histName+"Rapidity";
-	TString histNamePtLead = histName+"PtLead";
-	TString histNamePtSub = histName+"PtSub";
+	TString histNameNoWeight = histName+"NoWeight";
+	TString histNameGenWeight = histName+"GenWeight";
+	TString histNameGenPVzWeight = histName+"GenPVzWeight";
+	TString histNameGenPVzPUWeight = histName+"GenPVzPUWeight";
+	TString histNameGenPVzPUPrefireWeight = histName+"GenPVzPUPrefireWeight";
+	TString histNameGenPVzPUPrefireSFWeight = histName+"GenPVzPUPrefireSFWeight";
 
-	hInvMass = new TH1D(histNameInvMass,"",nMassBins,massbins);
-	hRapidity = new TH1D(histNameRapidity,"",100,-2.5,2.5);
-	hPtLead = new TH1D(histNamePtLead,"",100,0,500);
-	hPtSub = new TH1D(histNamePtSub,"",100,0,500);
+	hInvMass_NoWeight = new TH1D(histNameNoWeight,"",nMassBins,massbins);
+	hInvMass_GenWeight = new TH1D(histNameGenWeight,"",nMassBins,massbins);
+	hInvMass_GenPVzWeight = new TH1D(histNameGenPVzWeight,"",nMassBins,massbins);
+	hInvMass_GenPVzPUWeight = new TH1D(histNameGenPVzPUWeight,"",nMassBins,massbins);
+	hInvMass_GenPVzPUPrefireWeight = new TH1D(histNameGenPVzPUPrefireWeight,"",nMassBins,massbins);
+	hInvMass_GenPVzPUPrefireSF = new TH1D(histNameGenPVzPUPrefireSFWeight,"",nMassBins,massbins);
 
 	Long64_t nEntries = chain->GetEntries();
 	cout << "Loading " << fileName << endl;
@@ -467,7 +473,8 @@ void analyzeData(TString fileName)
 		if(sumGenWeight<0){
 			cout << "Gen weight sum < 0 for sample " << fileName << endl;
 		}
-	}
+	}// end isMC
+
 	// Loop over events
 	for(Long64_t iEntry=0;iEntry<nEntries;iEntry++){
 		chain->GetEntry(iEntry);
@@ -518,16 +525,18 @@ void analyzeData(TString fileName)
 				phiSub = Electron_phi[iEle];
 				idxSub = iEle;
 			}
-		}//end sub pt loop
+		}// end sub pt loop
 
 		// If either lead or subleading electron not defined, skip to next event
 		if(idxLead<0 || idxSub<0) continue;
 
 		// Kinematic cuts
-		if((abs(etaLead)>etaGapLow && abs(etaLead)<etaGapHigh) || (abs(etaSub)>etaGapLow && abs(etaSub)<etaGapHigh)) continue;
-		if(abs(etaLead)>etaHigh||abs(etaSub)>etaHigh) continue;
+		if(abs(etaLead)>etaGapLow && abs(etaLead)<etaGapHigh) continue; 
+		if(abs(etaSub)>etaGapLow && abs(etaSub)<etaGapHigh) continue;
+		if(abs(etaLead)>etaHigh || abs(etaSub)>etaHigh) continue;
 		if(ptLead<ptHigh || ptSub<ptLow) continue;
 
+		// Fill TLorentzVectors for two electrons
 		v1.SetPtEtaPhiM(ptLead,etaLead,phiLead,eMass);
 		v2.SetPtEtaPhiM(ptSub,etaSub,phiSub,eMass);
 
@@ -537,11 +546,14 @@ void analyzeData(TString fileName)
 		// dielectron rapidity
 		double rapidity = (v1+v2).Rapidity();
 
+		// initialize weighting factors
 		double sfWeight = 1.0;
 		double pvzWeight = 1.0;
 		double puWeight = 1.0;
 		double prefireWeight = 1.0;
 
+		// Define pt and eta values from lead sublead electrons
+		// To get scale factors with
 		double pt1 = ptLead;
 		double pt2 = ptSub;
 		double eta1 = etaLead;
@@ -580,23 +592,26 @@ void analyzeData(TString fileName)
 			prefireWeight = _prefiringweight;
 		}
 
-		double weight = xSecWeight*genWeight*sfWeight*pvzWeight*puWeight;
+		double weight = xSecWeight*genWeight*sfWeight*pvzWeight*puWeight*prefireWeight;
 		if(!isMC) weight = 1.0;
-		hInvMass->Fill(invMassReco,weight);
-		hRapidity->Fill(rapidity,weight);
-		hPtLead->Fill(ptLead,weight);
-		hPtSub->Fill(ptSub,weight);
-
+		hInvMass_NoWeight->Fill(invMass,xSecWeight);
+		hInvMass_GenWeight->Fill(invMass,xSecWeight*genWeight);
+		hInvMass_GenPVzWeight->Fill(invMass,xSecWeight*genWeight*pvzWeight);
+		hInvMass_GenPVzPUWeight->Fill(invMass,xSecWeight*genWeight*pvzWeight*puWeight);
+		hInvMass_GenPVzPUPrefireWeight->Fill(invMass,xSecWeight*genWeight*pvzWeight*puWeight*prefireWeight);
+		hInvMass_GenPVzPUPrefireSFWeight->Fill(invMass,xSecWeight*genWeight*pvzWeight*puWeight*prefireWeight*sfWeight);
 	}// end loop over entries
-	TString saveName = "output_data/saveFile_EE_";
+	TString saveName = "output_data/testFile_EE_DiffWeights_";
 	saveName += fileName;
 	saveName += ".root";
 	TFile*file;
 	file = new TFile(saveName,"recreate");
-	hInvMass->Write();
-	hRapidity->Write();
-	hPtLead->Write();
-	hPtSub->Write();
+	hInvMass_NoWeight->Write();
+	hInvMass_GenWeight->Write();
+	hInvMass_GenPVzWeight->Write();
+	hInvMass_GenPVzPUWeight->Write();
+	hInvMass_GenPVzPUPrefireWeight->Write();
+	hInvMass_GenPVzPUPrefireSFWeight->Write();
 	file->Close();
 
 }
