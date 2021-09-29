@@ -60,7 +60,7 @@ vector<TString> files= {
 
 	// Fakes
 	"WJetsToLNu_amcatnlo",		// 38	
-	"WJetsToLNu_amcatnlo_ext"
+	//"WJetsToLNu_amcatnlo_ext"
 };
 TString treeName = "recoTree/DYTree";
 vector<double> xSecVec = {
@@ -96,7 +96,7 @@ vector<double> xSecVec = {
 	0.000730495,	//1500to2000 (NNLO)
 	0.00016844,	//2000to3000 ((NNLO)
 	61526.7,	//WJetsToLNu (NNLO)
-	61526.7		//WJetsToLNu_ext (NNLO)
+	//61526.7		//WJetsToLNu_ext (NNLO)
 };
 int dataLuminosity = 35867;
 const TString muonTrigger1 = "HLT_IsoMu24_v*";
@@ -107,7 +107,7 @@ const double etaHigh = 2.4;
 const double ptLow = 17;
 const double ptHigh = 28;
 const float dRMinCut = 0.3;
-const double ptBinHigh = 500.0;
+const double ptBinHigh = 499;
 const double etaBinLow = -2.5;
 const double etaBinHigh = 2.5;
 const double pi = TMath::Pi();
@@ -455,6 +455,14 @@ void analyzeData(TString fileName)
 					&b_GenOthers_phi);
 		chain->SetBranchAddress("GenOthers_pT",&GenOthers_pT,
 					&b_GenOthers_pT);
+		chain->SetBranchAddress("GenOthers_Px",&GenOthers_Px,
+					&b_GenOthers_Px);
+		chain->SetBranchAddress("GenOthers_Py",&GenOthers_Py,
+					&b_GenOthers_Py);
+		chain->SetBranchAddress("GenOthers_Pz",&GenOthers_Pz,
+					&b_GenOthers_Pz);
+		chain->SetBranchAddress("GenOthers_E",&GenOthers_E,
+					&b_GenOthers_E);
 		chain->SetBranchAddress("GenOthers_ID",&GenOthers_ID,
 					&b_GenOthers_ID);
 		chain->SetBranchAddress("GenOthers_isHardProcess",
@@ -567,6 +575,61 @@ void analyzeData(TString fileName)
 			}
 		}//end sub pt loop
 
+		double pT_dressed1	= -1000;
+		double pT_dressed2	= -1000;
+		double eta_dressed1	= -1000;
+		double eta_dressed2	= -1000;
+		double phi_dressed1	= -1000;
+		double phi_dressed2	= -1000;
+		double dR1		= -1000;
+		double dR2		= -1000;
+		double dR1_squared	= -1000;
+		double dR2_squared	= -1000;
+		double eta_diff1	= -1000;
+		double eta_diff2	= -1000;
+		double eta_pho		= -1000;
+		double phi_pho		= -1000;
+
+		// Obtain two dressed muons
+		if(GENnPair==2 && GENLepton_fromHardProcessFinalState[0]==1 && 
+		   GENLepton_fromHardProcessFinalState[0]==1){
+			eta_dressed1 = GENLepton_eta[0];
+			eta_dressed2 = GENLepton_eta[1];
+			phi_dressed1 = GENLepton_phi[0];
+			phi_dressed2 = GENLepton_phi[1];
+
+			double px1 = GENLepton_Px[0];
+			double py1 = GENLepton_Py[0];
+			double pz1 = GENLepton_Pz[0];
+			double E1  = GENLepton_E[0];
+			TLorentzVector vDressed1;
+			vDressed1.SetPxPyPzE(px1,py1,pz1,E1);
+	
+			double px2 = GENLepton_Px[1];
+			double py2 = GENLepton_Py[1];
+			double pz2 = GENLepton_Pz[1];
+			double E2  = GENLepton_E[1];
+			TLorentzVector vDressed2;
+			vDressed2.SetPxPyPzE(px2,py2,pz2,E2);
+
+			vector<TLorentzVector> vPho;
+
+			// loop over photons
+			for(int iPho=0;iPho<nGenOthers;iPho++){
+				if(abs(GenOthers_ID[iPho])==22 && 
+				   GenOthers_isPromptFinalState[iPHo]){
+					eta_pho = GenOthers_eta[iPho];
+					phi_pho = GenOthers_phi[iPho];
+					eta_diff1 = eta_dressed1-eta_pho;
+					dR1_squared = eta_diff1*eta_diff1;
+					eta_diff2 = eta_dressed2-eta_pho;
+					dR2_squared = eta_diff2*eta_diff2;
+
+					dR1 = sqrt(dR1_squared);	
+					dR2 = sqrt(dR2_squared);	
+				}// end if photon ID				
+			}// end loop over photons
+		}// end if 2 gen leptons and if fromHardProcessFinalState
 		// If either lead or subleading muon not defined, skip to next event
 		if(idxLead<0 || idxSub<0) continue;
 
@@ -632,7 +695,7 @@ void analyzeData(TString fileName)
 		hPtSub->Fill(ptSub,weight);
 
 	}// end loop over entries
-	TString saveName = "output_data/isaveFile_MuMu_";
+	TString saveName = "output_data/saveFile_MuMu_";
 	saveName += fileName;
 	saveName += ".root";
 	TFile*file;
