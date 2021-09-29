@@ -101,7 +101,8 @@ vector<TString> hist_ew= {
         "DYLL_M2000to3000_TauTau"       // 37
 };
 vector<TString> hist_Fake = {
-        "WJetsToLNu_amcatnlo"           // 38   
+        "WJetsToLNu_amcatnlo",          // 38   
+        "WJetsToLNu_amcatnlo_ext"       // 39   
 };
 
 enum Variable{
@@ -322,7 +323,6 @@ TH1D*GetHistogram(vector<TString> filesvector,vector<TString> histvector,TString
 	for(int i=0;i<nFiles;i++){
 		loadFile = filesvector.at(i);
 		loadHist = "hist";
-		loadHist += histvector.at(i);
 		loadHist += variable;
 		cout << "********************************************" << endl;
 		cout << "Loading histogram: " << loadHist << endl;

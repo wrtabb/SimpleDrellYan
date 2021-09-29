@@ -59,7 +59,8 @@ vector<TString> files= {
 	"DYLL_M2000to3000_TauTau",	// 37
 
 	// Fakes
-	"WJetsToLNu_amcatnlo"		// 38	
+	"WJetsToLNu_amcatnlo",		// 38	
+	"WJetsToLNu_amcatnlo_ext"
 };
 TString treeName = "recoTree/DYTree";
 vector<double> xSecVec = {
@@ -94,7 +95,8 @@ vector<double> xSecVec = {
 	0.00556507,	//1000to1500 (NNLO)
 	0.000730495,	//1500to2000 (NNLO)
 	0.00016844,	//2000to3000 ((NNLO)
-	61526.7		//WJetsToLNu (NNLO)
+	61526.7,	//WJetsToLNu (NNLO)
+	61526.7		//WJetsToLNu_ext (NNLO)
 };
 int dataLuminosity = 35867;
 const TString muonTrigger1 = "HLT_IsoMu24_v*";
@@ -377,7 +379,7 @@ void analyzeData(TString fileName)
 	
 	// Define histograms
 	TString histName = "hist";
-	histName += fileName;	
+	//histName += fileName;	
 	TString histNameInvMass = histName+"InvMass";
 	TString histNameRapidity = histName+"Rapidity";
 	TString histNamePtLead = histName+"PtLead";
@@ -516,12 +518,27 @@ void analyzeData(TString fileName)
 		int idxLead = -1;
 		int idxSub = -1;
 
+		double chargedIso;
+		double neutralIso;
+		double gammaIso;
+		double sumPUPt;
+		double pT;  
+		double iso_dBeta;
+
 		// Find lead pT muon
 		// NOTE: Need to choose two muons by smallest vertex chi2
 		// Choosing highest two pT is a temporary placeholder 
 		for(int iMu=0;iMu<nMuon;iMu++){
 			if(!Muon_passTightID[iMu]) continue;
-			// need to add pfIso/pt still
+			chargedIso = Muon_PfChargedHadronIsoR04[iMu];
+			neutralIso = Muon_PfNeutralHadronIsoR04[iMu];
+			gammaIso = Muon_PfGammaIsoR04[iMu];
+			sumPUPt = Muon_PFSumPUIsoR04[iMu];
+			pT = Muon_pT[iMu];
+			iso_dBeta = 
+				(chargedIso+max(0.0,neutralIso+gammaIso-0.5*sumPUPt))/pT;
+			if(iso_dBeta > 0.15) continue;
+
 			if(Muon_pT[iMu] > ptLead){
 				ptLead = Muon_pT[iMu];
 				etaLead = Muon_eta[iMu];
@@ -533,6 +550,15 @@ void analyzeData(TString fileName)
 		// Find subleading pT muon
 		for(int iMu=0;iMu<nMuon;iMu++) {
 			if(!Muon_passTightID[iMu]) continue;
+			chargedIso = Muon_PfChargedHadronIsoR04[iMu];
+			neutralIso = Muon_PfNeutralHadronIsoR04[iMu];
+			gammaIso = Muon_PfGammaIsoR04[iMu];
+			sumPUPt = Muon_PFSumPUIsoR04[iMu];
+			pT = Muon_pT[iMu];
+			iso_dBeta = 
+				(chargedIso+max(0.0,neutralIso+gammaIso-0.5*sumPUPt))/pT;
+			if(!Muon_passTightID[iMu]) continue;
+			if(iso_dBeta > 0.15) continue;
 			if(Muon_pT[iMu] > ptSub && Muon_pT[iMu] < ptLead){
 				ptSub = Muon_pT[iMu];
 				etaSub = Muon_eta[iMu];
@@ -586,9 +612,8 @@ void analyzeData(TString fileName)
 				(hLeg2SF->GetBinContent(hLeg2SF->FindBin(etaLead,ptLead)))*
 				 (hLeg2SF->GetBinContent(hLeg2SF->FindBin(etaLead,ptLead)));
 			// Need to acquire muon SFs before adding this
-			sfWeight = 1.0;
 			}// end isFake
-
+			sfWeight = 1.0;
 			// Get gen weight
 			genWeight = (GENEvt_weight/fabs(GENEvt_weight))/sumGenWeight;
 
@@ -599,7 +624,7 @@ void analyzeData(TString fileName)
 			prefireWeight = _prefiringweight;
 		}
 
-		double weight = xSecWeight*genWeight*sfWeight*puWeight;
+		double weight = xSecWeight*genWeight*sfWeight*puWeight*prefireWeight;
 		if(!isMC) weight = 1.0;
 		hInvMass->Fill(invMassReco,weight);
 		hRapidity->Fill(rapidity,weight);
@@ -607,7 +632,7 @@ void analyzeData(TString fileName)
 		hPtSub->Fill(ptSub,weight);
 
 	}// end loop over entries
-	TString saveName = "output_data/saveFile_MuMu_";
+	TString saveName = "output_data/isaveFile_MuMu_";
 	saveName += fileName;
 	saveName += ".root";
 	TFile*file;

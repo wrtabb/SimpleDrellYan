@@ -49,6 +49,7 @@ files_to_load=(
 
         # Fakes
         WJetsToLNu_amcatnlo          # 38   
+	WJetsToLNu_amcatnlo_ext	     # 39
 )
 
 for index in ${!files_to_load[*]}; do
