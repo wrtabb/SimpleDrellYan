@@ -26,7 +26,7 @@ files_to_load=(
         # Tops
         ST_tW                        # 19
         ST_tbarW                     # 20
-        ttbar_M0To700      	     # 21
+        ttbar_M0to700      	     # 21
         ttbar_M700to1000             # 22
         ttbar_M1000toInf             # 23
 
@@ -48,6 +48,7 @@ files_to_load=(
 
         # Fakes
         WJetsToLNu_amcatnlo          # 38   
+        WJetsToLNu_amcatnlo_ext      # 39   
 )
 
 for index in ${!files_to_load[*]}; do

@@ -103,11 +103,11 @@ const double etaHigh = 2.4;
 const double ptLow = 17;
 const double ptHigh = 28;
 const float dRMinCut = 0.3;
-const double ptBinHigh = 500.0;
+const double ptBinHigh = 499;
 const double etaBinLow = -2.5;
 const double etaBinHigh = 2.5;
 const double pi = TMath::Pi();
-const int MPSIZE = 5000;
+const int MPSIZE = 2000;
 int GENnPair;//number of gen leptons per event
 double GENEvt_weight;
 double GENLepton_phi[MPSIZE];
@@ -373,7 +373,6 @@ void analyzeData(TString fileName)
 	
 	// Define histograms
 	TString histName = "hist";
-	histName += fileName;	
 	TString histNameInvMass = histName+"InvMass";
 	TString histNameRapidity = histName+"Rapidity";
 	TString histNamePtLead = histName+"PtLead";
@@ -580,7 +579,7 @@ void analyzeData(TString fileName)
 			prefireWeight = _prefiringweight;
 		}
 
-		double weight = xSecWeight*genWeight*sfWeight*pvzWeight*puWeight;
+		double weight = xSecWeight*genWeight*sfWeight*pvzWeight*puWeight*prefireWeight;
 		if(!isMC) weight = 1.0;
 		hInvMass->Fill(invMassReco,weight);
 		hRapidity->Fill(rapidity,weight);

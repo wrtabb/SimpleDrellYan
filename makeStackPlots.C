@@ -53,57 +53,6 @@ vector<TString> file_Fake = {
 	"output_data/saveFile_EE_WJetsToLNu_amcatnlo.root"
 };
 
-vector<TString> hist_data = {
-        "crab_DoubleEG_RunB",           // 0
-        "crab_DoubleEG_RunC",           // 1
-        "crab_DoubleEG_RunD",           // 2
-        "crab_DoubleEG_RunE",           // 3
-        "crab_DoubleEG_RunF",           // 4
-        "crab_DoubleEG_RunG",           // 5
-        "crab_DoubleEG_RunHver2",       // 6
-        "crab_DoubleEG_RunHver3"        // 7
-};
-vector<TString> hist_DYLL = {
-        "DYLL_M10to50_EE",              // 8
-        "DYLL_M50to100_EE",             // 9
-        "DYLL_M100to200_EE",            // 10
-        "DYLL_M200to400_EE",            // 11
-        "DYLL_M400to500_EE",            // 12
-        "DYLL_M500to700_EE",            // 13
-        "DYLL_M700to800_EE",            // 14
-        "DYLL_M800to1000_EE",           // 15
-        "DYLL_M1000to1500_EE",          // 16
-        "DYLL_M1500to2000_EE",          // 17
-        "DYLL_M2000to3000_EE"           // 18
-};
-
-vector<TString> hist_top = {
-        "ST_tW",                        // 19
-        "ST_tbarW",                     // 20
-        "ttbar_M0to700",      // 21
-        "ttbar_M700to1000",             // 22
-        "ttbar_M1000toInf"              // 23
-};
-vector<TString> hist_ew= {
-        "WW",                           // 24
-        "WZ",                           // 25
-        "ZZ",                           // 26
-        "DYLL_M10to50_TauTau",          // 27
-        "DYLL_M50to100_TauTau",         // 28
-        "DYLL_M100to200_TauTau",        // 29
-        "DYLL_M200to400_TauTau",        // 30
-        "DYLL_M400to500_TauTau",        // 31
-        "DYLL_M500to700_TauTau",        // 32
-        "DYLL_M700to800_TauTau",        // 33
-        "DYLL_M800to1000_TauTau",       // 34
-        "DYLL_M1000to1500_TauTau",      // 35
-        "DYLL_M1500to2000_TauTau",      // 36
-        "DYLL_M2000to3000_TauTau"       // 37
-};
-vector<TString> hist_Fake = {
-        "WJetsToLNu_amcatnlo"           // 38   
-};
-
 enum Variable{
 	INV_MASS,
 	RAPIDITY,
@@ -114,7 +63,7 @@ enum Variable{
 	ERR
 };
 
-TH1D*GetHistogram(vector<TString> filesvector,vector<TString> histvector,TString variable);
+TH1D*GetHistogram(vector<TString> filesvector,TString variable);
 vector<TString> GetPlotProperties(Variable var);
 void MakePlots(Variable var);
 
@@ -134,19 +83,19 @@ void MakePlots(Variable var)
 	vector<TString> plotProperties = GetPlotProperties(var);
 
 	// MC Signal
-	TH1D*hDYLL = GetHistogram(file_DYLL,hist_DYLL,plotProperties.at(0));
+	TH1D*hDYLL = GetHistogram(file_DYLL,plotProperties.at(0));
 	hDYLL->SetFillColor(kOrange-2);
 	hDYLL->SetLineColor(kOrange+3);
 	// Top quarks
-	TH1D*hTops = GetHistogram(file_top,hist_top,plotProperties.at(0));
+	TH1D*hTops = GetHistogram(file_top,plotProperties.at(0));
 	hTops->SetFillColor(kBlue+2);
 	hTops->SetLineColor(kBlue+3);
 	// W+Jets
-	TH1D*hFake = GetHistogram(file_Fake,hist_Fake,plotProperties.at(0));
+	TH1D*hFake = GetHistogram(file_Fake,plotProperties.at(0));
 	hFake->SetFillColor(kViolet+5);
 	hFake->SetLineColor(kViolet+3);
 	// EW
-	TH1D*hEW = GetHistogram(file_ew,hist_ew,plotProperties.at(0));
+	TH1D*hEW = GetHistogram(file_ew,plotProperties.at(0));
 	hEW->SetFillColor(kRed+2);
 	hEW->SetLineColor(kRed+4);
 
@@ -168,7 +117,7 @@ void MakePlots(Variable var)
 	hStack->Add(hDYLL);
 	
 	// Data
-	TH1D*hData = GetHistogram(file_data,hist_data,plotProperties.at(0));
+	TH1D*hData = GetHistogram(file_data,plotProperties.at(0));
 	hData->SetMarkerStyle(20);
 	hData->SetMarkerColor(kBlack);
 
@@ -311,7 +260,7 @@ vector<TString> GetPlotProperties(Variable var)
 	return properties;	
 }
 
-TH1D*GetHistogram(vector<TString> filesvector,vector<TString> histvector,TString variable)
+TH1D*GetHistogram(vector<TString> filesvector,TString variable)
 {
 	int nFiles = filesvector.size();
 	TString loadFile;
@@ -322,7 +271,6 @@ TH1D*GetHistogram(vector<TString> filesvector,vector<TString> histvector,TString
 	for(int i=0;i<nFiles;i++){
 		loadFile = filesvector.at(i);
 		loadHist = "hist";
-		loadHist += histvector.at(i);
 		loadHist += variable;
 		cout << "********************************************" << endl;
 		cout << "Loading histogram: " << loadHist << endl;
