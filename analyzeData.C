@@ -594,8 +594,16 @@ void analyzeData(TString fileName)
 		}
 
 		double weight = xSecWeight*genWeight*sfWeight*pvzWeight*puWeight*prefireWeight;
-		if(!isMC) weight = 1.0;
-		hInvMass_NoWeight->Fill(invMassReco,xSecWeight);
+		if(!isMC){
+			xSecWeight = 1.0;
+			genWeight = 1.0;
+			pvzWeight = 1.0;
+			puWeight = 1.0;
+			prefireWeight = 1.0;
+			sfWeight = 1.0;
+			hInvMass_NoWeight->Fill(invMassReco,xSecWeight);
+		}
+		hInvMass_NoWeight->Fill(invMassReco,xSecWeight/nEntries);
 		hInvMass_GenWeight->Fill(invMassReco,xSecWeight*genWeight);
 		hInvMass_GenPVzWeight->Fill(invMassReco,xSecWeight*genWeight*pvzWeight);
 		hInvMass_GenPVzPUWeight->Fill(invMassReco,xSecWeight*genWeight*pvzWeight*puWeight);
