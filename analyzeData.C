@@ -587,7 +587,7 @@ void analyzeData(TString fileName)
 		hPtSub->Fill(ptSub,weight);
 
 	}// end loop over entries
-	TString saveName = "output_data/saveFile_EE_";
+	TString saveName = "output_data/testFile_EE_NoWeights";
 	saveName += fileName;
 	saveName += ".root";
 	TFile*file;
@@ -597,6 +597,5 @@ void analyzeData(TString fileName)
 	hPtLead->Write();
 	hPtSub->Write();
 	file->Close();
-
 }
 

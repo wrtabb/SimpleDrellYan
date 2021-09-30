@@ -50,7 +50,8 @@ vector<TString> file_top = {
 };
 
 vector<TString> file_Fake = {
-	"output_data/saveFile_EE_WJetsToLNu_amcatnlo.root"
+	"output_data/saveFile_EE_WJetsToLNu_amcatnlo.root",
+	"output_data/saveFile_EE_WJetsToLNu_amcatnlo_ext.root"
 };
 
 enum Variable{
@@ -72,9 +73,9 @@ void makeStackPlots()
 	//gROOT->SetBatch(true);
 	gStyle->SetOptStat(0);
 	MakePlots(INV_MASS);
-	//MakePlots(RAPIDITY);
-	//MakePlots(PT_LEAD);
-	//MakePlots(PT_SUB);
+	MakePlots(RAPIDITY);
+	MakePlots(PT_LEAD);
+	MakePlots(PT_SUB);
 
 }
 
