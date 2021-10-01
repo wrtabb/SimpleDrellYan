@@ -576,7 +576,7 @@ void analyzeData(TString fileName)
 				hMedIDSF->GetBinContent(hMedIDSF->FindBin(eta2,pt2));
 			double sfHLT = 
 				(hLeg2SF->GetBinContent(hLeg2SF->FindBin(eta1,pt1)))*
-				 (hLeg2SF->GetBinContent(hLeg2SF->FindBin(eta1,pt1)));
+				 (hLeg2SF->GetBinContent(hLeg2SF->FindBin(eta2,pt2)));
 			sfWeight = sfReco1*sfReco2*sfID1*sfID2*sfHLT;
 			}// end isFake
 
