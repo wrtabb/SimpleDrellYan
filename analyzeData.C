@@ -104,6 +104,7 @@ const double ptLow = 17;
 const double ptHigh = 28;
 const float dRMinCut = 0.3;
 const double ptBinHigh = 499;
+const double ptBinLow = 26;
 const double etaBinLow = -2.5;
 const double etaBinHigh = 2.5;
 const double pi = TMath::Pi();
@@ -550,6 +551,8 @@ void analyzeData(TString fileName)
 			// Get Scale factors
 			if(pt1>ptBinHigh) pt1 = ptBinHigh;
 			if(pt2>ptBinHigh) pt2 = ptBinHigh;
+			if(pt1<ptBinLow) pt1 = ptBinLow;
+			if(pt2<ptBinLow) pt2 = ptBinLow;
 
 			if(!isFake){
 			double sfReco1 = 
@@ -560,10 +563,9 @@ void analyzeData(TString fileName)
 				hMedIDSF->GetBinContent(hMedIDSF->FindBin(eta1,pt1));
 			double sfID2 = 
 				hMedIDSF->GetBinContent(hMedIDSF->FindBin(eta2,pt2));
-			double sfHLT = 
-				(hLeg2SF->GetBinContent(hLeg2SF->FindBin(eta1,pt1)))*
-				 (hLeg2SF->GetBinContent(hLeg2SF->FindBin(eta1,pt1)));
-			sfWeight = sfReco1*sfReco2*sfID1*sfID2*sfHLT;
+			double sfHLT1 =hLeg2SF->GetBinContent(hLeg2SF->FindBin(eta1,pt1));
+			double sfHLT2 = hLeg2SF->GetBinContent(hLeg2SF->FindBin(eta2,pt2));
+			sfWeight = sfReco1*sfReco2*sfID1*sfID2*sfHLT1*sfHLT2;
 			}// end isFake
 
 			// Get gen weight
@@ -587,7 +589,7 @@ void analyzeData(TString fileName)
 		hPtSub->Fill(ptSub,weight);
 
 	}// end loop over entries
-	TString saveName = "output_data/testFile_EE_NoWeights";
+	TString saveName = "output_data/saveFile_EE_";
 	saveName += fileName;
 	saveName += ".root";
 	TFile*file;
