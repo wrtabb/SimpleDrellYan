@@ -1,57 +1,58 @@
 
 vector<TString> file_data = {
-	"output_data/saveFile_EE_crab_DoubleEG_RunB.root",           // 0
-	"output_data/saveFile_EE_crab_DoubleEG_RunC.root",           // 1
-	"output_data/saveFile_EE_crab_DoubleEG_RunD.root",           // 2
-	"output_data/saveFile_EE_crab_DoubleEG_RunE.root",           // 3
-	"output_data/saveFile_EE_crab_DoubleEG_RunF.root",           // 4
-	"output_data/saveFile_EE_crab_DoubleEG_RunG.root",           // 5
-	"output_data/saveFile_EE_crab_DoubleEG_RunHver2.root",       // 6
-	"output_data/saveFile_EE_crab_DoubleEG_RunHver3.root"       // 7
+	"output_data/saveFile_EE_NoPVz_crab_DoubleEG_RunB.root",           // 0
+	"output_data/saveFile_EE_NoPVz_crab_DoubleEG_RunC.root",           // 1
+	"output_data/saveFile_EE_NoPVz_crab_DoubleEG_RunD.root",           // 2
+	"output_data/saveFile_EE_NoPVz_crab_DoubleEG_RunE.root",           // 3
+	"output_data/saveFile_EE_NoPVz_crab_DoubleEG_RunF.root",           // 4
+	"output_data/saveFile_EE_NoPVz_crab_DoubleEG_RunG.root",           // 5
+	"output_data/saveFile_EE_NoPVz_crab_DoubleEG_RunHver2.root",       // 6
+	"output_data/saveFile_EE_NoPVz_crab_DoubleEG_RunHver3.root"       // 7
 };
 
 vector<TString> file_ew= {
-	"output_data/saveFile_EE_WW.root",
-	"output_data/saveFile_EE_WZ.root",
-	"output_data/saveFile_EE_ZZ.root",
-	"output_data/saveFile_EE_DYLL_M10to50_TauTau.root",
-	"output_data/saveFile_EE_DYLL_M50to100_TauTau.root",
-	"output_data/saveFile_EE_DYLL_M100to200_TauTau.root",
-	"output_data/saveFile_EE_DYLL_M200to400_TauTau.root",
-	"output_data/saveFile_EE_DYLL_M400to500_TauTau.root",
-	"output_data/saveFile_EE_DYLL_M500to700_TauTau.root",
-	"output_data/saveFile_EE_DYLL_M700to800_TauTau.root",
-	"output_data/saveFile_EE_DYLL_M800to1000_TauTau.root",
-	"output_data/saveFile_EE_DYLL_M1000to1500_TauTau.root",
-	"output_data/saveFile_EE_DYLL_M1500to2000_TauTau.root",
-	"output_data/saveFile_EE_DYLL_M2000to3000_TauTau.root"
+	"output_data/saveFile_EE_NoPVz_WW.root",
+	"output_data/saveFile_EE_NoPVz_WZ.root",
+	"output_data/saveFile_EE_NoPVz_ZZ.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M10to50_TauTau.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M50to100_TauTau.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M100to200_TauTau.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M200to400_TauTau.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M400to500_TauTau.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M500to700_TauTau.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M700to800_TauTau.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M800to1000_TauTau.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M1000to1500_TauTau.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M1500to2000_TauTau.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M2000to3000_TauTau.root"
 };
 
 vector<TString> file_DYLL = {
-	"output_data/saveFile_EE_DYLL_M10to50_EE.root",
-	"output_data/saveFile_EE_DYLL_M50to100_EE.root",
-	"output_data/saveFile_EE_DYLL_M100to200_EE.root",
-	"output_data/saveFile_EE_DYLL_M200to400_EE.root",
-	"output_data/saveFile_EE_DYLL_M400to500_EE.root",
-	"output_data/saveFile_EE_DYLL_M500to700_EE.root",
-	"output_data/saveFile_EE_DYLL_M700to800_EE.root",
-	"output_data/saveFile_EE_DYLL_M800to1000_EE.root",
-	"output_data/saveFile_EE_DYLL_M1000to1500_EE.root",
-	"output_data/saveFile_EE_DYLL_M1500to2000_EE.root",
-	"output_data/saveFile_EE_DYLL_M2000to3000_EE.root"
+	"output_data/saveFile_EE_NoPVz_DYLL_M10to50_EE.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M50to100_EE.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M100to200_EE.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M200to400_EE.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M400to500_EE.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M500to700_EE.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M700to800_EE.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M800to1000_EE.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M1000to1500_EE.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M1500to2000_EE.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M2000to3000_EE.root"
 };
 
 vector<TString> file_top = {
-	"output_data/saveFile_EE_ST_tW.root",
-	"output_data/saveFile_EE_ST_tbarW.root",
-	"output_data/saveFile_EE_ttbar_M0to700.root",
-	"output_data/saveFile_EE_ttbar_M700to1000.root",
-	"output_data/saveFile_EE_ttbar_M1000toInf.root"
+	"output_data/saveFile_EE_NoPVz_ST_tW.root",
+	"output_data/saveFile_EE_NoPVz_ST_tbarW.root",
+	"output_data/saveFile_EE_NoPVz_ttbar_M0to700.root",
+	"output_data/saveFile_EE_NoPVz_ttbar_M700to1000.root",
+	"output_data/saveFile_EE_NoPVz_ttbar_M1000toInf.root"
 };
 
 vector<TString> file_Fake = {
-	"output_data/saveFile_EE_WJetsToLNu_amcatnlo.root",
-	"output_data/saveFile_EE_WJetsToLNu_amcatnlo_ext.root"
+	"output_data/saveFile_EE_NoPVz_WJetsToLNu_amcatnlo.root",
+	//"output_data/saveFile_EE_NoPVz_WJetsToLNu_amcatnlo_ext.root"
+	"output_data/saveFile_EE_NoPVz_WJetsToLNu_amcatnlo_ext2v5.root"
 };
 
 enum Variable{
@@ -108,6 +109,16 @@ void MakePlots(Variable var)
 	hSum->Add(hFake);
 	hSum->Add(hEW);
 
+	// Some samples can have negative bin contents due to weightings
+	// Set any negative bins to zero
+	int nBins = hDYLL->GetNbinsX();
+	for(int i=1;i<nBins+1;i++){
+		if(hDYLL->GetBinContent(i)<0) hDYLL->SetBinContent(i,0);
+		if(hTops->GetBinContent(i)<0) hTops->SetBinContent(i,0);
+		if(hFake->GetBinContent(i)<0) hFake->SetBinContent(i,0);
+		if(hEW->GetBinContent(i)<0) hEW->SetBinContent(i,0);
+	}// end loop over bins
+
 	// Place signal and background into a stack
 	TString stackName = "hStack";
 	stackName += plotProperties.at(0);
@@ -128,7 +139,6 @@ void MakePlots(Variable var)
 	TH1D*hRatio = (TH1D*)hData->Clone(ratioName);
 	hRatio->Divide(hSum);
 
-	int nBins = hDYLL->GetNbinsX();
 	double binWidthLastBin = hDYLL->GetBinWidth(nBins);
 	float x1 = hDYLL->GetBinLowEdge(0);
 	float x2 = hDYLL->GetBinLowEdge(nBins)+binWidthLastBin;
@@ -205,7 +215,7 @@ void MakePlots(Variable var)
 	line->Draw("same");
 	canvas->Update();
 
-	TString saveName = "plots/dataVsMC_EE_";
+	TString saveName = "plots/dataVsMC_EE_NoPVz_";
 	saveName += plotProperties.at(0);
 	saveName += ".png";
 	canvas->SaveAs(saveName);
@@ -273,6 +283,7 @@ TH1D*GetHistogram(vector<TString> filesvector,TString variable)
 		loadFile = filesvector.at(i);
 		loadHist = "hist";
 		loadHist += variable;
+		loadHist += "Reco";
 		cout << "********************************************" << endl;
 		cout << "Loading histogram: " << loadHist << endl;
 		cout << "From file: " << loadFile << endl; 

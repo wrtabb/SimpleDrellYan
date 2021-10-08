@@ -9,6 +9,11 @@
 #include <TH1F.h>
 #include <iostream>
 
+//-----Functions-----//
+bool PassDileptonSelection(double eta1,double eta2,double pt1,double pt2,int idx1,int idx2);
+vector<double> GetVariables(double eta1,double eta2,double pt1,double pt2,double phi1,
+			    double phi2);
+
 TString base_directory = "root://xrootd-local.unl.edu///store/user/wtabb/DrellYan_13TeV_2016/v2p6/skims/skims_EE/";
 vector<TString> files= {
 	// Data
@@ -58,7 +63,9 @@ vector<TString> files= {
 	"DYLL_M2000to3000_TauTau",	// 37
 
 	// Fakes
-	"WJetsToLNu_amcatnlo"		// 38	
+	"WJetsToLNu_amcatnlo",		// 38	
+	"WJetsToLNu_amcatnlo_ext",	// 39	
+	"WJetsToLNu_amcatnlo_ext2v5"	// 40	
 };
 TString treeName = "recoTree/DYTree";
 vector<double> xSecVec = {
@@ -93,7 +100,9 @@ vector<double> xSecVec = {
 	0.00556507,	//1000to1500 (NNLO)
 	0.000730495,	//1500to2000 (NNLO)
 	0.00016844,	//2000to3000 ((NNLO)
-	61526.7		//WJetsToLNu (NNLO)
+	61526.7,	//WJetsToLNu (NNLO)
+	61526.7,	//WJetsToLNu_ext (NNLO)
+	61526.7		//WJetsToLNu_ext2v5 (NNLO)
 };
 int dataLuminosity = 35867;
 const TString electronTrigger = "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*";
@@ -290,8 +299,7 @@ double massbins[] = {
                 3000
 };
 int nMassBins = size(massbins)-1;//43;
-TLorentzVector v1;
-TLorentzVector v2;
+
 void analyzeData(TString fileName)
 {
 	TH1::SetDefaultSumw2();
@@ -348,10 +356,10 @@ void analyzeData(TString fileName)
 	}
 
 	TChain*chain;
-	TH1D*hInvMass;
-	TH1D*hRapidity;
-	TH1D*hPtLead;
-	TH1D*hPtSub;
+	TH1D*hInvMassReco;
+	TH1D*hRapidityReco;
+	TH1D*hPtLeadReco;
+	TH1D*hPtSubReco;
 
 	// Get histograms needed for weights and scale factors
 	TFile*fRecoSF  = new TFile("data/Reco_SF.root");
@@ -372,17 +380,17 @@ void analyzeData(TString fileName)
 	chain = new TChain(treeName);
 	chain->Add(loadFile);
 	
-	// Define histograms
+	// Define Reco histograms
 	TString histName = "hist";
-	TString histNameInvMass = histName+"InvMass";
-	TString histNameRapidity = histName+"Rapidity";
-	TString histNamePtLead = histName+"PtLead";
-	TString histNamePtSub = histName+"PtSub";
+	TString histNameInvMassReco = histName+"InvMassReco";
+	TString histNameRapidityReco = histName+"RapidityReco";
+	TString histNamePtLeadReco = histName+"PtLeadReco";
+	TString histNamePtSubReco = histName+"PtSubReco";
 
-	hInvMass = new TH1D(histNameInvMass,"",nMassBins,massbins);
-	hRapidity = new TH1D(histNameRapidity,"",100,-2.5,2.5);
-	hPtLead = new TH1D(histNamePtLead,"",100,0,500);
-	hPtSub = new TH1D(histNamePtSub,"",100,0,500);
+	hInvMassReco = new TH1D(histNameInvMassReco,"",nMassBins,massbins);
+	hRapidityReco = new TH1D(histNameRapidityReco,"",100,-2.5,2.5);
+	hPtLeadReco = new TH1D(histNamePtLeadReco,"",100,0,500);
+	hPtSubReco = new TH1D(histNamePtSubReco,"",100,0,500);
 
 	Long64_t nEntries = chain->GetEntries();
 	cout << "Loading " << fileName << endl;
@@ -455,7 +463,6 @@ void analyzeData(TString fileName)
 	// Find the gen weight sum
 	double sumGenWeight = 0.0;
 	double genWeight;
-
 	if(isMC){
 		Long64_t localEntry;
 		for(Long64_t iGen=0;iGen<nEntries;iGen++){
@@ -467,11 +474,11 @@ void analyzeData(TString fileName)
 		if(sumGenWeight<0){
 			cout << "Gen weight sum < 0 for sample " << fileName << endl;
 		}
-	}
+	}// end isMC for gen weight sum calculation
+
 	// Loop over events
 	for(Long64_t iEntry=0;iEntry<nEntries;iEntry++){
 		chain->GetEntry(iEntry);
-		if(Nelectrons!=2) continue;
 
 		// Check if event passes HLT cut
 		TString trigName;
@@ -485,8 +492,6 @@ void analyzeData(TString fileName)
 			} // end if trigName
 		}// end loop over triggers
 
-		if(!passHLT) continue;
-
 		// Get Reco Electrons
 		double ptLead = -1000;
 		double ptSub = -1000;
@@ -499,51 +504,74 @@ void analyzeData(TString fileName)
 		int idxSub = -1;
 
 		// Find lead pT electron
-		for(int iEle=0;iEle<Nelectrons;iEle++){
-			if(!Electron_passMediumID[iEle]) continue;
-			if(Electron_pT[iEle] > ptLead){
-				ptLead = Electron_pT[iEle];
-				etaLead = Electron_eta[iEle];
-				phiLead = Electron_phi[iEle];
-				idxLead = iEle;
-			}
-		}// end lead pt Loop
+		if(passHLT && Nelectrons==2){
+			for(int iEle=0;iEle<Nelectrons;iEle++){
+				if(!Electron_passMediumID[iEle]) continue;
+				for(int jEle=iEle+1;jEle<Nelectrons;jEle++){
+					if(!Electron_passMediumID[jEle]) continue;
+					if(Electron_pT[iEle] > Electron_pT[jEle]){
+						ptLead = Electron_pT[iEle];
+						etaLead = Electron_eta[iEle];
+						phiLead = Electron_phi[iEle];
+						idxLead = iEle;
 
-		// Find subleading pT electron
-		for(int iEle=0;iEle<Nelectrons;iEle++) {
-			if(!Electron_passMediumID[iEle]) continue;
-			if(Electron_pT[iEle] > ptSub && Electron_pT[iEle] < ptLead){
-				ptSub = Electron_pT[iEle];
-				etaSub = Electron_eta[iEle];
-				phiSub = Electron_phi[iEle];
-				idxSub = iEle;
-			}
-		}//end sub pt loop
+						ptSub = Electron_pT[jEle];
+						etaSub = Electron_eta[jEle];
+						phiSub = Electron_phi[jEle];
+						idxSub = jEle;
+					}// end if iEle is leading electron
+					else{
+						ptLead = Electron_pT[jEle];
+						etaLead = Electron_eta[jEle];
+						phiLead = Electron_phi[jEle];
+						idxLead = jEle;
 
-		// If either lead or subleading electron not defined, skip to next event
-		if(idxLead<0 || idxSub<0) continue;
+						ptSub = Electron_pT[iEle];
+						etaSub = Electron_eta[iEle];
+						phiSub = Electron_phi[iEle];
+						idxSub = iEle;
+					}// end if jEle is leading electron
+				}// end inner reco lepton loop
+			}// end reco lepton Loop
+		}// end if passHLT and Nelectrons==2
 
-		// Kinematic cuts
-		if((abs(etaLead)>etaGapLow && abs(etaLead)<etaGapHigh) || (abs(etaSub)>etaGapLow && abs(etaSub)<etaGapHigh)) continue;
-		if(abs(etaLead)>etaHigh||abs(etaSub)>etaHigh) continue;
-		if(ptLead<ptHigh || ptSub<ptLow) continue;
-
-		v1.SetPtEtaPhiM(ptLead,etaLead,phiLead,eMass);
-		v2.SetPtEtaPhiM(ptSub,etaSub,phiSub,eMass);
-
-		// dielectron invariant mass
-		double invMassReco = (v1+v2).M();
-		
-		// dielectron rapidity
-		double rapidity = (v1+v2).Rapidity();
+		// Determine if reco leptons pass selection
+		bool passRecoSelection = 
+			PassDileptonSelection(etaLead,etaSub,ptLead,ptSub,idxLead,idxSub);
 
 		double sfWeight = 1.0;
 		double pvzWeight = 1.0;
+		double pvzArray[60];
 		double puWeight = 1.0;
 		double prefireWeight = 1.0;
+/*
+		if(!isMC){
+			for(int iPVz=0;iPVz<60;iPVz++){
+				pvzArray[iPVz] = 1.0;
+			}
+		}
+		else{
+			for(int iPVz=0;iPVz<60;iPVz++){
+				pvzArray[iPVz] = hPVzSF->GetBinContent(iPVz);
+			}
+		}
+*/
+		// Get Reco Variables
+		vector<double> recoVariables;
+		recoVariables = GetVariables(etaLead,etaSub,ptLead,ptSub,phiLead,phiSub);
+		double invMassReco	= -1000;
+		double rapidityReco	= -1000;
+		double leadPtReco	= -1000;
+		double subPtReco	= -1000;
 
-		double pt1 = ptLead;
-		double pt2 = ptSub;
+		if(passRecoSelection){
+			invMassReco	= recoVariables.at(0);
+			rapidityReco	= recoVariables.at(1);
+			leadPtReco	= recoVariables.at(2);
+			subPtReco	= recoVariables.at(3);
+		}
+		double pt1  = ptLead;
+		double pt2  = ptSub;
 		double eta1 = etaLead;
 		double eta2 = etaSub;
 
@@ -573,31 +601,103 @@ void analyzeData(TString fileName)
 
 			// PVz weight
 			pvzWeight = hPVzSF->GetBinContent(hPVzSF->FindBin(PVz));
-
+/*
+			double xPVzBins[61];
+			if(PVz < -15 || PVz >= 15) pvzWeight =1.0;
+			else {
+			
+				for(int iPVz=0;iPVz<61;iPVz++){
+					xPVzBins[iPVz] = -15 + 0.5*iPVz;
+				}// end loop over pvzweight bins
+				int pvzbin = 9999;
+				for(int iPVz=0;iPVz<60;iPVz++){
+					if(xPVzBins[iPVz] <= PVz && PVz < xPVzBins[iPVz+1]){
+						pvzbin = iPVz;
+						break;
+					}// end if
+				}// end loop over pvzweight bins
+				if(pvzbin==999) 
+					cout << "something wrong in PVz weights!" << endl;
+				pvzWeight = pvzArray[pvzbin];
+			}
+*/
 			// Pileup weight
 			puWeight = hPileup->GetBinContent(hPileup->FindBin(nPileUp));
 
 			// Prefire weight
 			prefireWeight = _prefiringweight;
-		}
+		}// end isMC for weight calculation
 
-		double weight = xSecWeight*genWeight*sfWeight*pvzWeight*puWeight*prefireWeight;
-		if(!isMC) weight = 1.0;
-		hInvMass->Fill(invMassReco,weight);
-		hRapidity->Fill(rapidity,weight);
-		hPtLead->Fill(ptLead,weight);
-		hPtSub->Fill(ptSub,weight);
+		double recoWeight = 
+			xSecWeight*genWeight*sfWeight*pvzWeight*puWeight*prefireWeight;
+		if(!isMC) recoWeight = 1.0;
+
+		hInvMassReco->Fill(invMassReco,recoWeight);
+		hRapidityReco->Fill(rapidityReco,recoWeight);
+		hPtLeadReco->Fill(leadPtReco,recoWeight);
+		hPtSubReco->Fill(subPtReco,recoWeight);
 
 	}// end loop over entries
-	TString saveName = "output_data/saveFile_EE_";
+
+	// Save results to output file
+	TString saveName = "output_data/saveFile_EE_SimplePVz_";
 	saveName += fileName;
 	saveName += ".root";
 	TFile*file;
 	file = new TFile(saveName,"recreate");
-	hInvMass->Write();
-	hRapidity->Write();
-	hPtLead->Write();
-	hPtSub->Write();
+	hInvMassReco->Write();
+	hRapidityReco->Write();
+	hPtLeadReco->Write();
+	hPtSubReco->Write();
 	file->Close();
 }
 
+
+bool PassDileptonSelection(double eta1,double eta2,double pt1,double pt2,int idx1,int idx2)
+{
+	if(idx1<0 || idx2<0) return false;
+	if(abs(eta1)>etaGapLow && abs(eta1)<etaGapHigh) return false;
+	if(abs(eta2)>etaGapLow && abs(eta2)<etaGapHigh) return false;
+	if(abs(eta1)>etaHigh||abs(eta2)>etaHigh) return false;
+	if(pt1>pt2 && (pt1<ptHigh || pt2<ptLow)) return false;
+	if(pt2>pt1 && (pt2<ptHigh || pt1<ptLow)) return false;
+
+	return true;
+}
+
+vector<double> GetVariables(double eta1,double eta2,double pt1,double pt2,double phi1,
+			    double phi2)
+{
+	TLorentzVector v1;
+	TLorentzVector v2;
+	
+	v1.SetPtEtaPhiM(pt1,eta1,phi1,eMass);
+	v2.SetPtEtaPhiM(pt2,eta2,phi2,eMass);
+
+	// dielectron invariant mass
+	double invMass = (v1+v2).M();
+	
+	// dielectron rapidity
+	double rapidity = (v1+v2).Rapidity();
+
+	double ptLead;
+	double ptSub;
+
+	if(pt1>pt2){
+		ptLead = pt1;
+		ptSub  = pt2;
+	}
+	else{
+		ptLead = pt2;
+		ptSub  = pt1;
+	}
+
+	vector<double> variableReturn = {
+		invMass,	// 0
+		rapidity,	// 1
+		ptLead,		// 2
+		ptSub		// 3
+	};
+
+	return variableReturn;
+}
