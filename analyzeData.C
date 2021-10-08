@@ -60,7 +60,8 @@ vector<TString> files= {
 
 	// Fakes
 	"WJetsToLNu_amcatnlo",		// 38	
-	//"WJetsToLNu_amcatnlo_ext"
+	"WJetsToLNu_amcatnlo_ext",
+	"WJetsToLNu_amcatnlo_ext2v5",
 };
 TString treeName = "recoTree/DYTree";
 vector<double> xSecVec = {
@@ -96,7 +97,8 @@ vector<double> xSecVec = {
 	0.000730495,	//1500to2000 (NNLO)
 	0.00016844,	//2000to3000 ((NNLO)
 	61526.7,	//WJetsToLNu (NNLO)
-	//61526.7		//WJetsToLNu_ext (NNLO)
+	61526.7,	//WJetsToLNu_ext (NNLO)
+	61526.7		//WJetsToLNu_ext (NNLO)
 };
 int dataLuminosity = 35867;
 const TString muonTrigger1 = "HLT_IsoMu24_v*";
@@ -347,7 +349,8 @@ void analyzeData(TString fileName)
 	else if(fileName.CompareTo(files.at(36))==0) xSec = xSecVec.at(36);
 	else if(fileName.CompareTo(files.at(37))==0) xSec = xSecVec.at(37);
 	// Fakes
-	else if(fileName.CompareTo(files.at(38))==0){
+	else if(fileName.CompareTo(files.at(38)||fileName.CompareTo(files.at(39))==0||
+		fileName.CompareTo(files.at(40))==0)==0){
 		xSec = xSecVec.at(38);
 		isFake = true;
 	}
