@@ -539,6 +539,8 @@ void analyzeData(TString fileName)
 		// Find lead pT muon
 		// NOTE: Need to choose two muons by smallest vertex chi2
 		// Choosing highest two pT is a temporary placeholder 
+		// Add angular cut for muons
+		// Add opposite sign criteria
 		for(int iMu=0;iMu<nMuon;iMu++){
 			if(!Muon_passTightID[iMu]) continue;
 			chargedIso = Muon_PfChargedHadronIsoR04[iMu];
@@ -633,6 +635,7 @@ void analyzeData(TString fileName)
 				}// end if photon ID				
 			}// end loop over photons
 		}// end if 2 gen leptons and if fromHardProcessFinalState
+
 		// If either lead or subleading muon not defined, skip to next event
 		if(idxLead<0 || idxSub<0) continue;
 
@@ -655,6 +658,9 @@ void analyzeData(TString fileName)
 		double puWeight = 1.0;
 		double prefireWeight = 1.0;
 
+		// Before adding SFs, fix like with electrons - 
+		// Add intermediate pt and eta variables so the main ones
+		// Are not changed by SF calculation
 		// Need Rochester correction for muons for data and MC
 		if(isMC){
 			// Get Scale factors
@@ -676,9 +682,10 @@ void analyzeData(TString fileName)
 				hMedIDSF->GetBinContent(hMedIDSF->FindBin(etaSub,ptSub));
 			double sfHLT = 
 				(hLeg2SF->GetBinContent(hLeg2SF->FindBin(etaLead,ptLead)))*
-				 (hLeg2SF->GetBinContent(hLeg2SF->FindBin(etaLead,ptLead)));
+				(hLeg2SF->GetBinContent(hLeg2SF->FindBin(etaLead,ptLead)));
 			// Need to acquire muon SFs before adding this
 			}// end isFake
+
 			sfWeight = 1.0;
 			// Get gen weight
 			genWeight = (GENEvt_weight/fabs(GENEvt_weight))/sumGenWeight;
