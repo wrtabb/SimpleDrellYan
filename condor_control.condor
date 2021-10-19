@@ -2,7 +2,7 @@
 universe		= Docker 
 executable              = SimpleProcess.sh 
 arguments               = $(arg1)
-transfer_input_files    = SimpleProcess.py,analyzeData.C,rootlogon.C,data/Leg1_SF.root,data/Leg2_SF.root,data/MediumID_SF.root,data/PVz.root,data/Reco_SF.root,data/pileup.root
+transfer_input_files    = SimpleProcess.py,analyzeData.C,rootlogon.C,data/Leg1_SF.root,data/Leg2_SF.root,data/MediumID_SF.root,data/PVz.root,data/Reco_SF.root,data/pileup.root,$(arg2)
 
 +WantDocker = True
 docker_image ="unlhcc/osg-wn-el7"

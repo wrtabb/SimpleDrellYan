@@ -64,10 +64,14 @@ files_to_load=(
 	QCDEMEnriched_Pt170to300
 	QCDEMEnriched_Pt300toInf
 )
+txt_directory="fileLists/"
+extension=".txt"
 
 for index in ${!files_to_load[*]}; do
 	echo "Beginning to process ${files_to_load[$index]}"
 	condor_submit \
 		arg1=${files_to_load[$index]} \
+		arg2=${files_to_load[$index]}${extension} \
+
 		condor_control.condor
 done
