@@ -65,44 +65,66 @@ vector<TString> files= {
 	// Fakes
 	"WJetsToLNu_amcatnlo",		// 38	
 	"WJetsToLNu_amcatnlo_ext",	// 39	
-	"WJetsToLNu_amcatnlo_ext2v5"	// 40	
+	"WJetsToLNu_amcatnlo_ext2v5",	// 40	
+
+	// QCD
+	"QCDEMEnriched_Pt20to30",	// 41
+	"QCDEMEnriched_Pt30to50",	// 42
+	"QCDEMEnriched_Pt50to80",	// 43
+	"QCDEMEnriched_Pt50to80_ext1",	// 44
+	"QCDEMEnriched_Pt80to120",	// 45
+	"QCDEMEnriched_Pt80to120_ext1",	// 46
+	"QCDEMEnriched_Pt120to170",	// 47
+	"QCDEMEnriched_Pt120to170_ext1",// 48
+	"QCDEMEnriched_Pt170to300",	// 49
+	"QCDEMEnriched_Pt300toInf"	// 50
 };
 TString treeName = "recoTree/DYTree";
 vector<double> xSecVec = {
-	1,1,1,1,1,1,1,1,//Data
-	18610.0/3,      //DYLL_10to50 v1,v2,ext1v1 combined (NLO)
-	1923.26,	//DYLL_50to100(NNLO)
-	78.1258,	//DYLL_100to200(NNLO)
-	2.73309,	//DYLL_200to400(NNLO) 
-	0.142945,	//DYLL_400to500(NNLO)
-	0.0809755,	//DYLL_500to700(NNLO)
-	0.0125589,	//DYLL_700to800(NNLO)
-	0.0105845,	//DYLL_800to1000(NNLO)
-	0.00556507,	//DYLL_1000to1500(NNLO)
-	0.000730495,	//DYLL_1500to2000(NNLO)
-	0.00016844,	//DYLL_2000to3000(NNLO)
-	35.85,		//ST_tW
-	35.85,		//ST_tbarW
-	728.74,		//ttbar_M0to700
-	76.605,		//ttbar_M700to1000
-	20.578,		//ttbar_M1000toInf
-	118.7,		//WW
-	47.13,		//WZ
-	16.523,		//ZZ
-	18610.0/3.0,	//10to50 (NLO)
-	1923.26,	//50to100 (NNLO)
-	78.1258,	//100to200 (NNLO)
-	2.73309,	//200to400 (NNLO)
-	0.142945,	//400to500 (NNLO)
-	0.0809755,	//500to700 (NNLO)
-	0.0125589,	//700to800 (NNLO)
-	0.0105845,	//800to1000 (NNLO)
-	0.00556507,	//1000to1500 (NNLO)
-	0.000730495,	//1500to2000 (NNLO)
-	0.00016844,	//2000to3000 ((NNLO)
-	61526.7,	//WJetsToLNu (NNLO)
-	61526.7,	//WJetsToLNu_ext (NNLO)
-	61526.7		//WJetsToLNu_ext2v5 (NNLO)
+	1,1,1,1,1,1,1,1,	//Data
+	18610.0/3,		//DYLL_10to50 v1,v2,ext1v1 combined (NLO)
+	1923.26,		//DYLL_50to100(NNLO)
+	78.1258,		//DYLL_100to200(NNLO)
+	2.73309,		//DYLL_200to400(NNLO) 
+	0.142945,		//DYLL_400to500(NNLO)
+	0.0809755,		//DYLL_500to700(NNLO)
+	0.0125589,		//DYLL_700to800(NNLO)
+	0.0105845,		//DYLL_800to1000(NNLO)
+	0.00556507,		//DYLL_1000to1500(NNLO)
+	0.000730495,		//DYLL_1500to2000(NNLO)
+	0.00016844,		//DYLL_2000to3000(NNLO)
+	35.85,			//ST_tW
+	35.85,			//ST_tbarW
+	728.74,			//ttbar_M0to700
+	76.605,			//ttbar_M700to1000
+	20.578,			//ttbar_M1000toInf
+	118.7,			//WW
+	47.13,			//WZ
+	16.523,			//ZZ
+	18610.0/3.0,		//10to50 (NLO)
+	1923.26,		//50to100 (NNLO)
+	78.1258,		//100to200 (NNLO)
+	2.73309,		//200to400 (NNLO)
+	0.142945,		//400to500 (NNLO)
+	0.0809755,		//500to700 (NNLO)
+	0.0125589,		//700to800 (NNLO)
+	0.0105845,		//800to1000 (NNLO)
+	0.00556507,		//1000to1500 (NNLO)
+	0.000730495,		//1500to2000 (NNLO)
+	0.00016844,		//2000to3000 ((NNLO)
+	61526.7,		//WJetsToLNu (NNLO)
+	61526.7,		//WJetsToLNu_ext (NNLO)
+	61526.7,		//WJetsToLNu_ext2v5 (NNLO)
+	557600000*0.0096,	//QCDEMEnriched_Pt20to30 (LO)	
+	136000000*0.073,	//QCDEMEnriched_Pt30to50 (LO)
+	19800000*0.146,		//QCDEMEnriched_Pt50to80 (LO)
+	19800000*0.146,		//QCDEMEnriched_Pt50to80_ext1 (LO)
+	2800000*0.125,		//QCDEMEnriched_Pt80to120 (LO)
+	2800000*0.125,		//QCDEMEnriched_Pt80to120_ext1 (LO)
+	477000*0.132,		//QCDEMEnriched_Pt120to170 (LO)
+	477000*0.132,		//QCDEMEnriched_Pt120to170_ext1 (LO)
+	114000*0.165,		//QCDEMEnriched_Pt170to300 (LO)
+	9000*0.15		//QCDEMEnriched_Pt300toInf (LO)
 };
 int dataLuminosity = 35867;
 const TString electronTrigger = "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*";
@@ -541,21 +563,9 @@ void analyzeData(TString fileName)
 
 		double sfWeight = 1.0;
 		double pvzWeight = 1.0;
-		double pvzArray[60];
 		double puWeight = 1.0;
 		double prefireWeight = 1.0;
-/*
-		if(!isMC){
-			for(int iPVz=0;iPVz<60;iPVz++){
-				pvzArray[iPVz] = 1.0;
-			}
-		}
-		else{
-			for(int iPVz=0;iPVz<60;iPVz++){
-				pvzArray[iPVz] = hPVzSF->GetBinContent(iPVz);
-			}
-		}
-*/
+
 		// Get Reco Variables
 		vector<double> recoVariables;
 		recoVariables = GetVariables(etaLead,etaSub,ptLead,ptSub,phiLead,phiSub);
@@ -600,27 +610,8 @@ void analyzeData(TString fileName)
 			genWeight = (GENEvt_weight/fabs(GENEvt_weight))/sumGenWeight;
 
 			// PVz weight
-			pvzWeight = hPVzSF->GetBinContent(hPVzSF->FindBin(PVz));
-/*
-			double xPVzBins[61];
-			if(PVz < -15 || PVz >= 15) pvzWeight =1.0;
-			else {
-			
-				for(int iPVz=0;iPVz<61;iPVz++){
-					xPVzBins[iPVz] = -15 + 0.5*iPVz;
-				}// end loop over pvzweight bins
-				int pvzbin = 9999;
-				for(int iPVz=0;iPVz<60;iPVz++){
-					if(xPVzBins[iPVz] <= PVz && PVz < xPVzBins[iPVz+1]){
-						pvzbin = iPVz;
-						break;
-					}// end if
-				}// end loop over pvzweight bins
-				if(pvzbin==999) 
-					cout << "something wrong in PVz weights!" << endl;
-				pvzWeight = pvzArray[pvzbin];
-			}
-*/
+//			pvzWeight = hPVzSF->GetBinContent(hPVzSF->FindBin(PVz));
+
 			// Pileup weight
 			puWeight = hPileup->GetBinContent(hPileup->FindBin(nPileUp));
 

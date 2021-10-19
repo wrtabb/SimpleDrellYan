@@ -1,6 +1,7 @@
 #!/bin/bash
 
 files_to_load=(
+	# EG Data
         crab_DoubleEG_RunB           # 0
         crab_DoubleEG_RunC           # 1
         crab_DoubleEG_RunD           # 2
@@ -50,6 +51,18 @@ files_to_load=(
         WJetsToLNu_amcatnlo          # 38   
         WJetsToLNu_amcatnlo_ext      # 39   
         WJetsToLNu_amcatnlo_ext2v5   # 40   
+
+	# EM Enriched QCD		
+	QCDEMEnriched_Pt20to30		
+	QCDEMEnriched_Pt30to50
+	QCDEMEnriched_Pt50to80
+	QCDEMEnriched_Pt50to80_ext1
+	QCDEMEnriched_Pt80to120
+	QCDEMEnriched_Pt80to120_ext1
+	QCDEMEnriched_Pt120to170
+	QCDEMEnriched_Pt120to170_ext1
+	QCDEMEnriched_Pt170to300
+	QCDEMEnriched_Pt300toInf
 )
 
 for index in ${!files_to_load[*]}; do
