@@ -1,0 +1,4 @@
+/store/user/kplee/DYntuple/v2.8/DYLL_M400to500/ntuple_skim_sig_1.root
+/store/user/kplee/DYntuple/v2.8/DYLL_M400to500/ntuple_skim_sig_2.root
+/store/user/kplee/DYntuple/v2.8/DYLL_M400to500/ntuple_skim_sig_3.root
+/store/user/kplee/DYntuple/v2.8/DYLL_M400to500/ntuple_skim_sig_4.root
