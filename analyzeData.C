@@ -13,6 +13,8 @@
 bool PassDileptonSelection(double eta1,double eta2,double pt1,double pt2,int idx1,int idx2);
 vector<double> GetVariables(double eta1,double eta2,double pt1,double pt2,double phi1,
 			    double phi2);
+bool GetRecoLeptons(int &idxRecoLead, int &idxRecoSub);
+bool GetHardLeptons(int &idxHard1,int &idxHard2);
 
 TString base_directory = "root://xrootd-local.unl.edu///store/user/wtabb/DrellYan_13TeV_2016/v2p6/skims/skims_EE/";
 vector<TString> files= {
@@ -376,12 +378,35 @@ void analyzeData(TString fileName)
 		xSec = xSecVec.at(38);
 		isFake = true;
 	}
+	else if(fileName.CompareTo(files.at(39))==0){
+		xSec = xSecVec.at(39);
+		isFake = true;
+	}
+	else if(fileName.CompareTo(files.at(40))==0){
+		xSec = xSecVec.at(40);
+		isFake = true;
+	}
+	else if(fileName.CompareTo(files.at(41))==0) xSec = xSecVec.at(41);
+	else if(fileName.CompareTo(files.at(42))==0) xSec = xSecVec.at(42);
+	else if(fileName.CompareTo(files.at(43))==0) xSec = xSecVec.at(43);
+	else if(fileName.CompareTo(files.at(44))==0) xSec = xSecVec.at(44);
+	else if(fileName.CompareTo(files.at(45))==0) xSec = xSecVec.at(45);
+	else if(fileName.CompareTo(files.at(46))==0) xSec = xSecVec.at(46);
+	else if(fileName.CompareTo(files.at(47))==0) xSec = xSecVec.at(47);
+	else if(fileName.CompareTo(files.at(48))==0) xSec = xSecVec.at(48);
+	else if(fileName.CompareTo(files.at(49))==0) xSec = xSecVec.at(49);
+	else if(fileName.CompareTo(files.at(50))==0) xSec = xSecVec.at(50);
 
 	TChain*chain;
 	TH1D*hInvMassReco;
 	TH1D*hRapidityReco;
 	TH1D*hPtLeadReco;
 	TH1D*hPtSubReco;
+
+	TH1D*hInvMassHard;
+	TH1D*hRapidityHard;
+	TH1D*hPtLeadHard;
+	TH1D*hPtSubHard;
 
 	// Get histograms needed for weights and scale factors
 	TFile*fRecoSF  = new TFile("data/Reco_SF.root");
@@ -413,6 +438,17 @@ void analyzeData(TString fileName)
 	hRapidityReco = new TH1D(histNameRapidityReco,"",100,-2.5,2.5);
 	hPtLeadReco = new TH1D(histNamePtLeadReco,"",100,0,500);
 	hPtSubReco = new TH1D(histNamePtSubReco,"",100,0,500);
+
+	// Define Hard histograms
+	TString histNameInvMassHard = histName+"InvMassHard";
+	TString histNameRapidityHard = histName+"RapidityHard";
+	TString histNamePtLeadHard = histName+"PtLeadHard";
+	TString histNamePtSubHard = histName+"PtSubHard";
+
+	hInvMassHard = new TH1D(histNameInvMassHard,"",nMassBins,massbins);
+	hRapidityHard = new TH1D(histNameRapidityHard,"",100,-2.5,2.5);
+	hPtLeadHard = new TH1D(histNamePtLeadHard,"",100,0,500);
+	hPtSubHard = new TH1D(histNamePtSubHard,"",100,0,500);
 
 	Long64_t nEntries = chain->GetEntries();
 	cout << "Loading " << fileName << endl;
@@ -514,65 +550,44 @@ void analyzeData(TString fileName)
 			} // end if trigName
 		}// end loop over triggers
 
-		// Get Reco Electrons
-		double ptLead = -1000;
-		double ptSub = -1000;
-		double etaLead = -1000;
-		double etaSub = -1000;
-		double phiLead = -1000;
-		double phiSub = -1000;
-
-		int idxLead = -1;
-		int idxSub = -1;
-
-		// Find lead pT electron
-		if(passHLT && Nelectrons==2){
-			for(int iEle=0;iEle<Nelectrons;iEle++){
-				if(!Electron_passMediumID[iEle]) continue;
-				for(int jEle=iEle+1;jEle<Nelectrons;jEle++){
-					if(!Electron_passMediumID[jEle]) continue;
-					if(Electron_pT[iEle] > Electron_pT[jEle]){
-						ptLead = Electron_pT[iEle];
-						etaLead = Electron_eta[iEle];
-						phiLead = Electron_phi[iEle];
-						idxLead = iEle;
-
-						ptSub = Electron_pT[jEle];
-						etaSub = Electron_eta[jEle];
-						phiSub = Electron_phi[jEle];
-						idxSub = jEle;
-					}// end if iEle is leading electron
-					else{
-						ptLead = Electron_pT[jEle];
-						etaLead = Electron_eta[jEle];
-						phiLead = Electron_phi[jEle];
-						idxLead = jEle;
-
-						ptSub = Electron_pT[iEle];
-						etaSub = Electron_eta[iEle];
-						phiSub = Electron_phi[iEle];
-						idxSub = iEle;
-					}// end if jEle is leading electron
-				}// end inner reco lepton loop
-			}// end reco lepton Loop
-		}// end if passHLT and Nelectrons==2
-
-		// Determine if reco leptons pass selection
-		bool passRecoSelection = 
-			PassDileptonSelection(etaLead,etaSub,ptLead,ptSub,idxLead,idxSub);
-
-		double sfWeight = 1.0;
-		double pvzWeight = 1.0;
-		double puWeight = 1.0;
-		double prefireWeight = 1.0;
-
-		// Get Reco Variables
-		vector<double> recoVariables;
-		recoVariables = GetVariables(etaLead,etaSub,ptLead,ptSub,phiLead,phiSub);
+		//-----Get Reconstructed Quantities-----//
 		double invMassReco	= -1000;
 		double rapidityReco	= -1000;
 		double leadPtReco	= -1000;
 		double subPtReco	= -1000;
+
+		double ptRecoLead  = -1000;
+		double ptRecoSub   = -1000;
+		double etaRecoLead = -1000;
+		double etaRecoSub  = -1000;
+		double phiRecoLead = -1000;
+		double phiRecoSub  = -1000;
+
+		int idxRecoLead = -1;
+		int idxRecoSub  = -1;
+
+		// Find lead pT electron
+		if(passHLT && Nelectrons==2){
+			bool recoLep = GetRecoLeptons(idxRecoLead,idxRecoSub);
+			if(recoLep){
+				ptRecoLead  = Electron_pT[idxRecoLead];
+				ptRecoSub   = Electron_pT[idxRecoSub];
+				etaRecoLead = Electron_eta[idxRecoLead];
+				etaRecoSub  = Electron_eta[idxRecoSub];
+				phiRecoLead = Electron_phi[idxRecoLead];
+				phiRecoSub  = Electron_phi[idxRecoSub];
+			}
+		}
+
+		// Determine if reco leptons pass selection
+		bool passRecoSelection = PassDileptonSelection(etaRecoLead,etaRecoSub,
+							       ptRecoLead,ptRecoSub,
+							       idxRecoLead,idxRecoSub);
+		// Get Reco Variables
+		vector<double> recoVariables;
+		recoVariables = GetVariables(etaRecoLead,etaRecoSub,ptRecoLead,ptRecoSub,
+					     phiRecoLead,phiRecoSub);
+
 
 		if(passRecoSelection){
 			invMassReco	= recoVariables.at(0);
@@ -580,10 +595,59 @@ void analyzeData(TString fileName)
 			leadPtReco	= recoVariables.at(2);
 			subPtReco	= recoVariables.at(3);
 		}
-		double pt1  = ptLead;
-		double pt2  = ptSub;
-		double eta1 = etaLead;
-		double eta2 = etaSub;
+
+		//-----Get Hard Process Quantities-----//
+		double invMassHard	= -1000;
+		double rapidityHard	= -1000;
+		double leadPtHard	= -1000;
+		double subPtHard	= -1000;
+
+		double ptHardLead  = -1000;
+		double ptHardSub   = -1000;
+		double etaHardLead = -1000;
+		double etaHardSub  = -1000;
+		double phiHardLead = -1000;
+		double phiHardSub  = -1000;
+
+		int idxHardLead = -1;
+		int idxHardSub  = -1;
+
+		bool hardLep = GetHardLeptons(idxHardLead,idxHardSub);
+		if(hardLep){
+			ptHardLead  = GENLepton_pT[idxHardLead];
+			ptHardSub   = GENLepton_pT[idxHardSub];
+			etaHardLead = GENLepton_eta[idxHardLead];
+			etaHardSub  = GENLepton_eta[idxHardSub];
+			phiHardLead = GENLepton_phi[idxHardLead];
+			phiHardSub  = GENLepton_phi[idxHardSub];
+		}
+		bool passHardSelection = PassDileptonSelection(etaHardLead,etaHardSub,
+							       ptHardLead,ptHardSub,
+							       idxHardLead,idxHardSub);
+
+		// Get Hard Variables
+		vector<double> hardVariables;
+		hardVariables = GetVariables(etaHardLead,etaHardSub,ptHardLead,ptHardSub,
+					     phiHardLead,phiHardSub);
+
+
+		if(passHardSelection){
+			invMassHard	= hardVariables.at(0);
+			rapidityHard	= hardVariables.at(1);
+			leadPtHard	= hardVariables.at(2);
+			subPtHard	= hardVariables.at(3);
+		}
+
+		//-----Get Weights-----//
+		double sfWeight = 1.0;
+		double pvzWeight = 1.0;
+		double puWeight = 1.0;
+		double prefireWeight = 1.0;
+
+		double pt1  = ptRecoLead;
+		double pt2  = ptRecoSub;
+		double eta1 = etaRecoLead;
+		double eta2 = etaRecoSub;
 
 		if(isMC){
 			// Get Scale factors
@@ -621,6 +685,8 @@ void analyzeData(TString fileName)
 
 		double recoWeight = 
 			xSecWeight*genWeight*sfWeight*pvzWeight*puWeight*prefireWeight;
+		double hardWeight = xSecWeight/nEntries;
+
 		if(!isMC) recoWeight = 1.0;
 
 		hInvMassReco->Fill(invMassReco,recoWeight);
@@ -628,10 +694,14 @@ void analyzeData(TString fileName)
 		hPtLeadReco->Fill(leadPtReco,recoWeight);
 		hPtSubReco->Fill(subPtReco,recoWeight);
 
+		hInvMassHard->Fill(invMassHard,hardWeight);
+		hRapidityHard->Fill(rapidityHard,hardWeight);
+		hPtLeadHard->Fill(leadPtHard,hardWeight);
+		hPtSubHard->Fill(subPtHard,hardWeight);
 	}// end loop over entries
 
 	// Save results to output file
-	TString saveName = "output_data/saveFile_EE_SimplePVz_";
+	TString saveName = "output_data/saveFile_EE_NoPVz_WithHard_";
 	saveName += fileName;
 	saveName += ".root";
 	TFile*file;
@@ -640,6 +710,10 @@ void analyzeData(TString fileName)
 	hRapidityReco->Write();
 	hPtLeadReco->Write();
 	hPtSubReco->Write();
+	hInvMassHard->Write();
+	hRapidityHard->Write();
+	hPtLeadHard->Write();
+	hPtSubHard->Write();
 	file->Close();
 }
 
@@ -692,3 +766,48 @@ vector<double> GetVariables(double eta1,double eta2,double pt1,double pt2,double
 
 	return variableReturn;
 }
+
+bool GetRecoLeptons(int &idxRecoLead, int &idxRecoSub)
+{
+	for(int iEle=0;iEle<Nelectrons;iEle++){
+		if(!Electron_passMediumID[iEle]) continue;
+		for(int jEle=iEle+1;jEle<Nelectrons;jEle++){
+			if(!Electron_passMediumID[jEle]) continue;
+			if(Electron_pT[iEle] > Electron_pT[jEle]){
+				idxRecoLead = iEle;
+				idxRecoSub = jEle;
+			}// end if iEle is leading electron
+			else{
+				idxRecoLead = jEle;
+				idxRecoSub = iEle;
+			}// end if jEle is leading electron
+		}// end inner reco lepton loop
+	}// end reco lepton Loop
+	if(idxRecoLead>-1 && idxRecoSub>-1) return true;
+	else return false;
+}// end GetRecoLeptons()
+
+bool GetHardLeptons(int &idxHardLead,int &idxHardSub)
+{
+	for(int kLep=0;kLep<GENnPair;kLep++){
+		for(int lLep=kLep+1;lLep<GENnPair;lLep++){
+			if(!(abs(GENLepton_ID[kLep])==11 && abs(GENLepton_ID[lLep])==11))
+				continue;
+			if(GENLepton_ID[kLep]*GENLepton_ID[lLep]>0) continue;
+			if(GENLepton_isHardProcess[kLep]==1 && 
+			   GENLepton_isHardProcess[lLep]==1){
+				if(GENLepton_pT[kLep] > GENLepton_pT[lLep]){
+					idxHardLead = kLep;
+					idxHardSub = lLep;
+				}// end if iLep is leading electron
+				else{
+					idxHardLead = lLep;
+					idxHardSub = kLep;
+				}// end if jLep is leading electron
+			}// end if hard process
+		}//end inner loop over gen leptons
+	}//end outer loop over gen leptons
+
+	if(idxHardLead>-1 && idxHardSub>-1) return true;
+	else return false;
+}// end GetHardLeptons()
