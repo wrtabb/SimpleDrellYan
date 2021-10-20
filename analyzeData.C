@@ -540,7 +540,7 @@ void analyzeData(TString fileName)
 		int idxRecoLead = -1;
 		int idxRecoSub = -1;
 
-		if(passHLT && nMuon==2){
+		if(passHLT){
 			bool recoLep = GetRecoLeptons(idxRecoLead,idxRecoSub);
 			if(recoLep){
 				ptRecoLead  = Muon_pT[idxRecoLead]; 
@@ -763,7 +763,7 @@ vector<double> GetVariables(double eta1,double eta2,double pt1,double pt2,double
         return variableReturn;
 }// end GetVariables()
 
-bool GetRecoLeptons(int &idxLead, int &idxSub)
+bool GetRecoLeptons(int &idxRecoLead, int &idxRecoSub)
 {
 	double chargedIso;
 	double neutralIso;
@@ -799,18 +799,18 @@ bool GetRecoLeptons(int &idxLead, int &idxSub)
 			if(iso_dBeta > 0.15) continue;
 			
 			if(Muon_pT[iMu] > Muon_pT[jMu]){
-				idxLead = iMu;
-				idxSub  = jMu;
+				idxRecoLead = iMu;
+				idxRecoSub  = jMu;
 			}
 			else{
-				idxLead = jMu;
-				idxSub  = iMu;
+				idxRecoLead = jMu;
+				idxRecoSub  = iMu;
 
 			} 
 		}//end inner muon loop
 	}// end outer muon loop 
 
-	if(idxLead<0 || idxSub<0) return false; //two muons were not selected
+	if(idxRecoLead<0 || idxRecoSub<0) return false; //two muons were not selected
 	else return true;
 }// end GetRecoLeptons()
 
