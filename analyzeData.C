@@ -11,7 +11,7 @@
 
 // Functions
 double GetCrossSection(TString fileName);
-bool IsSampleFake(TString fileName)
+bool IsSampleFake(TString fileName);
 bool PassDileptonSelection(double eta1,double eta2,double pt1,double pt2,int idx1,int idx2);
 vector<double> GetVariables(double eta1,double eta2,double pt1,double pt2,double phi1,
                             double phi2);
@@ -543,12 +543,12 @@ void analyzeData(TString fileName)
 		if(passHLT && nMuon==2){
 			bool recoLep = GetRecoLeptons(idxRecoLead,idxRecoSub);
 			if(recoLep){
-				ptRecoLead  = Muon_pT[idxLead]; 
-				ptRecoSub   = Muon_pT[idxSub];
-				etaRecoLead = Muon_eta[idxLead];
-				etaRecoSub  = Muon_eta[idxSub];
-				phiRecoLead = Muon_phi[idxLead];
-				phiRecoSub  = Muon_phi[idxSub];
+				ptRecoLead  = Muon_pT[idxRecoLead]; 
+				ptRecoSub   = Muon_pT[idxRecoSub];
+				etaRecoLead = Muon_eta[idxRecoLead];
+				etaRecoSub  = Muon_eta[idxRecoSub];
+				phiRecoLead = Muon_phi[idxRecoLead];
+				phiRecoSub  = Muon_phi[idxRecoSub];
 			}// end if recoLep
 		}// end if passHLT
 
@@ -625,9 +625,6 @@ void analyzeData(TString fileName)
 */
 
 
-		v1.SetPtEtaPhiM(ptLead,etaLead,phiLead,muMass);
-		v2.SetPtEtaPhiM(ptSub,etaSub,phiSub,muMass);
-
 		double sfWeight = 1.0;
 		double puWeight = 1.0;
 		double prefireWeight = 1.0;
@@ -636,27 +633,31 @@ void analyzeData(TString fileName)
 		// Add intermediate pt and eta variables so the main ones
 		// Are not changed by SF calculation
 		// Need Rochester correction for muons for data and MC
+		double pt1 =  ptRecoLead;
+		double pt2 =  ptRecoSub;
+		double eta1 = etaRecoLead;
+		double eta2 = etaRecoSub;
 		if(isMC){
 			// Get Scale factors
-			if(ptLead>ptBinHigh) ptLead = ptBinHigh;
-			if(ptSub>ptBinHigh) ptSub = ptBinHigh;
-			if(etaLead>etaBinHigh) etaLead = etaBinHigh;
-			if(etaSub>etaBinHigh) etaSub = etaBinHigh;
-			if(etaLead<etaBinLow) etaLead = etaBinLow;
-			if(etaSub<etaBinLow) etaSub = etaBinLow;
+			if(pt1>ptBinHigh) pt1 = ptBinHigh;
+			if(pt2>ptBinHigh) pt2 = ptBinHigh;
+			if(eta1>etaBinHigh) eta1 = etaBinHigh;
+			if(eta2>etaBinHigh) eta2 = etaBinHigh;
+			if(eta1<etaBinLow) eta1 = etaBinLow;
+			if(eta2<etaBinLow) eta2 = etaBinLow;
 
 			if(!isFake){
 			double sfReco1 = 
-				hRecoSF->GetBinContent(hRecoSF->FindBin(etaLead,ptLead));
+				hRecoSF->GetBinContent(hRecoSF->FindBin(eta1,pt1));
 			double sfReco2 = 
-				hRecoSF->GetBinContent(hRecoSF->FindBin(etaSub,ptSub));
+				hRecoSF->GetBinContent(hRecoSF->FindBin(eta2,pt2));
 			double sfID1 = 
-				hMedIDSF->GetBinContent(hMedIDSF->FindBin(etaLead,ptLead));
+				hMedIDSF->GetBinContent(hMedIDSF->FindBin(eta1,pt1));
 			double sfID2 = 
-				hMedIDSF->GetBinContent(hMedIDSF->FindBin(etaSub,ptSub));
+				hMedIDSF->GetBinContent(hMedIDSF->FindBin(eta2,pt2));
 			double sfHLT = 
-				(hLeg2SF->GetBinContent(hLeg2SF->FindBin(etaLead,ptLead)))*
-				(hLeg2SF->GetBinContent(hLeg2SF->FindBin(etaLead,ptLead)));
+				(hLeg2SF->GetBinContent(hLeg2SF->FindBin(eta1,pt1)))*
+				(hLeg2SF->GetBinContent(hLeg2SF->FindBin(eta1,pt1)));
 			// Need to acquire muon SFs before adding this
 			}// end !isFake
 
@@ -674,9 +675,9 @@ void analyzeData(TString fileName)
 		double weight = xSecWeight*genWeight*sfWeight*puWeight*prefireWeight;
 		if(!isMC) weight = 1.0;
 		hInvMass->Fill(invMassReco,weight);
-		hRapidity->Fill(rapidity,weight);
-		hPtLead->Fill(ptLead,weight);
-		hPtSub->Fill(ptSub,weight);
+		hRapidity->Fill(rapidityReco,weight);
+		hPtLead->Fill(leadPtReco,weight);
+		hPtSub->Fill(subPtReco,weight);
 
 	}// end loop over entries
 	TString saveName = "output_data/saveFile_MuMu_";
@@ -695,7 +696,7 @@ void analyzeData(TString fileName)
 double GetCrossSection(TString fileName)
 {
 	int nFiles = files.size();
-	double xsec
+	double xsec = 1.0;
 	for(int i=0;i<nFiles;i++){
 		if(fileName.CompareTo(files.at(i))==0) xsec = xSecVec.at(i);
 	}// end loop over possible samples	
@@ -731,8 +732,8 @@ vector<double> GetVariables(double eta1,double eta2,double pt1,double pt2,double
         TLorentzVector v1;
         TLorentzVector v2;
 
-        v1.SetPtEtaPhiM(pt1,eta1,phi1,eMass);
-        v2.SetPtEtaPhiM(pt2,eta2,phi2,eMass);
+        v1.SetPtEtaPhiM(pt1,eta1,phi1,muMass);
+        v2.SetPtEtaPhiM(pt2,eta2,phi2,muMass);
 
 	// Dimuon invariant mass
         double invMass = (v1+v2).M();
@@ -797,13 +798,13 @@ bool GetRecoLeptons(int &idxLead, int &idxSub)
 				(chargedIso+max(0.0,neutralIso+gammaIso-0.5*sumPUPt))/pT;
 			if(iso_dBeta > 0.15) continue;
 			
-			if(Muon_pT[iMu] > Muon_pT[jMu]{
+			if(Muon_pT[iMu] > Muon_pT[jMu]){
 				idxLead = iMu;
-				idxSub  = jMu
+				idxSub  = jMu;
 			}
 			else{
 				idxLead = jMu;
-				idxSub  = iMu
+				idxSub  = iMu;
 
 			} 
 		}//end inner muon loop
