@@ -9,8 +9,14 @@
 #include <TH1F.h>
 #include <iostream>
 
+// Functions
 double GetCrossSection(TString fileName);
 bool IsSampleFake(TString fileName)
+bool PassDileptonSelection(double eta1,double eta2,double pt1,double pt2,int idx1,int idx2);
+vector<double> GetVariables(double eta1,double eta2,double pt1,double pt2,double phi1,
+                            double phi2);
+bool GetRecoLeptons(int &idxRecoLead, int &idxRecoSub);
+bool GetHardLeptons(int &idxHard1,int &idxHard2);
 
 TString base_directory = "root://xrootd-local.unl.edu///store/user/wtabb/DrellYan_13TeV_2016/v2p6/skims/skims_MuMu/";
 
@@ -518,70 +524,47 @@ void analyzeData(TString fileName)
 			} // end if trigName
 		}// end loop over triggers
 
-		if(!passHLT) continue;
+		//-----Get Reconstructed Quantities-----//
+		double invMassReco      = -1000;
+                double rapidityReco     = -1000;
+                double leadPtReco       = -1000;
+                double subPtReco        = -1000;
 
-		// Get Reco Muons
-		double ptLead = -1000;
-		double ptSub = -1000;
-		double etaLead = -1000;
-		double etaSub = -1000;
-		double phiLead = -1000;
-		double phiSub = -1000;
+		double ptRecoLead  = -1000;
+		double ptRecoSub   = -1000;
+		double etaRecoLead = -1000;
+		double etaRecoSub  = -1000;
+		double phiRecoLead = -1000;
+		double phiRecoSub  = -1000;
 
-		int idxLead = -1;
-		int idxSub = -1;
+		int idxRecoLead = -1;
+		int idxRecoSub = -1;
 
-		double chargedIso;
-		double neutralIso;
-		double gammaIso;
-		double sumPUPt;
-		double pT;  
-		double iso_dBeta;
+		if(passHLT && nMuon==2){
+			bool recoLep = GetRecoLeptons(idxRecoLead,idxRecoSub);
+			if(recoLep){
+				ptRecoLead  = Muon_pT[idxLead]; 
+				ptRecoSub   = Muon_pT[idxSub];
+				etaRecoLead = Muon_eta[idxLead];
+				etaRecoSub  = Muon_eta[idxSub];
+				phiRecoLead = Muon_phi[idxLead];
+				phiRecoSub  = Muon_phi[idxSub];
+			}// end if recoLep
+		}// end if passHLT
 
-		// Find lead pT muon
-		// NOTE: Need to choose two muons by smallest vertex chi2
-		// Choosing highest two pT is a temporary placeholder 
-		// Add angular cut for muons
-		// Add opposite sign criteria
-		for(int iMu=0;iMu<nMuon;iMu++){
-			if(!Muon_passTightID[iMu]) continue;
-			chargedIso = Muon_PfChargedHadronIsoR04[iMu];
-			neutralIso = Muon_PfNeutralHadronIsoR04[iMu];
-			gammaIso = Muon_PfGammaIsoR04[iMu];
-			sumPUPt = Muon_PFSumPUIsoR04[iMu];
-			pT = Muon_pT[iMu];
-			iso_dBeta = 
-				(chargedIso+max(0.0,neutralIso+gammaIso-0.5*sumPUPt))/pT;
-			if(iso_dBeta > 0.15) continue;
+		bool passRecoSelection = PassDileptonSelection(etaRecoLead,etaRecoSub,
+							       ptRecoLead,ptRecoSub,
+                                  			       phiRecoLead,phiRecoSub);
+		vector<double> recoVariables;
+                recoVariables = GetVariables(etaRecoLead,etaRecoSub,ptRecoLead,ptRecoSub,
+                                             phiRecoLead,phiRecoSub);
 
-			for(int jMu=0;jMu<nMuon;jMu++){
-				if(!Muon_passTightID[jMu]) continue;
-				chargedIso = Muon_PfChargedHadronIsoR04[jMu];
-				neutralIso = Muon_PfNeutralHadronIsoR04[jMu];
-				gammaIso = Muon_PfGammaIsoR04[jMu];
-				sumPUPt = Muon_PFSumPUIsoR04[jMu];
-				pT = Muon_pT[jMu];
-				iso_dBeta = 
-					(chargedIso+max(0.0,neutralIso+gammaIso-0.5*sumPUPt))/pT;
-				if(iso_dBeta > 0.15) continue;
-				
-				if(Muon_pT[iMu] > Muon_pT[jMu]{
-					idxLead = iMu;
-					idxSub  = jMu
-				}
-				else{
-					idxLead = jMu;
-					idxSub  = iMu
-
-				} 
-			}//end inner muon loop
-		}// end outer muon loop 
-		ptLead  = Muon_pT[idxLead]; 
-		ptSub   = Muon_pT[idxSub];
-		etaLead = Muon_eta[idxLead];
-		etaSub  = Muon_eta[idxSub];
-		phiLead = Muon_phi[idxLead];
-		phiSub  = Muon_phi[idxSub];
+		if(passRecoSelection){
+                        invMassReco     = recoVariables.at(0);
+                        rapidityReco    = recoVariables.at(1);
+                        leadPtReco      = recoVariables.at(2);
+                        subPtReco       = recoVariables.at(3);
+                }
 
 /*
 		double pT_dressed1	= -1000;
@@ -641,23 +624,9 @@ void analyzeData(TString fileName)
 		}// end if 2 gen leptons and if fromHardProcessFinalState
 */
 
-		// If either lead or subleading muon not defined, skip to next event
-		if(idxLead<0 || idxSub<0) continue;
-
-		// Kinematic cuts
-		if(abs(etaLead)>etaGapLow && abs(etaLead)<etaGapHigh) continue;
-		if(abs(etaSub)>etaGapLow && abs(etaSub)<etaGapHigh) continue;
-		if(abs(etaLead)>etaHigh||abs(etaSub)>etaHigh) continue;
-		if(!(ptLead>ptHigh && ptSub>ptLow)) continue;
 
 		v1.SetPtEtaPhiM(ptLead,etaLead,phiLead,muMass);
 		v2.SetPtEtaPhiM(ptSub,etaSub,phiSub,muMass);
-
-		// dimuon invariant mass
-		double invMassReco = (v1+v2).M();
-		
-		// dimuon rapidity
-		double rapidity = (v1+v2).Rapidity();
 
 		double sfWeight = 1.0;
 		double puWeight = 1.0;
@@ -689,7 +658,7 @@ void analyzeData(TString fileName)
 				(hLeg2SF->GetBinContent(hLeg2SF->FindBin(etaLead,ptLead)))*
 				(hLeg2SF->GetBinContent(hLeg2SF->FindBin(etaLead,ptLead)));
 			// Need to acquire muon SFs before adding this
-			}// end isFake
+			}// end !isFake
 
 			sfWeight = 1.0;
 			// Get gen weight
@@ -742,3 +711,132 @@ bool IsSampleFake(TString fileName)
 
 	return false;
 }// end IsSampleFake()
+
+bool PassDileptonSelection(double eta1,double eta2,double pt1,double pt2,int idx1,int idx2)
+{
+	if(eta1<0||eta2<0||pt1<0||pt2<0||idx1<0||idx2<0) return false;
+
+        if(abs(eta1)>etaGapLow && abs(eta1)<etaGapHigh) return false;
+        if(abs(eta2)>etaGapLow && abs(eta2)<etaGapHigh) return false;
+        if(abs(eta1)>etaHigh||abs(eta2)>etaHigh) return false;
+        if(pt1>pt2 && (pt1<ptHigh || pt2<ptLow)) return false;
+        if(pt2>pt1 && (pt2<ptHigh || pt1<ptLow)) return false;
+
+        return true;
+}// end PassDileptonSelection()
+
+vector<double> GetVariables(double eta1,double eta2,double pt1,double pt2,double phi1,
+                            double phi2)
+{
+        TLorentzVector v1;
+        TLorentzVector v2;
+
+        v1.SetPtEtaPhiM(pt1,eta1,phi1,eMass);
+        v2.SetPtEtaPhiM(pt2,eta2,phi2,eMass);
+
+	// Dimuon invariant mass
+        double invMass = (v1+v2).M();
+
+	// Dimuon rapidity
+        double rapidity = (v1+v2).Rapidity();
+
+        double ptLead;
+        double ptSub;
+
+        if(pt1>pt2){
+                ptLead = pt1;
+                ptSub  = pt2;
+        }
+        else{
+                ptLead = pt2;
+                ptSub  = pt1;
+        }
+
+        vector<double> variableReturn = {
+                invMass,        // 0
+                rapidity,       // 1
+                ptLead,         // 2
+                ptSub           // 3
+        };
+
+        return variableReturn;
+}// end GetVariables()
+
+bool GetRecoLeptons(int &idxLead, int &idxSub)
+{
+	double chargedIso;
+	double neutralIso;
+	double gammaIso;
+	double sumPUPt;
+	double pT;  
+	double iso_dBeta;
+
+	// NOTE: Need to choose two muons by smallest vertex chi2
+	// Choosing highest two pT is a temporary placeholder 
+	// Add angular cut for muons
+	// Add opposite sign criteria
+	for(int iMu=0;iMu<nMuon;iMu++){
+		if(!Muon_passTightID[iMu]) continue;
+		chargedIso = Muon_PfChargedHadronIsoR04[iMu];
+		neutralIso = Muon_PfNeutralHadronIsoR04[iMu];
+		gammaIso = Muon_PfGammaIsoR04[iMu];
+		sumPUPt = Muon_PFSumPUIsoR04[iMu];
+		pT = Muon_pT[iMu];
+		iso_dBeta = 
+			(chargedIso+max(0.0,neutralIso+gammaIso-0.5*sumPUPt))/pT;
+		if(iso_dBeta > 0.15) continue;
+
+		for(int jMu=0;jMu<nMuon;jMu++){
+			if(!Muon_passTightID[jMu]) continue;
+			chargedIso = Muon_PfChargedHadronIsoR04[jMu];
+			neutralIso = Muon_PfNeutralHadronIsoR04[jMu];
+			gammaIso = Muon_PfGammaIsoR04[jMu];
+			sumPUPt = Muon_PFSumPUIsoR04[jMu];
+			pT = Muon_pT[jMu];
+			iso_dBeta = 
+				(chargedIso+max(0.0,neutralIso+gammaIso-0.5*sumPUPt))/pT;
+			if(iso_dBeta > 0.15) continue;
+			
+			if(Muon_pT[iMu] > Muon_pT[jMu]{
+				idxLead = iMu;
+				idxSub  = jMu
+			}
+			else{
+				idxLead = jMu;
+				idxSub  = iMu
+
+			} 
+		}//end inner muon loop
+	}// end outer muon loop 
+
+	if(idxLead<0 || idxSub<0) return false; //two muons were not selected
+	else return true;
+}// end GetRecoLeptons()
+
+bool GetHardLeptons(int &idxHardLead,int &idxHardSub)
+{
+        for(int kLep=0;kLep<GENnPair;kLep++){
+                for(int lLep=kLep+1;lLep<GENnPair;lLep++){
+                        if(!(abs(GENLepton_ID[kLep])==13 && abs(GENLepton_ID[lLep])==13))
+                                continue;
+                        if(GENLepton_ID[kLep]*GENLepton_ID[lLep]>0) continue;
+                        if(GENLepton_isHardProcess[kLep]==1 &&
+                           GENLepton_isHardProcess[lLep]==1){
+                                if(GENLepton_pT[kLep] > GENLepton_pT[lLep]){
+                                        idxHardLead = kLep;
+                                        idxHardSub = lLep;
+                                }// end if iLep is leading electron
+                                else{
+                                        idxHardLead = lLep;
+                                        idxHardSub = kLep;
+                                }// end if jLep is leading electron
+                        }// end if hard process
+                }//end inner loop over gen leptons
+        }//end outer loop over gen leptons
+
+        if(idxHardLead>-1 && idxHardSub>-1) return true;
+        else return false;
+}// end GetHardLeptons()
+
+
+
