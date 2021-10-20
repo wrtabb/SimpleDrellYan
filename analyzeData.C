@@ -9,68 +9,71 @@
 #include <TH1F.h>
 #include <iostream>
 
+double GetCrossSection(TString fileName);
+bool IsSampleFake(TString fileName)
+
 TString base_directory = "root://xrootd-local.unl.edu///store/user/wtabb/DrellYan_13TeV_2016/v2p6/skims/skims_MuMu/";
 
 vector<TString> files= {
 	// Data
-	"SingleMuon_Run2016B",		// 0
-	"SingleMuon_Run2016C",		// 1
-	"SingleMuon_Run2016D",		// 2
-	"SingleMuon_Run2016E",		// 3
-	"SingleMuon_Run2016F",		// 4
-	"SingleMuon_Run2016G",		// 5
-	"SingleMuon_Run2016Hver2",	// 6
-	"SingleMuon_Run2016Hver3",	// 7
+	"SingleMuon_Run2016B",			// 0
+	"SingleMuon_Run2016C",			// 1
+	"SingleMuon_Run2016D",			// 2
+	"SingleMuon_Run2016E",			// 3
+	"SingleMuon_Run2016F",			// 4
+	"SingleMuon_Run2016G",			// 5
+	"SingleMuon_Run2016Hver2",		// 6
+	"SingleMuon_Run2016Hver3",		// 7
 
 	// MC Signal
-	"DYLL_M10to50_MuMu",		// 8
-	"DYLL_M50to100_MuMu",		// 9
-	"DYLL_M100to200_MuMu",		// 10
-	"DYLL_M200to400_MuMu",		// 11
-	"DYLL_M400to500_MuMu",		// 12
-	"DYLL_M500to700_MuMu",		// 13
-	"DYLL_M700to800_MuMu",		// 14
-	"DYLL_M800to1000_MuMu",		// 15
+	"DYLL_M10to50_MuMu",			// 8
+	"DYLL_M50to100_MuMu",			// 9
+	"DYLL_M100to200_MuMu",			// 10
+	"DYLL_M200to400_MuMu",			// 11
+	"DYLL_M400to500_MuMu",			// 12
+	"DYLL_M500to700_MuMu",			// 13
+	"DYLL_M700to800_MuMu",			// 14
+	"DYLL_M800to1000_MuMu",			// 15
 	"DYLL_M1000to1500_MuMu",		// 16
 	"DYLL_M1500to2000_MuMu",		// 17
 	"DYLL_M2000to3000_MuMu",		// 18
 
 	// Tops
-	"ST_tW",			// 19
-	"ST_tbarW",			// 20
-	"ttbar_M0to700",	// 21
-	"ttbar_M700to1000",		// 22
-	"ttbar_M1000toInf",		// 23
+	"ST_tW",				// 19
+	"ST_tbarW",				// 20
+	"ttbar_M0to700",			// 21
+	"ttbar_M700to1000",			// 22
+	"ttbar_M1000toInf",			// 23
 
 	// EW
-	"WW",				// 24
-	"WZ",				// 25
-	"ZZ",				// 26
-	"DYLL_M10to50_TauTau",		// 27
-	"DYLL_M50to100_TauTau",		// 28
-	"DYLL_M100to200_TauTau",	// 29
-	"DYLL_M200to400_TauTau",	// 30
-	"DYLL_M400to500_TauTau",	// 31
-	"DYLL_M500to700_TauTau",	// 32
-	"DYLL_M700to800_TauTau",	// 33
-	"DYLL_M800to1000_TauTau",	// 34
-	"DYLL_M1000to1500_TauTau",	// 35
-	"DYLL_M1500to2000_TauTau",	// 36
-	"DYLL_M2000to3000_TauTau",	// 37
+	"WW",					// 24
+	"WZ",					// 25
+	"ZZ",					// 26
+	"DYLL_M10to50_TauTau",			// 27
+	"DYLL_M50to100_TauTau",			// 28
+	"DYLL_M100to200_TauTau",		// 29
+	"DYLL_M200to400_TauTau",		// 30
+	"DYLL_M400to500_TauTau",		// 31
+	"DYLL_M500to700_TauTau",		// 32
+	"DYLL_M700to800_TauTau",		// 33
+	"DYLL_M800to1000_TauTau",		// 34
+	"DYLL_M1000to1500_TauTau",		// 35
+	"DYLL_M1500to2000_TauTau",		// 36
+	"DYLL_M2000to3000_TauTau",		// 37
 
 	// Fakes
-	"WJetsToLNu_amcatnlo",		// 38	
-	"WJetsToLNu_amcatnlo_ext",	// 39
-//	"WJetsToLNu_amcatnlo_ext2v5",	// 40
+	"WJetsToLNu_amcatnlo",			// 38	
+	"WJetsToLNu_amcatnlo_ext",		// 39
+	"WJetsToLNu_amcatnlo_ext2v5",		// 40
 
 	// QCD
-	"QCDMuEnriched_Pt15to20",	// 41
-	"QCDMuEnriched_Pt20to30",	// 42
-	"QCDMuEnriched_Pt30to50",	// 43
-	"QCDMuEnriched_Pt50to80",	// 44
-	"QCDMuEnriched_Pt80to120",	// 45
-	"QCDMuEnriched_Pt80to120_ext1",	// 46
-	"QCDMuEnriched_Pt120to170",	// 47
+	"QCDMuEnriched_Pt15to20",		// 41
+	"QCDMuEnriched_Pt20to30",		// 42
+	"QCDMuEnriched_Pt30to50",		// 43
+	"QCDMuEnriched_Pt50to80",		// 44
+	"QCDMuEnriched_Pt80to120",		// 45
+	"QCDMuEnriched_Pt80to120_ext1",		// 46
+	"QCDMuEnriched_Pt120to170",		// 47
 	"QCDMuEnriched_Pt120to170_backup",	// 48
 	"QCDMuEnriched_Pt170to300",		// 49
 	"QCDMuEnriched_Pt170to300_backup",	// 50
@@ -351,57 +354,8 @@ void analyzeData(TString fileName)
 	TH1::SetDefaultSumw2();
 
 	// Get cross section for sample
-	double xSec = 1.0;
-	bool isFake = false;
-
-	// Data
-	if(fileName.CompareTo(files.at(0))==0) xSec = xSecVec.at(0);
-	else if(fileName.CompareTo(files.at(1))==0) xSec = xSecVec.at(1);
-	else if(fileName.CompareTo(files.at(2))==0) xSec = xSecVec.at(2);
-	else if(fileName.CompareTo(files.at(3))==0) xSec = xSecVec.at(3);
-	else if(fileName.CompareTo(files.at(4))==0) xSec = xSecVec.at(4);
-	else if(fileName.CompareTo(files.at(5))==0) xSec = xSecVec.at(5);
-	else if(fileName.CompareTo(files.at(6))==0) xSec = xSecVec.at(6);
-	else if(fileName.CompareTo(files.at(7))==0) xSec = xSecVec.at(7);
-	// MC Signal
-	else if(fileName.CompareTo(files.at(8))==0) xSec = xSecVec.at(8);
-	else if(fileName.CompareTo(files.at(9))==0) xSec = xSecVec.at(9);
-	else if(fileName.CompareTo(files.at(10))==0) xSec = xSecVec.at(10);
-	else if(fileName.CompareTo(files.at(11))==0) xSec = xSecVec.at(11);
-	else if(fileName.CompareTo(files.at(12))==0) xSec = xSecVec.at(12);
-	else if(fileName.CompareTo(files.at(13))==0) xSec = xSecVec.at(13);
-	else if(fileName.CompareTo(files.at(14))==0) xSec = xSecVec.at(14);
-	else if(fileName.CompareTo(files.at(15))==0) xSec = xSecVec.at(15);
-	else if(fileName.CompareTo(files.at(16))==0) xSec = xSecVec.at(16);
-	else if(fileName.CompareTo(files.at(17))==0) xSec = xSecVec.at(17);
-	else if(fileName.CompareTo(files.at(18))==0) xSec = xSecVec.at(18);
-	//Tops
-	else if(fileName.CompareTo(files.at(19))==0) xSec = xSecVec.at(19);
-	else if(fileName.CompareTo(files.at(20))==0) xSec = xSecVec.at(20);
-	else if(fileName.CompareTo(files.at(21))==0) xSec = xSecVec.at(21);
-	else if(fileName.CompareTo(files.at(22))==0) xSec = xSecVec.at(22);
-	else if(fileName.CompareTo(files.at(23))==0) xSec = xSecVec.at(23);
-	// EW
-	else if(fileName.CompareTo(files.at(24))==0) xSec = xSecVec.at(24);
-	else if(fileName.CompareTo(files.at(25))==0) xSec = xSecVec.at(25);
-	else if(fileName.CompareTo(files.at(26))==0) xSec = xSecVec.at(26);
-	else if(fileName.CompareTo(files.at(27))==0) xSec = xSecVec.at(27);
-	else if(fileName.CompareTo(files.at(28))==0) xSec = xSecVec.at(28);
-	else if(fileName.CompareTo(files.at(29))==0) xSec = xSecVec.at(29);
-	else if(fileName.CompareTo(files.at(30))==0) xSec = xSecVec.at(30);
-	else if(fileName.CompareTo(files.at(31))==0) xSec = xSecVec.at(31);
-	else if(fileName.CompareTo(files.at(32))==0) xSec = xSecVec.at(32);
-	else if(fileName.CompareTo(files.at(33))==0) xSec = xSecVec.at(33);
-	else if(fileName.CompareTo(files.at(34))==0) xSec = xSecVec.at(34);
-	else if(fileName.CompareTo(files.at(35))==0) xSec = xSecVec.at(35);
-	else if(fileName.CompareTo(files.at(36))==0) xSec = xSecVec.at(36);
-	else if(fileName.CompareTo(files.at(37))==0) xSec = xSecVec.at(37);
-	// Fakes
-	else if(fileName.CompareTo(files.at(38)||fileName.CompareTo(files.at(39))==0||
-		fileName.CompareTo(files.at(40))==0)==0){
-		xSec = xSecVec.at(38);
-		isFake = true;
-	}
+	bool isFake = IsSampleFake(fileName);
+	double xSec = GetCrossSection(fileName);
 
 	TChain*chain;
 	TH1D*hInvMass;
@@ -430,7 +384,6 @@ void analyzeData(TString fileName)
 	
 	// Define histograms
 	TString histName = "hist";
-	//histName += fileName;	
 	TString histNameInvMass = histName+"InvMass";
 	TString histNameRapidity = histName+"Rapidity";
 	TString histNamePtLead = histName+"PtLead";
@@ -544,11 +497,12 @@ void analyzeData(TString fileName)
 		if(sumGenWeight<0){
 			cout << "Gen weight sum < 0 for sample " << fileName << endl;
 		}
-	}
+	}// end isMC
 	// Loop over events
+	
 	for(Long64_t iEntry=0;iEntry<nEntries;iEntry++){
 		chain->GetEntry(iEntry);
-		if(nMuon<2) continue;
+		if(nMuon<2) continue; //temporary measure, need to select two muons
 
 		// Check if event passes HLT cut
 		TString trigName;
@@ -766,3 +720,22 @@ void analyzeData(TString fileName)
 
 }
 
+double GetCrossSection(TString fileName)
+{
+	int nFiles = files.size();
+	double xsec
+	for(int i=0;i<nFiles;i++){
+		if(fileName.CompareTo(files.at(i))==0) xsec = xSecVec.at(i);
+	}// end loop over possible samples	
+	
+	return xsec;
+}// end GetCrossSection()
+
+bool IsSampleFake(TString fileName)
+{
+	for(int i=38;i<41;i++){
+		if(fileName.CompareTo(files.at(i))==0) return true;
+	}
+
+	return false;
+}// end IsSampleFake()
