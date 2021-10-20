@@ -606,7 +606,8 @@ void analyzeData(TString fileName)
 		double leadPtDressed	= -1000;
 		double subPtDressed	= -1000;
 
-		vector<TLorentzVector> dressedLeptons;
+		vector<TLorentzVector> dressedLeptons = 
+			GetDressedLeptons(idxHardLead,idxHardSub);
 
 		double ptDressedLead  = dressedLeptons.at(0).Pt(); 
 		double ptDressedSub   = dressedLeptons.at(1).Pt();
@@ -624,7 +625,7 @@ void analyzeData(TString fileName)
 		// Get Dressed Variables
 		vector<double> dressedVariables;
 		dressedVariables = GetVariables(etaDressedLead,etaDressedSub,ptDressedLead,
-					     ptDressedSub,phiDressedLead,phiDressedSub);
+					        ptDressedSub,phiDressedLead,phiDressedSub);
 
 		if(passDressedSelection){
 			invMassDressed	= dressedVariables.at(0);
