@@ -17,6 +17,7 @@ vector<double> GetVariables(double eta1,double eta2,double pt1,double pt2,double
 			    double phi2);
 bool GetRecoLeptons(int &idxRecoLead, int &idxRecoSub);
 bool GetHardLeptons(int &idxHard1,int &idxHard2);
+std::vector<TLorentzVector> GetDressedLeptons(int &idxHardLead,int &idxHardSub);
 
 TString base_directory = "root://xrootd-local.unl.edu///store/user/wtabb/DrellYan_13TeV_2016/v2p6/skims/skims_EE/";
 vector<TString> files= {
@@ -345,6 +346,11 @@ void analyzeData(TString fileName)
 	TH1D*hPtLeadHard;
 	TH1D*hPtSubHard;
 
+	TH1D*hInvMassDressed;
+	TH1D*hRapidityDressed;
+	TH1D*hPtLeadDressed;
+	TH1D*hPtSubDressed;
+
 	// Get histograms needed for weights and scale factors
 	TFile*fRecoSF  = new TFile("data/Reco_SF.root");
 	TFile*fMedIDSF = new TFile("data/MediumID_SF.root");
@@ -387,6 +393,17 @@ void analyzeData(TString fileName)
 	hPtLeadHard = new TH1D(histNamePtLeadHard,"",100,0,500);
 	hPtSubHard = new TH1D(histNamePtSubHard,"",100,0,500);
 
+	// Define Dressed histograms
+	TString histNameInvMassDressed = histName+"InvMassDressed";
+	TString histNameRapidityDressed = histName+"RapidityDressed";
+	TString histNamePtLeadDressed = histName+"PtLeadDressed";
+	TString histNamePtSubDressed = histName+"PtSubDressed";
+
+	hInvMassDressed = new TH1D(histNameInvMassDressed,"",nMassBins,massbins);
+	hRapidityDressed = new TH1D(histNameRapidityDressed,"",100,-2.5,2.5);
+	hPtLeadDressed = new TH1D(histNamePtLeadDressed,"",100,0,500);
+	hPtSubDressed = new TH1D(histNamePtSubDressed,"",100,0,500);
+
 	Long64_t nEntries = chain->GetEntries();
 	cout << "Loading " << fileName << endl;
 	cout << nEntries << " entries loaded. " << endl;
@@ -399,6 +416,10 @@ void analyzeData(TString fileName)
 	// Define branches
 	chain->SetBranchAddress("Nelectrons",&Nelectrons,&b_Nelectrons);
 	chain->SetBranchAddress("Electron_pT",&Electron_pT,&b_Electron_pT);
+	chain->SetBranchAddress("Electron_Px",&Electron_Px,&b_Electron_Px);
+	chain->SetBranchAddress("Electron_Py",&Electron_Py,&b_Electron_Py);
+	chain->SetBranchAddress("Electron_Pz",&Electron_Pz,&b_Electron_Pz);
+	chain->SetBranchAddress("Electron_Energy",&Electron_Energy,&b_Electron_Energy);
 	chain->SetBranchAddress("Electron_eta",&Electron_eta,&b_Electron_eta);
 	chain->SetBranchAddress("Electron_phi",&Electron_phi,&b_Electron_phi);
 	chain->SetBranchAddress("Electron_passMediumID",&Electron_passMediumID,
@@ -440,6 +461,10 @@ void analyzeData(TString fileName)
 					&b_GenOthers_phi);
 		chain->SetBranchAddress("GenOthers_pT",&GenOthers_pT,
 					&b_GenOthers_pT);
+		chain->SetBranchAddress("GenOthers_Px",&GenOthers_Px,&b_GenOthers_Px);
+		chain->SetBranchAddress("GenOthers_Py",&GenOthers_Py,&b_GenOthers_Py);
+		chain->SetBranchAddress("GenOthers_Pz",&GenOthers_Pz,&b_GenOthers_Pz);
+		chain->SetBranchAddress("GenOthers_E",&GenOthers_E,&b_GenOthers_E);
 		chain->SetBranchAddress("GenOthers_ID",&GenOthers_ID,
 					&b_GenOthers_ID);
 		chain->SetBranchAddress("GenOthers_isHardProcess",
@@ -575,6 +600,39 @@ void analyzeData(TString fileName)
 			subPtHard	= hardVariables.at(3);
 		}
 
+		//-----Get Dressed Quantities-----//
+		double invMassDressed	= -1000;
+		double rapidityDressed	= -1000;
+		double leadPtDressed	= -1000;
+		double subPtDressed	= -1000;
+
+		vector<TLorentzVector> dressedLeptons;
+
+		double ptDressedLead  = dressedLeptons.at(0).Pt(); 
+		double ptDressedSub   = dressedLeptons.at(1).Pt();
+		double etaDressedLead = dressedLeptons.at(0).Eta();
+		double etaDressedSub  = dressedLeptons.at(1).Eta();
+		double phiDressedLead = dressedLeptons.at(0).Phi();
+		double phiDressedSub  = dressedLeptons.at(1).Phi();
+		bool passDressedSelection = PassDileptonSelection(etaDressedLead,
+								  etaDressedSub,
+							          ptDressedLead,
+								  ptDressedSub,
+							          idxHardLead,
+								  idxHardSub);
+
+		// Get Dressed Variables
+		vector<double> dressedVariables;
+		dressedVariables = GetVariables(etaDressedLead,etaDressedSub,ptDressedLead,
+					     ptDressedSub,phiDressedLead,phiDressedSub);
+
+		if(passDressedSelection){
+			invMassDressed	= dressedVariables.at(0);
+			rapidityDressed	= dressedVariables.at(1);
+			leadPtDressed	= dressedVariables.at(2);
+			subPtDressed	= dressedVariables.at(3);
+		}
+
 		//-----Get Weights-----//
 		double sfWeight = 1.0;
 		double pvzWeight = 1.0;
@@ -635,10 +693,15 @@ void analyzeData(TString fileName)
 		hRapidityHard->Fill(rapidityHard,hardWeight);
 		hPtLeadHard->Fill(leadPtHard,hardWeight);
 		hPtSubHard->Fill(subPtHard,hardWeight);
+
+		hInvMassDressed->Fill(invMassDressed,hardWeight);
+		hRapidityDressed->Fill(rapidityDressed,hardWeight);
+		hPtLeadDressed->Fill(leadPtDressed,hardWeight);
+		hPtSubDressed->Fill(subPtDressed,hardWeight);
 	}// end loop over entries
 
 	// Save results to output file
-	TString saveName = "output_data/saveFile_EE_NoPVz_WithHard_";
+	TString saveName = "output_data/saveFile_EE_NoPVz_WithDressed_";
 	saveName += fileName;
 	saveName += ".root";
 	TFile*file;
@@ -651,6 +714,10 @@ void analyzeData(TString fileName)
 	hRapidityHard->Write();
 	hPtLeadHard->Write();
 	hPtSubHard->Write();
+	hInvMassDressed->Write();
+	hRapidityDressed->Write();
+	hPtLeadDressed->Write();
+	hPtSubDressed->Write();
 	file->Close();
 }
 
@@ -768,3 +835,100 @@ bool IsSampleFake(TString fileName)
 
         return false;
 }// end IsSampleFake()
+
+std::vector<TLorentzVector> GetDressedLeptons(int &idxHardLead,int &idxHardSub)
+{
+	TLorentzVector dressed1;
+	TLorentzVector dressed2;
+
+	// Electron loop
+	for(int iLep=0;iLep<GENnPair;iLep++){
+		for(int jLep=iLep+1;jLep<GENnPair;jLep++){
+			if(!(abs(GENLepton_ID[iLep])==11 && abs(GENLepton_ID[jLep])==11))
+				continue;
+			if(GENLepton_ID[iLep]*GENLepton_ID[jLep]>0) continue;
+			if(GENLepton_fromHardProcessFinalState[iLep]==1 && 
+			   GENLepton_fromHardProcessFinalState[jLep]==1){
+				if(GENLepton_pT[iLep] > GENLepton_pT[jLep]){
+					idxHardLead = iLep;
+					idxHardSub = jLep;
+				}// end if iLep is leading electron
+				else{
+					idxHardLead = jLep;
+					idxHardSub = iLep;
+				}// end if jLep is leading electron
+			}// end if hard process
+		}//end inner loop over gen leptons
+	}//end outer loop over gen leptons
+
+	double px1 = GENLepton_Px[idxHardLead];
+	double px2 = GENLepton_Px[idxHardSub];
+	double py1 = GENLepton_Py[idxHardLead];
+	double py2 = GENLepton_Py[idxHardSub];
+	double pz1 = GENLepton_Pz[idxHardLead];
+	double pz2 = GENLepton_Pz[idxHardSub];
+	double E1 = GENLepton_E[idxHardLead];
+	double E2 = GENLepton_E[idxHardSub];
+	dressed1.SetPxPyPzE(px1,py1,pz1,E1);
+	dressed2.SetPxPyPzE(px2,py2,pz2,E2);
+
+	double eta1 = GENLepton_eta[idxHardLead];
+	double eta2 = GENLepton_eta[idxHardSub];
+	double phi1 = GENLepton_phi[idxHardLead];
+	double phi2 = GENLepton_phi[idxHardSub];
+
+	double dRMin = 0.3;
+	TLorentzVector phoVec;
+	double etaPho,phiPho;
+	double etaDiff1,phiDiff1;
+;
+	double etaDiff2,phiDiff2;
+	double dR1Squared,dR1;
+	double dR2Squared,dR2;
+	double pxPho,pyPho,pzPho,EPho;
+
+	// Photon loop
+	for(int iPho=0;iPho<nGenOthers;iPho++){
+		if(GenOthers_ID[iPho]!=22 ||
+		   GenOthers_isPromptFinalState[iPho]!=1) continue;
+			// location of photon
+			etaPho = GenOthers_eta[iPho];
+			phiPho = GenOthers_phi[iPho];
+
+			// find location related to leading electron
+			etaDiff1 = eta1-etaPho;
+			phiDiff1 = phi1-phiPho;
+			dR1Squared = etaDiff1*etaDiff1+phiDiff1*phiDiff1;
+			dR1 = sqrt(dR1Squared);
+
+			// find location related to subleading electron
+			etaDiff2 = eta2-etaPho;
+			phiDiff2 = phi2-phiPho;
+			dR2Squared = etaDiff2*etaDiff2+phiDiff2*phiDiff2;
+			dR2 = sqrt(dR2Squared);
+
+			// place current photon into a lorentz vector
+			pxPho = GenOthers_Px[iPho];
+			pyPho = GenOthers_Py[iPho];
+			pzPho = GenOthers_Pz[iPho];
+			EPho  = GenOthers_E[iPho];
+			phoVec.SetPxPyPzE(pxPho,pyPho,pzPho,EPho);
+
+			// only keep photon if it is within the cone dRMin
+			if(dR1>dRMin && dR2>dRMin) continue;
+
+			// associate photon with whichever electron it is closest to 
+			if(dR1>dR2){
+				dressed1 += phoVec;				
+			}
+			else{
+				dressed2 += phoVec;				
+			}
+	}// end loop over photons	
+
+	vector<TLorentzVector> returnVector;
+	returnVector.push_back(dressed1);
+	returnVector.push_back(dressed2);
+
+	return returnVector;
+}// end GetDressedLeptons()
