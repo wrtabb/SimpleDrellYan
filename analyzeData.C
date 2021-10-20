@@ -11,7 +11,7 @@
 
 //-----Functions-----//
 double GetCrossSection(TString fileName);
-bool IsSampleFake(TString fileName)
+bool IsSampleFake(TString fileName);
 bool PassDileptonSelection(double eta1,double eta2,double pt1,double pt2,int idx1,int idx2);
 vector<double> GetVariables(double eta1,double eta2,double pt1,double pt2,double phi1,
 			    double phi2);
@@ -752,7 +752,7 @@ bool GetHardLeptons(int &idxHardLead,int &idxHardSub)
 double GetCrossSection(TString fileName)
 {
         int nFiles = files.size();
-        double xsec
+        double xsec = 1.0;
         for(int i=0;i<nFiles;i++){
                 if(fileName.CompareTo(files.at(i))==0) xsec = xSecVec.at(i);
         }// end loop over possible samples      
