@@ -10,6 +10,8 @@
 #include <iostream>
 
 //-----Functions-----//
+double GetCrossSection(TString fileName);
+bool IsSampleFake(TString fileName)
 bool PassDileptonSelection(double eta1,double eta2,double pt1,double pt2,int idx1,int idx2);
 vector<double> GetVariables(double eta1,double eta2,double pt1,double pt2,double phi1,
 			    double phi2);
@@ -329,73 +331,8 @@ void analyzeData(TString fileName)
 	TH1::SetDefaultSumw2();
 
 	// Get cross section for sample
-	double xSec = 1.0;
-	bool isFake = false;
-	// Data
-	if(fileName.CompareTo(files.at(0))==0) xSec = xSecVec.at(0);
-	else if(fileName.CompareTo(files.at(1))==0) xSec = xSecVec.at(1);
-	else if(fileName.CompareTo(files.at(2))==0) xSec = xSecVec.at(2);
-	else if(fileName.CompareTo(files.at(3))==0) xSec = xSecVec.at(3);
-	else if(fileName.CompareTo(files.at(4))==0) xSec = xSecVec.at(4);
-	else if(fileName.CompareTo(files.at(5))==0) xSec = xSecVec.at(5);
-	else if(fileName.CompareTo(files.at(6))==0) xSec = xSecVec.at(6);
-	else if(fileName.CompareTo(files.at(7))==0) xSec = xSecVec.at(7);
-	// MC Signal
-	else if(fileName.CompareTo(files.at(8))==0) xSec = xSecVec.at(8);
-	else if(fileName.CompareTo(files.at(9))==0) xSec = xSecVec.at(9);
-	else if(fileName.CompareTo(files.at(10))==0) xSec = xSecVec.at(10);
-	else if(fileName.CompareTo(files.at(11))==0) xSec = xSecVec.at(11);
-	else if(fileName.CompareTo(files.at(12))==0) xSec = xSecVec.at(12);
-	else if(fileName.CompareTo(files.at(13))==0) xSec = xSecVec.at(13);
-	else if(fileName.CompareTo(files.at(14))==0) xSec = xSecVec.at(14);
-	else if(fileName.CompareTo(files.at(15))==0) xSec = xSecVec.at(15);
-	else if(fileName.CompareTo(files.at(16))==0) xSec = xSecVec.at(16);
-	else if(fileName.CompareTo(files.at(17))==0) xSec = xSecVec.at(17);
-	else if(fileName.CompareTo(files.at(18))==0) xSec = xSecVec.at(18);
-	//Tops
-	else if(fileName.CompareTo(files.at(19))==0) xSec = xSecVec.at(19);
-	else if(fileName.CompareTo(files.at(20))==0) xSec = xSecVec.at(20);
-	else if(fileName.CompareTo(files.at(21))==0) xSec = xSecVec.at(21);
-	else if(fileName.CompareTo(files.at(22))==0) xSec = xSecVec.at(22);
-	else if(fileName.CompareTo(files.at(23))==0) xSec = xSecVec.at(23);
-	// EW
-	else if(fileName.CompareTo(files.at(24))==0) xSec = xSecVec.at(24);
-	else if(fileName.CompareTo(files.at(25))==0) xSec = xSecVec.at(25);
-	else if(fileName.CompareTo(files.at(26))==0) xSec = xSecVec.at(26);
-	else if(fileName.CompareTo(files.at(27))==0) xSec = xSecVec.at(27);
-	else if(fileName.CompareTo(files.at(28))==0) xSec = xSecVec.at(28);
-	else if(fileName.CompareTo(files.at(29))==0) xSec = xSecVec.at(29);
-	else if(fileName.CompareTo(files.at(30))==0) xSec = xSecVec.at(30);
-	else if(fileName.CompareTo(files.at(31))==0) xSec = xSecVec.at(31);
-	else if(fileName.CompareTo(files.at(32))==0) xSec = xSecVec.at(32);
-	else if(fileName.CompareTo(files.at(33))==0) xSec = xSecVec.at(33);
-	else if(fileName.CompareTo(files.at(34))==0) xSec = xSecVec.at(34);
-	else if(fileName.CompareTo(files.at(35))==0) xSec = xSecVec.at(35);
-	else if(fileName.CompareTo(files.at(36))==0) xSec = xSecVec.at(36);
-	else if(fileName.CompareTo(files.at(37))==0) xSec = xSecVec.at(37);
-	// Fakes
-	else if(fileName.CompareTo(files.at(38))==0){
-		xSec = xSecVec.at(38);
-		isFake = true;
-	}
-	else if(fileName.CompareTo(files.at(39))==0){
-		xSec = xSecVec.at(39);
-		isFake = true;
-	}
-	else if(fileName.CompareTo(files.at(40))==0){
-		xSec = xSecVec.at(40);
-		isFake = true;
-	}
-	else if(fileName.CompareTo(files.at(41))==0) xSec = xSecVec.at(41);
-	else if(fileName.CompareTo(files.at(42))==0) xSec = xSecVec.at(42);
-	else if(fileName.CompareTo(files.at(43))==0) xSec = xSecVec.at(43);
-	else if(fileName.CompareTo(files.at(44))==0) xSec = xSecVec.at(44);
-	else if(fileName.CompareTo(files.at(45))==0) xSec = xSecVec.at(45);
-	else if(fileName.CompareTo(files.at(46))==0) xSec = xSecVec.at(46);
-	else if(fileName.CompareTo(files.at(47))==0) xSec = xSecVec.at(47);
-	else if(fileName.CompareTo(files.at(48))==0) xSec = xSecVec.at(48);
-	else if(fileName.CompareTo(files.at(49))==0) xSec = xSecVec.at(49);
-	else if(fileName.CompareTo(files.at(50))==0) xSec = xSecVec.at(50);
+	bool isFake = IsSampleFake(fileName);
+        double xSec = GetCrossSection(fileName);
 
 	TChain*chain;
 	TH1D*hInvMassReco;
@@ -811,3 +748,23 @@ bool GetHardLeptons(int &idxHardLead,int &idxHardSub)
 	if(idxHardLead>-1 && idxHardSub>-1) return true;
 	else return false;
 }// end GetHardLeptons()
+
+double GetCrossSection(TString fileName)
+{
+        int nFiles = files.size();
+        double xsec
+        for(int i=0;i<nFiles;i++){
+                if(fileName.CompareTo(files.at(i))==0) xsec = xSecVec.at(i);
+        }// end loop over possible samples      
+
+        return xsec;
+}// end GetCrossSection()
+
+bool IsSampleFake(TString fileName)
+{
+        for(int i=38;i<41;i++){
+                if(fileName.CompareTo(files.at(i))==0) return true;
+        }
+
+        return false;
+}// end IsSampleFake()
