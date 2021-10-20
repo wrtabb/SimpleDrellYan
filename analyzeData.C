@@ -18,6 +18,7 @@ vector<double> GetVariables(double eta1,double eta2,double pt1,double pt2,double
 bool GetRecoLeptons(int &idxRecoLead, int &idxRecoSub);
 bool GetHardLeptons(int &idxHard1,int &idxHard2);
 std::vector<TLorentzVector> GetDressedLeptons(int &idxHardLead,int &idxHardSub);
+void Counter(Long64_t event,Long64_t total);
 
 TString base_directory = "root://xrootd-local.unl.edu///store/user/wtabb/DrellYan_13TeV_2016/v2p6/skims/skims_EE/";
 vector<TString> files= {
@@ -499,6 +500,7 @@ void analyzeData(TString fileName)
 	// Loop over events
 	for(Long64_t iEntry=0;iEntry<nEntries;iEntry++){
 		chain->GetEntry(iEntry);
+		Counter(iEntry,nEntries);
 
 		// Check if event passes HLT cut
 		TString trigName;
@@ -878,7 +880,7 @@ std::vector<TLorentzVector> GetDressedLeptons(int &idxHardLead,int &idxHardSub)
 	double phi1 = GENLepton_phi[idxHardLead];
 	double phi2 = GENLepton_phi[idxHardSub];
 
-	double dRMin = 0.3;
+	double dRMin = 0.1;
 	TLorentzVector phoVec;
 	double etaPho,phiPho;
 	double etaDiff1,phiDiff1;
@@ -919,7 +921,7 @@ std::vector<TLorentzVector> GetDressedLeptons(int &idxHardLead,int &idxHardSub)
 			if(dR1>dRMin && dR2>dRMin) continue;
 
 			// associate photon with whichever electron it is closest to 
-			if(dR1>dR2){
+			if(dR1<dR2){
 				dressed1 += phoVec;				
 			}
 			else{
@@ -933,3 +935,11 @@ std::vector<TLorentzVector> GetDressedLeptons(int &idxHardLead,int &idxHardSub)
 
 	return returnVector;
 }// end GetDressedLeptons()
+
+void Counter(Long64_t event,Long64_t total)
+{
+	int P = 100*(event)/(total);
+	if(event%(total/100)==0)
+		cout << P << "%" << endl;
+	 return;
+}
