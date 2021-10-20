@@ -60,8 +60,33 @@ vector<TString> files= {
 
 	// Fakes
 	"WJetsToLNu_amcatnlo",		// 38	
-	"WJetsToLNu_amcatnlo_ext",
-	"WJetsToLNu_amcatnlo_ext2v5",
+	"WJetsToLNu_amcatnlo_ext",	// 39
+//	"WJetsToLNu_amcatnlo_ext2v5",	// 40
+
+	// QCD
+	"QCDMuEnriched_Pt15to20",	// 41
+	"QCDMuEnriched_Pt20to30",	// 42
+	"QCDMuEnriched_Pt30to50",	// 43
+	"QCDMuEnriched_Pt50to80",	// 44
+	"QCDMuEnriched_Pt80to120",	// 45
+	"QCDMuEnriched_Pt80to120_ext1",	// 46
+	"QCDMuEnriched_Pt120to170",	// 47
+//	"QCDMuEnriched_Pt120to170_backup",	// 48
+	"QCDMuEnriched_Pt170to300",		// 49
+	"QCDMuEnriched_Pt170to300_backup",	// 50
+	"QCDMuEnriched_Pt170to300_ext1",	// 51
+	"QCDMuEnriched_Pt300to470",		// 52
+	"QCDMuEnriched_Pt300to470_ext1",	// 53
+	"QCDMuEnriched_Pt300to470_ext2",	// 54
+	"QCDMuEnriched_Pt470to600",		// 55
+	"QCDMuEnriched_Pt600to800",		// 56
+	"QCDMuEnriched_Pt600to800_backup",	// 57
+	"QCDMuEnriched_Pt600to800_ext1",	// 58
+	"QCDMuEnriched_Pt800to1000",		// 59
+	"QCDMuEnriched_Pt800to1000_ext1",	// 60
+	"QCDMuEnriched_Pt800to1000_ext2",	// 61
+	"QCDMuEnriched_Pt1000toInf",		// 62
+	"QCDMuEnriched_Pt1000toInf_ext1",	// 63
 };
 TString treeName = "recoTree/DYTree";
 vector<double> xSecVec = {
