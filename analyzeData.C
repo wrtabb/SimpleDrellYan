@@ -554,34 +554,36 @@ void analyzeData(TString fileName)
 				(chargedIso+max(0.0,neutralIso+gammaIso-0.5*sumPUPt))/pT;
 			if(iso_dBeta > 0.15) continue;
 
-			if(Muon_pT[iMu] > ptLead){
-				ptLead = Muon_pT[iMu];
-				etaLead = Muon_eta[iMu];
-				phiLead = Muon_phi[iMu];
-				idxLead = iMu;
-			}
-		}// end lead pt Loop
+			for(int jMu=0;jMu<nMuon;jMu++){
+				if(!Muon_passTightID[jMu]) continue;
+				chargedIso = Muon_PfChargedHadronIsoR04[jMu];
+				neutralIso = Muon_PfNeutralHadronIsoR04[jMu];
+				gammaIso = Muon_PfGammaIsoR04[jMu];
+				sumPUPt = Muon_PFSumPUIsoR04[jMu];
+				pT = Muon_pT[jMu];
+				iso_dBeta = 
+					(chargedIso+max(0.0,neutralIso+gammaIso-0.5*sumPUPt))/pT;
+				if(iso_dBeta > 0.15) continue;
+				
+				if(Muon_pT[iMu] > Muon_pT[jMu]{
+					idxLead = iMu;
+					idxSub  = jMu
+				}
+				else{
+					idxLead = jMu;
+					idxSub  = iMu
 
-		// Find subleading pT muon
-		for(int iMu=0;iMu<nMuon;iMu++) {
-			if(!Muon_passTightID[iMu]) continue;
-			chargedIso = Muon_PfChargedHadronIsoR04[iMu];
-			neutralIso = Muon_PfNeutralHadronIsoR04[iMu];
-			gammaIso = Muon_PfGammaIsoR04[iMu];
-			sumPUPt = Muon_PFSumPUIsoR04[iMu];
-			pT = Muon_pT[iMu];
-			iso_dBeta = 
-				(chargedIso+max(0.0,neutralIso+gammaIso-0.5*sumPUPt))/pT;
-			if(!Muon_passTightID[iMu]) continue;
-			if(iso_dBeta > 0.15) continue;
-			if(Muon_pT[iMu] > ptSub && Muon_pT[iMu] < ptLead){
-				ptSub = Muon_pT[iMu];
-				etaSub = Muon_eta[iMu];
-				phiSub = Muon_phi[iMu];
-				idxSub = iMu;
-			}
-		}//end sub pt loop
+				} 
+			}//end inner muon loop
+		}// end outer muon loop 
+		ptLead  = Muon_pT[idxLead]; 
+		ptSub   = Muon_pT[idxSub];
+		etaLead = Muon_eta[idxLead];
+		etaSub  = Muon_eta[idxSub];
+		phiLead = Muon_phi[idxLead];
+		phiSub  = Muon_phi[idxSub];
 
+/*
 		double pT_dressed1	= -1000;
 		double pT_dressed2	= -1000;
 		double eta_dressed1	= -1000;
@@ -637,6 +639,7 @@ void analyzeData(TString fileName)
 				}// end if photon ID				
 			}// end loop over photons
 		}// end if 2 gen leptons and if fromHardProcessFinalState
+*/
 
 		// If either lead or subleading muon not defined, skip to next event
 		if(idxLead<0 || idxSub<0) continue;
