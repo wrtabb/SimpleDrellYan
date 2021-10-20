@@ -8,15 +8,17 @@
 #include <TH2F.h>
 #include <TH1F.h>
 #include <iostream>
-
+#include <fstream>
 //-----Functions-----//
 bool PassDileptonSelection(double eta1,double eta2,double pt1,double pt2,int idx1,int idx2);
 vector<double> GetVariables(double eta1,double eta2,double pt1,double pt2,double phi1,
 			    double phi2);
 bool GetRecoLeptons(int &idxRecoLead, int &idxRecoSub);
 bool GetHardLeptons(int &idxHard1,int &idxHard2);
+bool PassInvMassTT();
 
-TString base_directory = "root://xrootd-local.unl.edu///store/user/wtabb/DrellYan_13TeV_2016/v2p6/skims/skims_EE/";
+//TString base_directory = "root://xrootd-local.unl.edu///store/user/wtabb/DrellYan_13TeV_2016/v2p6/skims/skims_EE/";
+TString base_directory = "root://cluster142.knu.ac.kr:1094/";
 vector<TString> files= {
 	// Data
 	"crab_DoubleEG_RunB",		// 0
@@ -29,22 +31,22 @@ vector<TString> files= {
 	"crab_DoubleEG_RunHver3",	// 7
 
 	// MC Signal
-	"DYLL_M10to50_EE",		// 8
-	"DYLL_M50to100_EE",		// 9
-	"DYLL_M100to200_EE",		// 10
-	"DYLL_M200to400_EE",		// 11
-	"DYLL_M400to500_EE",		// 12
-	"DYLL_M500to700_EE",		// 13
-	"DYLL_M700to800_EE",		// 14
-	"DYLL_M800to1000_EE",		// 15
-	"DYLL_M1000to1500_EE",		// 16
-	"DYLL_M1500to2000_EE",		// 17
-	"DYLL_M2000to3000_EE",		// 18
+	"DYLL_M10to50",		// 8
+	"DYLL_M50to100",		// 9
+	"DYLL_M100to200",		// 10
+	"DYLL_M200to400",		// 11
+	"DYLL_M400to500",		// 12
+	"DYLL_M500to700",		// 13
+	"DYLL_M700to800",		// 14
+	"DYLL_M800to1000",		// 15
+	"DYLL_M1000to1500",		// 16
+	"DYLL_M1500to2000",		// 17
+	"DYLL_M2000to3000",		// 18
 
 	// Tops
 	"ST_tW",			// 19
 	"ST_tbarW",			// 20
-	"ttbar_M0to700",		// 21
+	"ttbar",		// 21
 	"ttbar_M700to1000",		// 22
 	"ttbar_M1000toInf",		// 23
 
@@ -183,6 +185,7 @@ double Electron_etSC[MPSIZE]; //no muon
 bool Electron_passMediumID[MPSIZE];
 double _prefiringweight;
 double eMass = 0.000510998;
+double topMass = 172.76;
 int HLT_ntrig;
 int HLT_trigType[MPSIZE];
 int HLT_trigFired[MPSIZE];
@@ -422,10 +425,19 @@ void analyzeData(TString fileName)
 	TH1D*hPVzSF   = (TH1D*)fPVzSF->Get("PVz_SF");
 
 	// Load trees
-	TString loadFile = base_directory+fileName;
-	loadFile += ".root";
+	TString file_list_txt = "fileLists/";
+	file_list_txt += fileName;
+	file_list_txt += ".txt";
+	cout << "Loading file: " << file_list_txt << endl;
+	std::ifstream file_list;
+	file_list.open(file_list_txt);
+	std::string line;
 	chain = new TChain(treeName);
-	chain->Add(loadFile);
+	while(getline(file_list,line)){
+		TString loadFile = base_directory+line;
+		chain->Add(loadFile);
+	}
+	file_list.close();
 	
 	// Define Reco histograms
 	TString histName = "hist";
@@ -550,6 +562,53 @@ void analyzeData(TString fileName)
 			} // end if trigName
 		}// end loop over triggers
 
+		//-----Get Hard Process Quantities-----//
+		double invMassHard	= -1000;
+		double rapidityHard	= -1000;
+		double leadPtHard	= -1000;
+		double subPtHard	= -1000;
+
+		double ptHardLead  = -1000;
+		double ptHardSub   = -1000;
+		double etaHardLead = -1000;
+		double etaHardSub  = -1000;
+		double phiHardLead = -1000;
+		double phiHardSub  = -1000;
+
+		int idxHardLead = -1;
+		int idxHardSub  = -1;
+
+		bool hardLep = GetHardLeptons(idxHardLead,idxHardSub);
+		if(hardLep){
+			ptHardLead  = GENLepton_pT[idxHardLead];
+			ptHardSub   = GENLepton_pT[idxHardSub];
+			etaHardLead = GENLepton_eta[idxHardLead];
+			etaHardSub  = GENLepton_eta[idxHardSub];
+			phiHardLead = GENLepton_phi[idxHardLead];
+			phiHardSub  = GENLepton_phi[idxHardSub];
+		}
+		bool passHardSelection = PassDileptonSelection(etaHardLead,etaHardSub,
+							       ptHardLead,ptHardSub,
+							       idxHardLead,idxHardSub);
+
+		// Get Hard Variables
+		vector<double> hardVariables;
+		hardVariables = GetVariables(etaHardLead,etaHardSub,ptHardLead,ptHardSub,
+					     phiHardLead,phiHardSub);
+
+
+		if(passHardSelection){
+			invMassHard	= hardVariables.at(0);
+			rapidityHard	= hardVariables.at(1);
+			leadPtHard	= hardVariables.at(2);
+			subPtHard	= hardVariables.at(3);
+		}
+		int idxTT1 = -1;
+		int idxTT2 = -1;
+		bool passTT = PassInvMassTT();
+		if(fileName.CompareTo(files.at(9))==0 && invMassHard > 100) continue;
+		if(fileName.CompareTo(files.at(21))==0 && !passTT) continue;
+
 		//-----Get Reconstructed Quantities-----//
 		double invMassReco	= -1000;
 		double rapidityReco	= -1000;
@@ -596,48 +655,7 @@ void analyzeData(TString fileName)
 			subPtReco	= recoVariables.at(3);
 		}
 
-		//-----Get Hard Process Quantities-----//
-		double invMassHard	= -1000;
-		double rapidityHard	= -1000;
-		double leadPtHard	= -1000;
-		double subPtHard	= -1000;
-
-		double ptHardLead  = -1000;
-		double ptHardSub   = -1000;
-		double etaHardLead = -1000;
-		double etaHardSub  = -1000;
-		double phiHardLead = -1000;
-		double phiHardSub  = -1000;
-
-		int idxHardLead = -1;
-		int idxHardSub  = -1;
-
-		bool hardLep = GetHardLeptons(idxHardLead,idxHardSub);
-		if(hardLep){
-			ptHardLead  = GENLepton_pT[idxHardLead];
-			ptHardSub   = GENLepton_pT[idxHardSub];
-			etaHardLead = GENLepton_eta[idxHardLead];
-			etaHardSub  = GENLepton_eta[idxHardSub];
-			phiHardLead = GENLepton_phi[idxHardLead];
-			phiHardSub  = GENLepton_phi[idxHardSub];
-		}
-		bool passHardSelection = PassDileptonSelection(etaHardLead,etaHardSub,
-							       ptHardLead,ptHardSub,
-							       idxHardLead,idxHardSub);
-
-		// Get Hard Variables
-		vector<double> hardVariables;
-		hardVariables = GetVariables(etaHardLead,etaHardSub,ptHardLead,ptHardSub,
-					     phiHardLead,phiHardSub);
-
-
-		if(passHardSelection){
-			invMassHard	= hardVariables.at(0);
-			rapidityHard	= hardVariables.at(1);
-			leadPtHard	= hardVariables.at(2);
-			subPtHard	= hardVariables.at(3);
-		}
-
+ 
 		//-----Get Weights-----//
 		double sfWeight = 1.0;
 		double pvzWeight = 1.0;
@@ -701,7 +719,7 @@ void analyzeData(TString fileName)
 	}// end loop over entries
 
 	// Save results to output file
-	TString saveName = "output_data/saveFile_EE_NoPVz_WithHard_";
+	TString saveName = "output_data/testLoadFromKorea_";
 	saveName += fileName;
 	saveName += ".root";
 	TFile*file;
@@ -811,3 +829,41 @@ bool GetHardLeptons(int &idxHardLead,int &idxHardSub)
 	if(idxHardLead>-1 && idxHardSub>-1) return true;
 	else return false;
 }// end GetHardLeptons()
+
+bool PassInvMassTT()
+{
+	// This function exists to truncate the mass spectrum of the ttbar and ttbarBackup
+	// samples. These must be truncated at 700 GeV
+	int idx1 = -1;
+	int idx2 = -1;
+
+	for(int kLep=0;kLep<nGenOthers;kLep++){
+		for(int lLep=kLep+1;lLep<nGenOthers;lLep++){
+			if(!(abs(GenOthers_ID[kLep])==6 && abs(GenOthers_ID[lLep])==6))
+				continue;
+			if(GenOthers_ID[kLep]*GenOthers_ID[lLep]>0) continue;
+			if(GenOthers_isHardProcess[kLep]==1 && 
+			   GenOthers_isHardProcess[lLep]==1){
+				idx1 = kLep;
+				idx2 = lLep;
+			}// end if hard process
+		}//end inner loop over gen leptons
+	}//end outer loop over gen leptons
+
+	if(idx2<0 || idx1<0) return false;
+
+	TLorentzVector v1;
+	TLorentzVector v2;
+
+	double pt1 = GenOthers_pT[idx1];
+	double pt2 = GenOthers_pT[idx2];
+	double eta1 = GenOthers_eta[idx1];
+	double eta2 = GenOthers_eta[idx2];
+	double phi1 = GenOthers_phi[idx1];
+	double phi2 = GenOthers_phi[idx2];
+	v1.SetPtEtaPhiM(pt1,eta1,phi1,topMass);
+	v2.SetPtEtaPhiM(pt2,eta2,phi2,eMass);
+
+	if( (v1+v2).M() > 700) return false;
+	else return true;
+}// end PassInvMassTT() 

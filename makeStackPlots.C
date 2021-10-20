@@ -51,9 +51,23 @@ vector<TString> file_top = {
 
 vector<TString> file_Fake = {
 	"output_data/saveFile_EE_NoPVz_WJetsToLNu_amcatnlo.root",
-	//"output_data/saveFile_EE_NoPVz_WJetsToLNu_amcatnlo_ext.root"
+	"output_data/saveFile_EE_NoPVz_WJetsToLNu_amcatnlo_ext.root"
 	"output_data/saveFile_EE_NoPVz_WJetsToLNu_amcatnlo_ext2v5.root"
 };
+
+vector<TString> file_QCD = {
+	"output_data/saveFile_EE_NoPVz_QCDEMEnriched_Pt20to30.root",
+	"output_data/saveFile_EE_NoPVz_QCDEMEnriched_Pt30to50.root",
+	"output_data/saveFile_EE_NoPVz_QCDEMEnriched_Pt50to80.root",
+	"output_data/saveFile_EE_NoPVz_QCDEMEnriched_Pt50to80_ext1.root",
+	"output_data/saveFile_EE_NoPVz_QCDEMEnriched_Pt80to120.root",
+	"output_data/saveFile_EE_NoPVz_QCDEMEnriched_Pt80to120_ext1.root",
+	"output_data/saveFile_EE_NoPVz_QCDEMEnriched_Pt120to170.root",
+	"output_data/saveFile_EE_NoPVz_QCDEMEnriched_Pt120to170_ext1.root",
+	"output_data/saveFile_EE_NoPVz_QCDEMEnriched_Pt170to300.root",
+	"output_data/saveFile_EE_NoPVz_QCDEMEnriched_Pt300toInf.root"
+};
+
 
 enum Variable{
 	INV_MASS,
@@ -74,9 +88,9 @@ void makeStackPlots()
 	//gROOT->SetBatch(true);
 	gStyle->SetOptStat(0);
 	MakePlots(INV_MASS);
-	MakePlots(RAPIDITY);
-	MakePlots(PT_LEAD);
-	MakePlots(PT_SUB);
+//	MakePlots(RAPIDITY);
+//	MakePlots(PT_LEAD);
+//	MakePlots(PT_SUB);
 
 }
 
@@ -100,6 +114,10 @@ void MakePlots(Variable var)
 	TH1D*hEW = GetHistogram(file_ew,plotProperties.at(0));
 	hEW->SetFillColor(kRed+2);
 	hEW->SetLineColor(kRed+4);
+	// QCD
+	TH1D*hQCD = GetHistogram(file_QCD,plotProperties.at(0));
+	hQCD->SetFillColor(kGreen+2);
+	hQCD->SetLineColor(kGreen+2);
 
 	// Total MC sum
 	TString hSumName = "hSum";
@@ -108,6 +126,7 @@ void MakePlots(Variable var)
 	hSum->Add(hTops);
 	hSum->Add(hFake);
 	hSum->Add(hEW);
+	hSum->Add(hQCD);
 
 	// Some samples can have negative bin contents due to weightings
 	// Set any negative bins to zero
@@ -117,12 +136,14 @@ void MakePlots(Variable var)
 		if(hTops->GetBinContent(i)<0) hTops->SetBinContent(i,0);
 		if(hFake->GetBinContent(i)<0) hFake->SetBinContent(i,0);
 		if(hEW->GetBinContent(i)<0) hEW->SetBinContent(i,0);
+		if(hQCD->GetBinContent(i)<0) hQCD->SetBinContent(i,0);
 	}// end loop over bins
 
 	// Place signal and background into a stack
 	TString stackName = "hStack";
 	stackName += plotProperties.at(0);
 	THStack*hStack = new THStack(stackName,"");
+	hStack->Add(hQCD);
 	hStack->Add(hFake);
 	hStack->Add(hEW);
 	hStack->Add(hTops);
@@ -174,6 +195,7 @@ void MakePlots(Variable var)
 	legend->AddEntry(hTops,"t#bar{t}+tW+#bar{t}W");
 	legend->AddEntry(hEW,"diboson + #gamma^{*}/Z #rightarrow #tau^{-}#tau^{+}");
 	legend->AddEntry(hFake,"W+Jets");
+	legend->AddEntry(hQCD,"QCD");
 	legend->Draw("same");
 
 	// Stack properties

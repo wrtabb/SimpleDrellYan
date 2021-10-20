@@ -16,7 +16,10 @@ cd -
 #directory to save output data
 mkdir output_data
 mkdir data
+mkdir fileLists
+
 mv *.root data
+mv *.txt fileLists
 
 # Run Processing code 
 echo "Run the tree analysis script"
