@@ -71,7 +71,7 @@ vector<TString> files= {
 	"QCDMuEnriched_Pt80to120",	// 45
 	"QCDMuEnriched_Pt80to120_ext1",	// 46
 	"QCDMuEnriched_Pt120to170",	// 47
-//	"QCDMuEnriched_Pt120to170_backup",	// 48
+	"QCDMuEnriched_Pt120to170_backup",	// 48
 	"QCDMuEnriched_Pt170to300",		// 49
 	"QCDMuEnriched_Pt170to300_backup",	// 50
 	"QCDMuEnriched_Pt170to300_ext1",	// 51
@@ -90,40 +90,63 @@ vector<TString> files= {
 };
 TString treeName = "recoTree/DYTree";
 vector<double> xSecVec = {
-	1,1,1,1,1,1,1,1,//Data
-	18610.0/3,      //DYLL_10to50 v1,v2,ext1v1 combined (NLO)
-	1923.26,	//DYLL_50to100(NNLO)
-	78.1258,	//DYLL_100to200(NNLO)
-	2.73309,	//DYLL_200to400(NNLO) 
-	0.142945,	//DYLL_400to500(NNLO)
-	0.0809755,	//DYLL_500to700(NNLO)
-	0.0125589,	//DYLL_700to800(NNLO)
-	0.0105845,	//DYLL_800to1000(NNLO)
-	0.00556507,	//DYLL_1000to1500(NNLO)
-	0.000730495,	//DYLL_1500to2000(NNLO)
-	0.00016844,	//DYLL_2000to3000(NNLO)
-	35.85,		//ST_tW
-	35.85,		//ST_tbarW
-	728.74,		//ttbar_M0to700
-	76.605,		//ttbar_M700to1000
-	20.578,		//ttbar_M1000toInf
-	118.7,		//WW
-	47.13,		//WZ
-	16.523,		//ZZ
-	18610.0/3.0,	//10to50 (NLO)
-	1923.26,	//50to100 (NNLO)
-	78.1258,	//100to200 (NNLO)
-	2.73309,	//200to400 (NNLO)
-	0.142945,	//400to500 (NNLO)
-	0.0809755,	//500to700 (NNLO)
-	0.0125589,	//700to800 (NNLO)
-	0.0105845,	//800to1000 (NNLO)
-	0.00556507,	//1000to1500 (NNLO)
-	0.000730495,	//1500to2000 (NNLO)
-	0.00016844,	//2000to3000 ((NNLO)
-	61526.7,	//WJetsToLNu (NNLO)
-	61526.7,	//WJetsToLNu_ext (NNLO)
-	61526.7		//WJetsToLNu_ext (NNLO)
+	1,1,1,1,1,1,1,1,	//Data
+	18610.0/3,		//DYLL_10to50 v1,v2,ext1v1 combined (NLO)
+	1923.26,		//DYLL_50to100(NNLO)
+	78.1258,		//DYLL_100to200(NNLO)
+	2.73309,		//DYLL_200to400(NNLO) 
+	0.142945,		//DYLL_400to500(NNLO)
+	0.0809755,		//DYLL_500to700(NNLO)
+	0.0125589,		//DYLL_700to800(NNLO)
+	0.0105845,		//DYLL_800to1000(NNLO)
+	0.00556507,		//DYLL_1000to1500(NNLO)
+	0.000730495,		//DYLL_1500to2000(NNLO)
+	0.00016844,		//DYLL_2000to3000(NNLO)
+	35.85,			//ST_tW
+	35.85,			//ST_tbarW
+	728.74,			//ttbar_M0to700
+	76.605,			//ttbar_M700to1000
+	20.578,			//ttbar_M1000toInf
+	118.7,			//WW
+	47.13,			//WZ
+	16.523,			//ZZ
+	18610.0/3.0,		//10to50 (NLO)
+	1923.26,		//50to100 (NNLO)
+	78.1258,		//100to200 (NNLO)
+	2.73309,		//200to400 (NNLO)
+	0.142945,		//400to500 (NNLO)
+	0.0809755,		//500to700 (NNLO)
+	0.0125589,		//700to800 (NNLO)
+	0.0105845,		//800to1000 (NNLO)
+	0.00556507,		//1000to1500 (NNLO)
+	0.000730495,		//1500to2000 (NNLO)
+	0.00016844,		//2000to3000 ((NNLO)
+	61526.7,		//WJetsToLNu (NNLO)
+	61526.7,		//WJetsToLNu_ext (NNLO)
+	61526.7,		//WJetsToLNu_ext (NNLO)
+	1273190000*0.003,	//QCDMuEnriched_Pt15to20,	
+	558528000*0.0053,	//QCDMuEnriched_Pt20to30,	
+	139803000*0.01182,	//QCDMuEnriched_Pt30to50,	
+	19222500*0.02276,	//QCDMuEnriched_Pt50to80,	
+	2758420*0.03844,	//QCDMuEnriched_Pt80to120,	
+	2758420*0.03844,	//QCDMuEnriched_Pt80to120_ext1,	
+	469797*0.05362,		//QCDMuEnriched_Pt120to170,	
+	469797*0.05362,		//QCDMuEnriched_Pt120to170_backup,	
+	117989*0.07335,		//QCDMuEnriched_Pt170to300,		
+	117989*0.07335,		//QCDMuEnriched_Pt170to300_backup,	
+	117989*0.07335,		//QCDMuEnriched_Pt170to300_ext1,	
+	7820.25*0.10196,	//QCDMuEnriched_Pt300to470,		
+	7820.25*0.10196,	//QCDMuEnriched_Pt300to470_ext1,	
+	7820.25*0.10196,	//QCDMuEnriched_Pt300to470_ext2,	
+	645.528*0.12242,	//QCDMuEnriched_Pt470to600,		
+	187.109*0.13412,	//QCDMuEnriched_Pt600to800,		
+	187.109*0.13412,	//QCDMuEnriched_Pt600to800_backup,	
+	187.109*0.13412,	//QCDMuEnriched_Pt600to800_ext1,	
+	32.3486*0.14552,	//QCDMuEnriched_Pt800to1000,		
+	32.3486*0.14552,	//QCDMuEnriched_Pt800to1000_ext1,	
+	32.3486*0.14552,	//QCDMuEnriched_Pt800to1000_ext2,	
+	10.4305*0.15544,	//QCDMuEnriched_Pt1000toInf,		
+	10.4305*0.15544		//QCDMuEnriched_Pt1000toInf_ext1,	
 };
 int dataLuminosity = 35867;
 const TString muonTrigger1 = "HLT_IsoMu24_v*";
