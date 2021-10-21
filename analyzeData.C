@@ -3,6 +3,7 @@
 #include <TString.h>
 #include <TFile.h>
 #include <TH1D.h>
+#include <TH2D.h>
 #include <TChain.h>
 #include <TLorentzVector.h>
 #include <TH2F.h>
@@ -327,6 +328,12 @@ double massbins[] = {
                 3000
 };
 int nMassBins = size(massbins)-1;//43;
+double massbins2[] = {15,17.5,20,22.5,25,27.5,30,32.5,35,37.5,40,42.5,45,47.5,
+ 50,52.5,55,57.5,60,62,64,66,68,70,72,74,76,78.5,81,83.5,86,88.5,91,93.5,96,98.5,101,103.5,
+ 106,108,110,112.5,115,117.5,120,123,126,129.5,133,137,141,145.5,150,155,160,165.5,171,178,
+ 185,192.5,200,210,220,231.5,243,258,273,296.5,320,350,380,410,440,475,510,555,600,650,700,
+ 765,830,915,1000,1250,1500,2250,3000};
+int nMassBins2 = size(massbins2)-1;
 
 void analyzeData(TString fileName)
 {
@@ -351,6 +358,11 @@ void analyzeData(TString fileName)
 	TH1D*hRapidityDressed;
 	TH1D*hPtLeadDressed;
 	TH1D*hPtSubDressed;
+
+	TH2D*hMatrixInvMassHard;
+	TH2D*hMatrixInvMassDressed;
+	TH2D*hMatrixRapidityHard;
+	TH2D*hMatrixRapidityDressed;
 
 	// Get histograms needed for weights and scale factors
 	TFile*fRecoSF  = new TFile("data/Reco_SF.root");
@@ -404,6 +416,23 @@ void analyzeData(TString fileName)
 	hRapidityDressed = new TH1D(histNameRapidityDressed,"",100,-2.5,2.5);
 	hPtLeadDressed = new TH1D(histNamePtLeadDressed,"",100,0,500);
 	hPtSubDressed = new TH1D(histNamePtSubDressed,"",100,0,500);
+
+	// Define migration matrices
+	TString matrixName = "histMatrix";
+	TString matrixNameInvMassHard = matrixName+"InvMassHard";
+	TString matrixNameRapidityHard = matrixName+"RapidityHard";
+
+	TString matrixNameInvMassDressed = matrixName+"InvMassDressed";
+	TString matrixNameRapidityDressed = matrixName+"RapidityDressed";
+
+	hMatrixInvMassHard = new 
+		TH2D(matrixNameInvMassHard,"",nMassBins,massbins,nMassBins2,massbins2); 
+	hMatrixInvMassDressed = new 
+		TH2D(matrixNameInvMassDressed,"",nMassBins,massbins,nMassBins2,massbins2); 
+	hMatrixRapidityHard = new 
+		TH2D(matrixNameRapidityHard,"",100,-2.5,2.5,200,-2.5,2.5); 
+	hMatrixRapidityDressed = new 
+		TH2D(matrixNameRapidityDressed,"",100,-2.5,2.5,200,-2.5,2.5); 
 
 	Long64_t nEntries = chain->GetEntries();
 	cout << "Loading " << fileName << endl;
@@ -687,20 +716,34 @@ void analyzeData(TString fileName)
 
 		if(!isMC) recoWeight = 1.0;
 
+		// Fill reco histograms
 		hInvMassReco->Fill(invMassReco,recoWeight);
 		hRapidityReco->Fill(rapidityReco,recoWeight);
 		hPtLeadReco->Fill(leadPtReco,recoWeight);
 		hPtSubReco->Fill(subPtReco,recoWeight);
 
+		// Fill gen-level from hard process histograms
 		hInvMassHard->Fill(invMassHard,hardWeight);
 		hRapidityHard->Fill(rapidityHard,hardWeight);
 		hPtLeadHard->Fill(leadPtHard,hardWeight);
 		hPtSubHard->Fill(subPtHard,hardWeight);
 
+		// Fill dressed histograms
 		hInvMassDressed->Fill(invMassDressed,hardWeight);
 		hRapidityDressed->Fill(rapidityDressed,hardWeight);
 		hPtLeadDressed->Fill(leadPtDressed,hardWeight);
 		hPtSubDressed->Fill(subPtDressed,hardWeight);
+
+		// Fill migration matrices
+		hMatrixInvMassHard->Fill(invMassHard,invMassReco,recoWeight);
+		hMatrixInvMassHard->Fill(invMassHard,0.0,recoWeight*(1-sfWeight));
+		hMatrixInvMassDressed->Fill(invMassDressed,invMassReco,recoWeight); 
+		hMatrixInvMassDressed->Fill(invMassDressed,0.0,recoWeight*(1-sfWeight)); 
+		hMatrixRapidityHard->Fill(rapidityHard,rapidityReco,recoWeight); 
+		hMatrixRapidityHard->Fill(rapidityHard,0.0,recoWeight*(1-sfWeight)); 
+		hMatrixRapidityDressed->Fill(rapidityDressed,rapidityReco,recoWeight);
+		hMatrixRapidityDressed->Fill(rapidityDressed,rapidityReco,recoWeight*(1-sfWeight));
+
 	}// end loop over entries
 
 	// Save results to output file
@@ -721,6 +764,10 @@ void analyzeData(TString fileName)
 	hRapidityDressed->Write();
 	hPtLeadDressed->Write();
 	hPtSubDressed->Write();
+	hMatrixInvMassHard->Write();
+	hMatrixInvMassDressed->Write();
+	hMatrixRapidityHard->Write();
+	hMatrixRapidityDressed->Write();	
 	file->Close();
 }
 

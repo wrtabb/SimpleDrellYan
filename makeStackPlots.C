@@ -1,58 +1,71 @@
 
 vector<TString> file_data = {
-	"output_data/saveFile_EE_NoPVz_crab_DoubleEG_RunB.root",           // 0
-	"output_data/saveFile_EE_NoPVz_crab_DoubleEG_RunC.root",           // 1
-	"output_data/saveFile_EE_NoPVz_crab_DoubleEG_RunD.root",           // 2
-	"output_data/saveFile_EE_NoPVz_crab_DoubleEG_RunE.root",           // 3
-	"output_data/saveFile_EE_NoPVz_crab_DoubleEG_RunF.root",           // 4
-	"output_data/saveFile_EE_NoPVz_crab_DoubleEG_RunG.root",           // 5
-	"output_data/saveFile_EE_NoPVz_crab_DoubleEG_RunHver2.root",       // 6
-	"output_data/saveFile_EE_NoPVz_crab_DoubleEG_RunHver3.root"       // 7
+	"output_data/saveFile_EE_NoPVz_WithDressed_crab_DoubleEG_RunB.root",           // 0
+	"output_data/saveFile_EE_NoPVz_WithDressed_crab_DoubleEG_RunC.root",           // 1
+	"output_data/saveFile_EE_NoPVz_WithDressed_crab_DoubleEG_RunD.root",           // 2
+	"output_data/saveFile_EE_NoPVz_WithDressed_crab_DoubleEG_RunE.root",           // 3
+	"output_data/saveFile_EE_NoPVz_WithDressed_crab_DoubleEG_RunF.root",           // 4
+	"output_data/saveFile_EE_NoPVz_WithDressed_crab_DoubleEG_RunG.root",           // 5
+	"output_data/saveFile_EE_NoPVz_WithDressed_crab_DoubleEG_RunHver2.root",       // 6
+	"output_data/saveFile_EE_NoPVz_WithDressed_crab_DoubleEG_RunHver3.root"       // 7
 };
 
 vector<TString> file_ew= {
-	"output_data/saveFile_EE_NoPVz_WW.root",
-	"output_data/saveFile_EE_NoPVz_WZ.root",
-	"output_data/saveFile_EE_NoPVz_ZZ.root",
-	"output_data/saveFile_EE_NoPVz_DYLL_M10to50_TauTau.root",
-	"output_data/saveFile_EE_NoPVz_DYLL_M50to100_TauTau.root",
-	"output_data/saveFile_EE_NoPVz_DYLL_M100to200_TauTau.root",
-	"output_data/saveFile_EE_NoPVz_DYLL_M200to400_TauTau.root",
-	"output_data/saveFile_EE_NoPVz_DYLL_M400to500_TauTau.root",
-	"output_data/saveFile_EE_NoPVz_DYLL_M500to700_TauTau.root",
-	"output_data/saveFile_EE_NoPVz_DYLL_M700to800_TauTau.root",
-	"output_data/saveFile_EE_NoPVz_DYLL_M800to1000_TauTau.root",
-	"output_data/saveFile_EE_NoPVz_DYLL_M1000to1500_TauTau.root",
-	"output_data/saveFile_EE_NoPVz_DYLL_M1500to2000_TauTau.root",
-	"output_data/saveFile_EE_NoPVz_DYLL_M2000to3000_TauTau.root"
+	"output_data/saveFile_EE_NoPVz_WithDressed_WW.root",
+	"output_data/saveFile_EE_NoPVz_WithDressed_WZ.root",
+	"output_data/saveFile_EE_NoPVz_WithDressed_ZZ.root",
+	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M10to50_TauTau.root",
+	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M50to100_TauTau.root",
+	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M100to200_TauTau.root",
+	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M200to400_TauTau.root",
+	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M400to500_TauTau.root",
+	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M500to700_TauTau.root",
+	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M700to800_TauTau.root",
+	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M800to1000_TauTau.root",
+	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M1000to1500_TauTau.root",
+	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M1500to2000_TauTau.root",
+	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M2000to3000_TauTau.root"
 };
 
 vector<TString> file_DYLL = {
-	"output_data/saveFile_EE_NoPVz_DYLL_M10to50_EE.root",
-	"output_data/saveFile_EE_NoPVz_DYLL_M50to100_EE.root",
-	"output_data/saveFile_EE_NoPVz_DYLL_M100to200_EE.root",
-	"output_data/saveFile_EE_NoPVz_DYLL_M200to400_EE.root",
-	"output_data/saveFile_EE_NoPVz_DYLL_M400to500_EE.root",
-	"output_data/saveFile_EE_NoPVz_DYLL_M500to700_EE.root",
-	"output_data/saveFile_EE_NoPVz_DYLL_M700to800_EE.root",
-	"output_data/saveFile_EE_NoPVz_DYLL_M800to1000_EE.root",
-	"output_data/saveFile_EE_NoPVz_DYLL_M1000to1500_EE.root",
-	"output_data/saveFile_EE_NoPVz_DYLL_M1500to2000_EE.root",
-	"output_data/saveFile_EE_NoPVz_DYLL_M2000to3000_EE.root"
+	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M10to50_EE.root",
+	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M50to100_EE.root",
+	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M100to200_EE.root",
+	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M200to400_EE.root",
+	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M400to500_EE.root",
+	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M500to700_EE.root",
+	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M700to800_EE.root",
+	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M800to1000_EE.root",
+	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M1000to1500_EE.root",
+	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M1500to2000_EE.root",
+	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M2000to3000_EE.root"
 };
 
 vector<TString> file_top = {
-	"output_data/saveFile_EE_NoPVz_ST_tW.root",
-	"output_data/saveFile_EE_NoPVz_ST_tbarW.root",
-	"output_data/saveFile_EE_NoPVz_ttbar_M0to700.root",
-	"output_data/saveFile_EE_NoPVz_ttbar_M700to1000.root",
-	"output_data/saveFile_EE_NoPVz_ttbar_M1000toInf.root"
+	"output_data/saveFile_EE_NoPVz_WithDressed_ST_tW.root",
+	"output_data/saveFile_EE_NoPVz_WithDressed_ST_tbarW.root",
+	"output_data/saveFile_EE_NoPVz_WithDressed_ttbar_M0to700.root",
+	"output_data/saveFile_EE_NoPVz_WithDressed_ttbar_M700to1000.root",
+	"output_data/saveFile_EE_NoPVz_WithDressed_ttbar_M1000toInf.root"
 };
 
 vector<TString> file_Fake = {
-	"output_data/saveFile_EE_NoPVz_WJetsToLNu_amcatnlo.root",
-	//"output_data/saveFile_EE_NoPVz_WJetsToLNu_amcatnlo_ext.root"
-	"output_data/saveFile_EE_NoPVz_WJetsToLNu_amcatnlo_ext2v5.root"
+	"output_data/saveFile_EE_NoPVz_WithDressed_WJetsToLNu_amcatnlo.root",
+	"output_data/saveFile_EE_NoPVz_WithDressed_WJetsToLNu_amcatnlo_ext.root",
+	"output_data/saveFile_EE_NoPVz_WithDressed_WJetsToLNu_amcatnlo_ext2v5.root"
+};
+
+vector<TString> file_QCD = {
+	"output_data/saveFile_EE_NoPVz_WithDressed_QCDEMEnriched_Pt20to30.root",       
+	"output_data/saveFile_EE_NoPVz_WithDressed_QCDEMEnriched_Pt30to50.root",       
+	"output_data/saveFile_EE_NoPVz_WithDressed_QCDEMEnriched_Pt50to80.root",       
+	"output_data/saveFile_EE_NoPVz_WithDressed_QCDEMEnriched_Pt50to80_ext1.root",  
+	"output_data/saveFile_EE_NoPVz_WithDressed_QCDEMEnriched_Pt80to120.root",      
+	"output_data/saveFile_EE_NoPVz_WithDressed_QCDEMEnriched_Pt80to120_ext1.root", 
+	"output_data/saveFile_EE_NoPVz_WithDressed_QCDEMEnriched_Pt120to170.root",     
+	"output_data/saveFile_EE_NoPVz_WithDressed_QCDEMEnriched_Pt120to170_ext1.root",
+	"output_data/saveFile_EE_NoPVz_WithDressed_QCDEMEnriched_Pt170to300.root",     
+	"output_data/saveFile_EE_NoPVz_WithDressed_QCDEMEnriched_Pt300toInf.root"      
 };
 
 enum Variable{
@@ -100,6 +113,10 @@ void MakePlots(Variable var)
 	TH1D*hEW = GetHistogram(file_ew,plotProperties.at(0));
 	hEW->SetFillColor(kRed+2);
 	hEW->SetLineColor(kRed+4);
+	// QCD
+	TH1D*hQCD = GetHistogram(file_QCD,plotProperties.at(0));
+	hQCD->SetFillColor(kGreen+2);
+	hQCD->SetLineColor(kGreen+4);
 
 	// Total MC sum
 	TString hSumName = "hSum";
@@ -108,6 +125,7 @@ void MakePlots(Variable var)
 	hSum->Add(hTops);
 	hSum->Add(hFake);
 	hSum->Add(hEW);
+	hSum->Add(hQCD);
 
 	// Some samples can have negative bin contents due to weightings
 	// Set any negative bins to zero
@@ -117,12 +135,14 @@ void MakePlots(Variable var)
 		if(hTops->GetBinContent(i)<0) hTops->SetBinContent(i,0);
 		if(hFake->GetBinContent(i)<0) hFake->SetBinContent(i,0);
 		if(hEW->GetBinContent(i)<0) hEW->SetBinContent(i,0);
+		if(hQCD->GetBinContent(i)<0) hQCD->SetBinContent(i,0);
 	}// end loop over bins
 
 	// Place signal and background into a stack
 	TString stackName = "hStack";
 	stackName += plotProperties.at(0);
 	THStack*hStack = new THStack(stackName,"");
+	hStack->Add(hQCD);
 	hStack->Add(hFake);
 	hStack->Add(hEW);
 	hStack->Add(hTops);
@@ -174,6 +194,7 @@ void MakePlots(Variable var)
 	legend->AddEntry(hTops,"t#bar{t}+tW+#bar{t}W");
 	legend->AddEntry(hEW,"diboson + #gamma^{*}/Z #rightarrow #tau^{-}#tau^{+}");
 	legend->AddEntry(hFake,"W+Jets");
+	legend->AddEntry(hQCD,"QCD");
 	legend->Draw("same");
 
 	// Stack properties
@@ -215,7 +236,7 @@ void MakePlots(Variable var)
 	line->Draw("same");
 	canvas->Update();
 
-	TString saveName = "plots/dataVsMC_EE_NoPVz_";
+	TString saveName = "plots/dataVsMC_EE_NoPVz_WithDressed_";
 	saveName += plotProperties.at(0);
 	saveName += ".png";
 	canvas->SaveAs(saveName);
