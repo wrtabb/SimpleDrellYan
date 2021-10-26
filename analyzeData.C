@@ -918,14 +918,22 @@ std::vector<TLorentzVector> GetDressedLeptons(int &idxDressedLead,int &idxDresse
 	TLorentzVector dressed1;
 	TLorentzVector dressed2;
 
-	// Electron loop
+	// loop over electrons and select two post-fsr gen-level electrons
 	for(int iLep=0;iLep<GENnPair;iLep++){
 		for(int jLep=iLep+1;jLep<GENnPair;jLep++){
+			
+			// require that they both be electrons
 			if(!(abs(GENLepton_ID[iLep])==11 && abs(GENLepton_ID[jLep])==11))
 				continue;
+		
+			// require that they have opposite charge
 			if(GENLepton_ID[iLep]*GENLepton_ID[jLep]>0) continue;
-			if(GENLepton_fromDressedProcessFinalState[iLep]==1 && 
-			   GENLepton_fromDressedProcessFinalState[jLep]==1){
+
+			// require that they be post-fsr
+			if(GENLepton_fromHardProcessFinalState[iLep]==1 && 
+			   GENLepton_fromHardProcessFinalState[jLep]==1){
+
+				// determine which electron is lead and sub-lead
 				if(GENLepton_pT[iLep] > GENLepton_pT[jLep]){
 					idxDressedLead = iLep;
 					idxDressedSub = jLep;
@@ -966,8 +974,11 @@ std::vector<TLorentzVector> GetDressedLeptons(int &idxDressedLead,int &idxDresse
 
 	// Photon loop
 	for(int iPho=0;iPho<nGenOthers;iPho++){
+		
+		// require that they be photons and are prompt final state
 		if(abs(GenOthers_ID[iPho])!=22 ||
 		   GenOthers_isPromptFinalState[iPho]!=1) continue;
+
 			// location of photon
 			etaPho = GenOthers_eta[iPho];
 			phiPho = GenOthers_phi[iPho];
