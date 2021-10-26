@@ -364,6 +364,9 @@ void analyzeData(TString fileName)
 	TH2D*hMatrixRapidityHard;
 	TH2D*hMatrixRapidityDressed;
 
+	TH2D*hDressedVsHard;
+        TH2D*hDressedVsFSR;
+
 	// Get histograms needed for weights and scale factors
 	TFile*fRecoSF  = new TFile("data/Reco_SF.root");
 	TFile*fMedIDSF = new TFile("data/MediumID_SF.root");
@@ -433,6 +436,12 @@ void analyzeData(TString fileName)
 		TH2D(matrixNameRapidityHard,"",100,-2.5,2.5,200,-2.5,2.5); 
 	hMatrixRapidityDressed = new 
 		TH2D(matrixNameRapidityDressed,"",100,-2.5,2.5,200,-2.5,2.5); 
+
+	// Define dressed vs hard and fsr histograms
+	TString DressedVsHard = "histDressedVsHard";
+        TString DressedVsFSR  = "histDressedVsFSR";
+        hDressedVsHard = new TH2D(DressedVsHard,"",nMassBins,massbins,nMassBins,massbins);
+        hDressedVsFSR  = new TH2D(DressedVsFSR,"",nMassBins,massbins,nMassBins,massbins);;
 
 	Long64_t nEntries = chain->GetEntries();
 	cout << "Loading " << fileName << endl;
@@ -762,6 +771,10 @@ void analyzeData(TString fileName)
 		hMatrixRapidityDressed->Fill(rapidityDressed,rapidityReco,recoWeight);
 		hMatrixRapidityDressed->Fill(rapidityDressed,rapidityReco,recoWeight*(1-sfWeight));
 
+		// Fill dressedVs histograms
+		hDressedVsHard->Fill(invMassDressed,invMassHard,hardWeight);
+		//hDressedVsFSR ->Fill(invMassDressed,invMassFSR);
+		
 	}// end loop over entries
 
 	// Save results to output file
@@ -786,6 +799,8 @@ void analyzeData(TString fileName)
 	hMatrixInvMassDressed->Write();
 	hMatrixRapidityHard->Write();
 	hMatrixRapidityDressed->Write();	
+	hDressedVsHard->Write();
+	//hDressedVsFSR->Write();
 	file->Close();
 }
 
