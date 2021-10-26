@@ -822,7 +822,7 @@ void analyzeData(TString fileName)
 	}// end loop over entries
 
 	// Save results to output file
-	TString saveName = "output_data/saveFile_MuMu_";
+	TString saveName = "output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_";
 	saveName += fileName;
 	saveName += ".root";
 	TFile*file;
