@@ -614,9 +614,13 @@ void analyzeData(TString fileName)
 			phiHardLead = GENLepton_phi[idxHardLead];
 			phiHardSub  = GENLepton_phi[idxHardSub];
 		}
-		bool passHardSelection = PassDileptonSelection(etaHardLead,etaHardSub,
-							       ptHardLead,ptHardSub,
-							       idxHardLead,idxHardSub);
+		bool passHardSelection = false;
+		if(ptHardLead >=0 || ptHardSub >= 0 || etaHardLead > -3 ||
+		   etaHardSub > -3 || phiHardLead > -100 || phiHardSub > -100){
+			passHardSelection = PassDileptonSelection(etaHardLead,etaHardSub,
+					   		          ptHardLead,ptHardSub,
+							          idxHardLead,idxHardSub);
+		}
 
 		// Get Hard Variables
 		vector<double> hardVariables;
@@ -637,26 +641,38 @@ void analyzeData(TString fileName)
 		double leadPtDressed	= -1000;
 		double subPtDressed	= -1000;
 
-		vector<TLorentzVector> dressedLeptons = 
-			GetDressedLeptons(idxHardLead,idxHardSub);
+		int idxDressedLead = -1;
+		int idxDressedSub  = -1;
 
-		double ptDressedLead  = dressedLeptons.at(0).Pt(); 
-		double ptDressedSub   = dressedLeptons.at(1).Pt();
-		double etaDressedLead = dressedLeptons.at(0).Eta();
-		double etaDressedSub  = dressedLeptons.at(1).Eta();
-		double phiDressedLead = dressedLeptons.at(0).Phi();
-		double phiDressedSub  = dressedLeptons.at(1).Phi();
+		vector<TLorentzVector> dressedLeptons = 
+			GetDressedLeptons(idxDressedLead,idxDressedSub);
+
+		double ptDressedLead  = -1000;
+		double ptDressedSub   = -1000;
+		double etaDressedLead = -1000;
+		double etaDressedSub  = -1000;
+		double phiDressedLead = -1000;
+		double phiDressedSub  = -1000;
+
 		bool passDressedSelection = PassDileptonSelection(etaDressedLead,
 								  etaDressedSub,
 							          ptDressedLead,
 								  ptDressedSub,
-							          idxHardLead,
-								  idxHardSub);
+							          idxDressedLead,
+								  idxDressedSub);
+
+		ptDressedLead  = dressedLeptons.at(0).Pt(); 
+		ptDressedSub   = dressedLeptons.at(1).Pt();
+		etaDressedLead = dressedLeptons.at(0).Eta();
+		etaDressedSub  = dressedLeptons.at(1).Eta();
+		phiDressedLead = dressedLeptons.at(0).Phi();
+		phiDressedSub  = dressedLeptons.at(1).Phi();
 
 		// Get Dressed Variables
 		vector<double> dressedVariables;
 		dressedVariables = GetVariables(etaDressedLead,etaDressedSub,ptDressedLead,
 					        ptDressedSub,phiDressedLead,phiDressedSub);
+
 
 		if(passDressedSelection){
 			invMassDressed	= dressedVariables.at(0);
@@ -843,27 +859,38 @@ bool GetRecoLeptons(int &idxRecoLead, int &idxRecoSub)
 
 bool GetHardLeptons(int &idxHardLead,int &idxHardSub)
 {
-	for(int kLep=0;kLep<GENnPair;kLep++){
-		for(int lLep=kLep+1;lLep<GENnPair;lLep++){
-			if(!(abs(GENLepton_ID[kLep])==11 && abs(GENLepton_ID[lLep])==11))
+	int nHardLeptons = 0;
+	for(int iLep=0;iLep<GENnPair;iLep++){
+		for(int jLep=iLep+1;jLep<GENnPair;jLep++){
+			if(!(abs(GENLepton_ID[iLep])==11 && abs(GENLepton_ID[jLep])==11))
 				continue;
-			if(GENLepton_ID[kLep]*GENLepton_ID[lLep]>0) continue;
-			if(GENLepton_isHardProcess[kLep]==1 && 
-			   GENLepton_isHardProcess[lLep]==1){
-				if(GENLepton_pT[kLep] > GENLepton_pT[lLep]){
-					idxHardLead = kLep;
-					idxHardSub = lLep;
+			if(GENLepton_ID[iLep]*GENLepton_ID[jLep]>0) continue;
+			if(GENLepton_isHardProcess[iLep]==1 && 
+			   GENLepton_isHardProcess[jLep]==1){
+				if(GENLepton_pT[iLep] > GENLepton_pT[jLep]){
+					idxHardLead = iLep;
+					idxHardSub = jLep;
+					nHardLeptons++;
 				}// end if iLep is leading electron
 				else{
-					idxHardLead = lLep;
-					idxHardSub = kLep;
+					idxHardLead = jLep;
+					idxHardSub = iLep;
+					nHardLeptons++;
 				}// end if jLep is leading electron
 			}// end if hard process
 		}//end inner loop over gen leptons
 	}//end outer loop over gen leptons
 
-	if(idxHardLead>-1 && idxHardSub>-1) return true;
-	else return false;
+	if(nHardLeptons==0){
+		cout << "Event must be only mumu or tautau" << endl;
+		return false;
+	}
+	if(nHardLeptons>1){
+		cout << "Too many electrons found from hard process" << endl;
+		cout << "Very odd; this shouldn't happen" << endl;
+		return false;
+	}
+	return true;
 }// end GetHardLeptons()
 
 double GetCrossSection(TString fileName)
@@ -886,7 +913,7 @@ bool IsSampleFake(TString fileName)
         return false;
 }// end IsSampleFake()
 
-std::vector<TLorentzVector> GetDressedLeptons(int &idxHardLead,int &idxHardSub)
+std::vector<TLorentzVector> GetDressedLeptons(int &idxDressedLead,int &idxDressedSub)
 {
 	TLorentzVector dressed1;
 	TLorentzVector dressed2;
@@ -897,41 +924,41 @@ std::vector<TLorentzVector> GetDressedLeptons(int &idxHardLead,int &idxHardSub)
 			if(!(abs(GENLepton_ID[iLep])==11 && abs(GENLepton_ID[jLep])==11))
 				continue;
 			if(GENLepton_ID[iLep]*GENLepton_ID[jLep]>0) continue;
-			if(GENLepton_fromHardProcessFinalState[iLep]==1 && 
-			   GENLepton_fromHardProcessFinalState[jLep]==1){
+			if(GENLepton_fromDressedProcessFinalState[iLep]==1 && 
+			   GENLepton_fromDressedProcessFinalState[jLep]==1){
 				if(GENLepton_pT[iLep] > GENLepton_pT[jLep]){
-					idxHardLead = iLep;
-					idxHardSub = jLep;
+					idxDressedLead = iLep;
+					idxDressedSub = jLep;
 				}// end if iLep is leading electron
 				else{
-					idxHardLead = jLep;
-					idxHardSub = iLep;
+					idxDressedLead = jLep;
+					idxDressedSub = iLep;
 				}// end if jLep is leading electron
 			}// end if hard process
 		}//end inner loop over gen leptons
 	}//end outer loop over gen leptons
 
-	double px1 = GENLepton_Px[idxHardLead];
-	double px2 = GENLepton_Px[idxHardSub];
-	double py1 = GENLepton_Py[idxHardLead];
-	double py2 = GENLepton_Py[idxHardSub];
-	double pz1 = GENLepton_Pz[idxHardLead];
-	double pz2 = GENLepton_Pz[idxHardSub];
-	double E1 = GENLepton_E[idxHardLead];
-	double E2 = GENLepton_E[idxHardSub];
+	double px1 = GENLepton_Px[idxDressedLead];
+	double px2 = GENLepton_Px[idxDressedSub];
+	double py1 = GENLepton_Py[idxDressedLead];
+	double py2 = GENLepton_Py[idxDressedSub];
+	double pz1 = GENLepton_Pz[idxDressedLead];
+	double pz2 = GENLepton_Pz[idxDressedSub];
+	double E1 = GENLepton_E[idxDressedLead];
+	double E2 = GENLepton_E[idxDressedSub];
 	dressed1.SetPxPyPzE(px1,py1,pz1,E1);
 	dressed2.SetPxPyPzE(px2,py2,pz2,E2);
 
-	double eta1 = GENLepton_eta[idxHardLead];
-	double eta2 = GENLepton_eta[idxHardSub];
-	double phi1 = GENLepton_phi[idxHardLead];
-	double phi2 = GENLepton_phi[idxHardSub];
+	double eta1 = GENLepton_eta[idxDressedLead];
+	double eta2 = GENLepton_eta[idxDressedSub];
+	double phi1 = GENLepton_phi[idxDressedLead];
+	double phi2 = GENLepton_phi[idxDressedSub];
 
 	double dRMin = 0.1;
 	TLorentzVector phoVec;
 	double etaPho,phiPho;
 	double etaDiff1,phiDiff1;
-;
+
 	double etaDiff2,phiDiff2;
 	double dR1Squared,dR1;
 	double dR2Squared,dR2;
@@ -939,7 +966,7 @@ std::vector<TLorentzVector> GetDressedLeptons(int &idxHardLead,int &idxHardSub)
 
 	// Photon loop
 	for(int iPho=0;iPho<nGenOthers;iPho++){
-		if(GenOthers_ID[iPho]!=22 ||
+		if(abs(GenOthers_ID[iPho])!=22 ||
 		   GenOthers_isPromptFinalState[iPho]!=1) continue;
 			// location of photon
 			etaPho = GenOthers_eta[iPho];

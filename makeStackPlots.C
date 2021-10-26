@@ -106,26 +106,26 @@ void MakePlots(Variable var)
 	hTops->SetFillColor(kBlue+2);
 	hTops->SetLineColor(kBlue+3);
 	// W+Jets
-	TH1D*hFake = GetHistogram(file_Fake,plotProperties.at(0));
-	hFake->SetFillColor(kViolet+5);
-	hFake->SetLineColor(kViolet+3);
+//	TH1D*hFake = GetHistogram(file_Fake,plotProperties.at(0));
+//	hFake->SetFillColor(kViolet+5);
+//	hFake->SetLineColor(kViolet+3);
 	// EW
 	TH1D*hEW = GetHistogram(file_ew,plotProperties.at(0));
 	hEW->SetFillColor(kRed+2);
 	hEW->SetLineColor(kRed+4);
 	// QCD
-	TH1D*hQCD = GetHistogram(file_QCD,plotProperties.at(0));
-	hQCD->SetFillColor(kGreen+2);
-	hQCD->SetLineColor(kGreen+4);
+//	TH1D*hQCD = GetHistogram(file_QCD,plotProperties.at(0));
+//	hQCD->SetFillColor(kGreen+2);
+//	hQCD->SetLineColor(kGreen+4);
 
 	// Total MC sum
 	TString hSumName = "hSum";
 	hSumName += plotProperties.at(0); 
 	TH1D*hSum = (TH1D*)hDYLL->Clone(hSumName);
 	hSum->Add(hTops);
-	hSum->Add(hFake);
+//	hSum->Add(hFake);
 	hSum->Add(hEW);
-	hSum->Add(hQCD);
+//	hSum->Add(hQCD);
 
 	// Some samples can have negative bin contents due to weightings
 	// Set any negative bins to zero
@@ -133,17 +133,17 @@ void MakePlots(Variable var)
 	for(int i=1;i<nBins+1;i++){
 		if(hDYLL->GetBinContent(i)<0) hDYLL->SetBinContent(i,0);
 		if(hTops->GetBinContent(i)<0) hTops->SetBinContent(i,0);
-		if(hFake->GetBinContent(i)<0) hFake->SetBinContent(i,0);
+//		if(hFake->GetBinContent(i)<0) hFake->SetBinContent(i,0);
 		if(hEW->GetBinContent(i)<0) hEW->SetBinContent(i,0);
-		if(hQCD->GetBinContent(i)<0) hQCD->SetBinContent(i,0);
+//		if(hQCD->GetBinContent(i)<0) hQCD->SetBinContent(i,0);
 	}// end loop over bins
 
 	// Place signal and background into a stack
 	TString stackName = "hStack";
 	stackName += plotProperties.at(0);
 	THStack*hStack = new THStack(stackName,"");
-	hStack->Add(hQCD);
-	hStack->Add(hFake);
+//	hStack->Add(hQCD);
+//	hStack->Add(hFake);
 	hStack->Add(hEW);
 	hStack->Add(hTops);
 	hStack->Add(hDYLL);
@@ -193,8 +193,8 @@ void MakePlots(Variable var)
 	legend->AddEntry(hDYLL,"#gamma^{*}/Z #rightarrow e^{-}e^{+}");
 	legend->AddEntry(hTops,"t#bar{t}+tW+#bar{t}W");
 	legend->AddEntry(hEW,"diboson + #gamma^{*}/Z #rightarrow #tau^{-}#tau^{+}");
-	legend->AddEntry(hFake,"W+Jets");
-	legend->AddEntry(hQCD,"QCD");
+//	legend->AddEntry(hFake,"W+Jets");
+//	legend->AddEntry(hQCD,"QCD");
 	legend->Draw("same");
 
 	// Stack properties
@@ -236,7 +236,7 @@ void MakePlots(Variable var)
 	line->Draw("same");
 	canvas->Update();
 
-	TString saveName = "plots/dataVsMC_EE_NoPVz_WithDressed_";
+	TString saveName = "plots/dataVsMC_EE_NoPVz_WithDressed_NoFake_NoQCD_";
 	saveName += plotProperties.at(0);
 	saveName += ".png";
 	canvas->SaveAs(saveName);
