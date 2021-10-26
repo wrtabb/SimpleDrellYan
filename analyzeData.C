@@ -560,7 +560,7 @@ void analyzeData(TString fileName)
 		int idxRecoSub  = -1;
 
 		// Find lead pT electron
-		if(passHLT && Nelectrons==2){
+		if(passHLT){
 			bool recoLep = GetRecoLeptons(idxRecoLead,idxRecoSub);
 			if(recoLep){
 				ptRecoLead  = Electron_pT[idxRecoLead];
@@ -686,6 +686,7 @@ void analyzeData(TString fileName)
 		double pvzWeight = 1.0;
 		double puWeight = 1.0;
 		double prefireWeight = 1.0;
+		double genWeight = 1.0;
 
 		double pt1  = ptRecoLead;
 		double pt2  = ptRecoSub;
@@ -728,7 +729,8 @@ void analyzeData(TString fileName)
 
 		double recoWeight = 
 			xSecWeight*genWeight*sfWeight*pvzWeight*puWeight*prefireWeight;
-		double hardWeight = xSecWeight/nEntries;
+		double hardWeight = 
+			xSecWeight*genWeight*pvzWeight*puWeight*prefireWeight;
 
 		if(!isMC) recoWeight = 1.0;
 
@@ -839,6 +841,7 @@ vector<double> GetVariables(double eta1,double eta2,double pt1,double pt2,double
 
 bool GetRecoLeptons(int &idxRecoLead, int &idxRecoSub)
 {
+	int nDileptons = 0;
 	for(int iEle=0;iEle<Nelectrons;iEle++){
 		if(!Electron_passMediumID[iEle]) continue;
 		for(int jEle=iEle+1;jEle<Nelectrons;jEle++){
@@ -851,9 +854,10 @@ bool GetRecoLeptons(int &idxRecoLead, int &idxRecoSub)
 				idxRecoLead = jEle;
 				idxRecoSub = iEle;
 			}// end if jEle is leading electron
+			nDileptons++;
 		}// end inner reco lepton loop
 	}// end reco lepton Loop
-	if(idxRecoLead>-1 && idxRecoSub>-1) return true;
+	if(nDileptons==1) return true;
 	else return false;
 }// end GetRecoLeptons()
 
@@ -882,7 +886,6 @@ bool GetHardLeptons(int &idxHardLead,int &idxHardSub)
 	}//end outer loop over gen leptons
 
 	if(nHardLeptons==0){
-		cout << "Event must be only mumu or tautau" << endl;
 		return false;
 	}
 	if(nHardLeptons>1){
