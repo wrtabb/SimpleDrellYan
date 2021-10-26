@@ -578,8 +578,6 @@ void analyzeData(TString fileName)
 	// Loop over events
 	for(Long64_t iEntry=0;iEntry<nEntries;iEntry++){
 		chain->GetEntry(iEntry);
-		if(nMuon<2) continue; //temporary measure, need to select two muons
-
 		// Check if event passes HLT cut
 		TString trigName;
 		int trigNameSize = pHLT_trigName->size();
@@ -927,6 +925,8 @@ bool GetRecoLeptons(int &idxRecoLead, int &idxRecoSub)
 	double pT;  
 	double iso_dBeta;
 
+	int nDileptons = 0;
+
 	// NOTE: Need to choose two muons by smallest vertex chi2
 	// Choosing highest two pT is a temporary placeholder 
 	// Add angular cut for muons
@@ -962,15 +962,17 @@ bool GetRecoLeptons(int &idxRecoLead, int &idxRecoSub)
 				idxRecoSub  = iMu;
 
 			} 
+			nDileptons++;
 		}//end inner muon loop
 	}// end outer muon loop 
 
-	if(idxRecoLead<0 || idxRecoSub<0) return false; //two muons were not selected
+	if(nDileptons!=1) return false; //two muons were not selected
 	else return true;
 }// end GetRecoLeptons()
 
 bool GetHardLeptons(int &idxHardLead,int &idxHardSub)
 {
+	int nDileptons = 0;
         for(int iLep=0;iLep<GENnPair;iLep++){
                 for(int jLep=iLep+1;jLep<GENnPair;jLep++){
                         if(!(abs(GENLepton_ID[iLep])==13 && abs(GENLepton_ID[jLep])==13))
@@ -986,11 +988,12 @@ bool GetHardLeptons(int &idxHardLead,int &idxHardSub)
                                         idxHardLead = jLep;
                                         idxHardSub = iLep;
                                 }// end if jLep is leading electron
+				nDileptons++;
                         }// end if hard process
                 }//end inner loop over gen leptons
         }//end outer loop over gen leptons
 
-        if(idxHardLead>-1 && idxHardSub>-1) return true;
+        if(nDileptons==1) return true;
         else return false;
 }// end GetHardLeptons()
 
