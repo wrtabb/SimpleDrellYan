@@ -15,6 +15,16 @@ vector<TString> file_DYLL = {
         "output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M2000to3000_EE.root"
 };
 
+vector<TString> file_dataEE = {
+	"output_data/testLoadFromKorea_crab_DoubleEG_RunB.root",
+	"output_data/testLoadFromKorea_crab_DoubleEG_RunC.root",
+	"output_data/testLoadFromKorea_crab_DoubleEG_RunD.root",
+	"output_data/testLoadFromKorea_crab_DoubleEG_RunE.root",
+	"output_data/testLoadFromKorea_crab_DoubleEG_RunF.root",
+	"output_data/testLoadFromKorea_crab_DoubleEG_RunHver2.root",
+	"output_data/testLoadFromKorea_crab_DoubleEG_RunHver3.root"
+};
+
 void getUnfoldingHistograms()
 {
 	vector<TFile*> file;
@@ -27,7 +37,6 @@ void getUnfoldingHistograms()
 	vector<TH2D*> vRapidityMatrixHard;
 	vector<TH2D*> vRapidityMatrixDressed;
 
-
 	TH1D*hInvMassHard; 
 	TH1D*hRapidityHard;
 	TH1D*hInvMassDressed;
@@ -36,6 +45,28 @@ void getUnfoldingHistograms()
 	TH2D*hInvMassMatrixDressed;
 	TH2D*hRapidityMatrixHard;
 	TH2D*hRapidityMatrixDressed;
+
+	vector<TFile*> file_loadData;
+	vector<TH1D*> vInvMassReco;
+	vector<TH1D*> vRapidityReco;
+
+	TH1D*hInvMassReco;
+	TH1D*hRapidityReco;
+
+	int nDataFiles = file_dataEE.size();
+	for(int i=0;i<nDataFiles;i++){
+		file_loadData.push_back(new TFile(file_dataEE.at(i)));
+		if(i==0){
+			hInvMassReco = (TH1D*)file_loadData.at(i)->Get("histInvMassReco");
+			hRapidityReco = (TH1D*)file_loadData.at(i)->Get("histRapidityReco");
+		}
+		vInvMassReco.push_back((TH1D*)file_loadData.at(i)->Get("histInvMassReco"));
+		vRapidityReco.push_back((TH1D*)file_loadData.at(i)->Get("histRapidityReco"));
+		if(i>0){
+			hInvMassReco->Add(vInvMassReco.at(i));
+			hRapidityReco->Add(vRapidityReco.at(i));
+		}
+	}// end loop over data files
 
 	int nFiles = file_DYLL.size();
 	for(int i=0;i<nFiles;i++){
@@ -77,15 +108,33 @@ void getUnfoldingHistograms()
 	c1->SetLogz();
 	c1->SetGrid();
 	hInvMassMatrixHard->Draw("colz");
-	c1->SaveAs("plots/testInvMassHardMigrationMatrix.png");
+	c1->SaveAs("plots/migrationMatrixHard.png");
 
 	TCanvas*c2=new TCanvas("c2","",0,0,1000,1000);
 	c2->SetLogx();
 	c2->SetLogy();
+	c2->SetLogz();
 	c2->SetGrid();
-	hInvMassDressed->SetMarkerStyle(20);
-	hInvMassDressed->SetMarkerColor(kBlack);
-	hInvMassDressed->Draw("pe");
-	//hInvMassHard->Draw("hist,same");
-	c2->SaveAs("plots/testInvMassHardVsDressed.png");
+	hInvMassMatrixDressed->Draw("colz");
+	c2->SaveAs("plots/migrationMatrixHard.png");
+
+	TCanvas*c3=new TCanvas("c3","",0,0,1000,1000);
+	c3->SetLogx();
+	c3->SetLogy();
+	c3->SetGrid();
+	hInvMassDressed->SetLineColor(kRed);
+	hInvMassHard->SetLineColor(kBlue);
+	hInvMassReco->SetMarkerStyle(20);
+	hInvMassReco->SetMarkerColor(kBlack);
+	hInvMassHard->Draw("hist");
+	hInvMassDressed->Draw("hist,same");
+	hInvMassReco->Draw("pe,same");
+	c3->SaveAs("plots/testInvMassHardVsDressed.png");
+
+	TFile*save_file = new TFile("data/unfoldingHistograms.root","recreate");
+	hInvMassMatrixDressed->Write();
+	hInvMassDressed->Write();
+	hInvMassReco->Write();
+	save_file->Close();
+	
 }

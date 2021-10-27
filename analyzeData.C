@@ -8,7 +8,7 @@
 #include <TLorentzVector.h>
 #include <TH2F.h>
 #include <TH1F.h>
-#include <TCanvas.h>
+
 #include <iostream>
 
 //-----Functions-----//
@@ -784,12 +784,8 @@ void analyzeData(TString fileName)
 		
 	}// end loop over entries
 
-TCanvas*c1=new TCanvas("c1","",0,0,1000,1000);
-c1->SetLogy();
-c1->SetGrid();
-c1->SaveAs("tempPt.png");
 	// Save results to output file
-	TString saveName = "output_data/saveFile_EE_NoPVz_WithDressed_";
+	TString saveName = "output_data/saveFile_EE_NoPVz_";
 	saveName += fileName;
 	saveName += ".root";
 	TFile*file;
