@@ -1,6 +1,8 @@
 
 vector<TString> file_DYLL = {
-        "output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M10to50_EE.root",
+        "output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M10to50_EE_v1.root",
+        "output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M10to50_EE_v2.root",
+        "output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M10to50_EE_ext1v1.root",
         "output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M50to100_EE.root",
         "output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M100to200_EE.root",
         "output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M200to400_EE.root",
@@ -84,6 +86,6 @@ void getUnfoldingHistograms()
 	hInvMassDressed->SetMarkerStyle(20);
 	hInvMassDressed->SetMarkerColor(kBlack);
 	hInvMassDressed->Draw("pe");
-	hInvMassHard->Draw("hist");
+	//hInvMassHard->Draw("hist,same");
 	c2->SaveAs("plots/testInvMassHardVsDressed.png");
 }

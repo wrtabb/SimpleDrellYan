@@ -8,12 +8,13 @@
 #include <TLorentzVector.h>
 #include <TH2F.h>
 #include <TH1F.h>
+#include <TCanvas.h>
 #include <iostream>
 
 //-----Functions-----//
 double GetCrossSection(TString fileName);
 bool IsSampleFake(TString fileName);
-bool PassDileptonSelection(double eta1,double eta2,double pt1,double pt2,int idx1,int idx2);
+bool PassDileptonSelection(double eta1,double eta2,double pt1,double pt2);
 vector<double> GetVariables(double eta1,double eta2,double pt1,double pt2,double phi1,
 			    double phi2);
 bool GetRecoLeptons(int &idxRecoLead, int &idxRecoSub);
@@ -34,7 +35,9 @@ vector<TString> files= {
 	"crab_DoubleEG_RunHver3",	// 7
 
 	// MC Signal
-	"DYLL_M10to50_EE",		// 8
+	"DYLL_M10to50_EE_v1",		// 8
+	"DYLL_M10to50_EE_v2",		// 8
+	"DYLL_M10to50_EE_ext1v1",	// 8
 	"DYLL_M50to100_EE",		// 9
 	"DYLL_M100to200_EE",		// 10
 	"DYLL_M200to400_EE",		// 11
@@ -57,7 +60,9 @@ vector<TString> files= {
 	"WW",				// 24
 	"WZ",				// 25
 	"ZZ",				// 26
-	"DYLL_M10to50_TauTau",		// 27
+	"DYLL_M10to50_TauTau_v1",	// 27
+	"DYLL_M10to50_TauTau_v2",	// 27
+	"DYLL_M10to50_TauTau_ext1v1",	// 27
 	"DYLL_M50to100_TauTau",		// 28
 	"DYLL_M100to200_TauTau",	// 29
 	"DYLL_M200to400_TauTau",	// 30
@@ -89,7 +94,9 @@ vector<TString> files= {
 TString treeName = "recoTree/DYTree";
 vector<double> xSecVec = {
 	1,1,1,1,1,1,1,1,	//Data
-	18610.0/3,		//DYLL_10to50 v1,v2,ext1v1 combined (NLO)
+	18610.0/3,		//DYLL_10to50 v1 (NLO)
+	18610.0/3,		//DYLL_10to50 v2 (NLO)
+	18610.0/3,		//DYLL_10to50 ext1v1 (NLO)
 	1923.26,		//DYLL_50to100(NNLO)
 	78.1258,		//DYLL_100to200(NNLO)
 	2.73309,		//DYLL_200to400(NNLO) 
@@ -157,8 +164,8 @@ double GENLepton_Py[MPSIZE];
 double GENLepton_Pz[MPSIZE];
 double GENLepton_E[MPSIZE];
 int GENLepton_ID[MPSIZE];
-bool GENLepton_isHardProcess[MPSIZE];
-bool GENLepton_fromHardProcessFinalState[MPSIZE];
+int GENLepton_isHardProcess[MPSIZE];
+int GENLepton_fromHardProcessFinalState[MPSIZE];
 int nGenOthers;
 double GenOthers_phi[MPSIZE];
 double GenOthers_eta[MPSIZE];
@@ -479,6 +486,10 @@ void analyzeData(TString fileName)
 		chain->SetBranchAddress("_prefiringweight", &_prefiringweight,
 					&b__prefiringweight);
 		chain->SetBranchAddress("GENnPair", &GENnPair, &b_GENnPair);
+		chain->SetBranchAddress("GENLepton_Px",&GENLepton_Px,&b_GENLepton_Px);
+		chain->SetBranchAddress("GENLepton_Py",&GENLepton_Py,&b_GENLepton_Py);
+		chain->SetBranchAddress("GENLepton_Pz",&GENLepton_Pz,&b_GENLepton_Pz);
+		chain->SetBranchAddress("GENLepton_E",&GENLepton_E,&b_GENLepton_E);
 		chain->SetBranchAddress("GENLepton_eta", &GENLepton_eta, 
 					&b_GENLepton_eta);
 		chain->SetBranchAddress("GENLepton_phi",&GENLepton_phi, 
@@ -583,8 +594,7 @@ void analyzeData(TString fileName)
 
 		// Determine if reco leptons pass selection
 		bool passRecoSelection = PassDileptonSelection(etaRecoLead,etaRecoSub,
-							       ptRecoLead,ptRecoSub,
-							       idxRecoLead,idxRecoSub);
+							       ptRecoLead,ptRecoSub);
 		// Get Reco Variables
 		vector<double> recoVariables;
 		recoVariables = GetVariables(etaRecoLead,etaRecoSub,ptRecoLead,ptRecoSub,
@@ -627,8 +637,7 @@ void analyzeData(TString fileName)
 		if(ptHardLead >=0 || ptHardSub >= 0 || etaHardLead > -3 ||
 		   etaHardSub > -3 || phiHardLead > -100 || phiHardSub > -100){
 			passHardSelection = PassDileptonSelection(etaHardLead,etaHardSub,
-					   		          ptHardLead,ptHardSub,
-							          idxHardLead,idxHardSub);
+					   		          ptHardLead,ptHardSub);
 		}
 
 		// Get Hard Variables
@@ -663,19 +672,17 @@ void analyzeData(TString fileName)
 		double phiDressedLead = -1000;
 		double phiDressedSub  = -1000;
 
-		bool passDressedSelection = PassDileptonSelection(etaDressedLead,
-								  etaDressedSub,
-							          ptDressedLead,
-								  ptDressedSub,
-							          idxDressedLead,
-								  idxDressedSub);
-
 		ptDressedLead  = dressedLeptons.at(0).Pt(); 
 		ptDressedSub   = dressedLeptons.at(1).Pt();
 		etaDressedLead = dressedLeptons.at(0).Eta();
 		etaDressedSub  = dressedLeptons.at(1).Eta();
 		phiDressedLead = dressedLeptons.at(0).Phi();
 		phiDressedSub  = dressedLeptons.at(1).Phi();
+
+		bool passDressedSelection = PassDileptonSelection(etaDressedLead,
+								  etaDressedSub,
+							          ptDressedLead,
+								  ptDressedSub);
 
 		// Get Dressed Variables
 		vector<double> dressedVariables;
@@ -777,6 +784,10 @@ void analyzeData(TString fileName)
 		
 	}// end loop over entries
 
+TCanvas*c1=new TCanvas("c1","",0,0,1000,1000);
+c1->SetLogy();
+c1->SetGrid();
+c1->SaveAs("tempPt.png");
 	// Save results to output file
 	TString saveName = "output_data/saveFile_EE_NoPVz_WithDressed_";
 	saveName += fileName;
@@ -805,9 +816,8 @@ void analyzeData(TString fileName)
 }
 
 
-bool PassDileptonSelection(double eta1,double eta2,double pt1,double pt2,int idx1,int idx2)
+bool PassDileptonSelection(double eta1,double eta2,double pt1,double pt2)
 {
-	if(idx1<0 || idx2<0) return false;
 	if(abs(eta1)>etaGapLow && abs(eta1)<etaGapHigh) return false;
 	if(abs(eta2)>etaGapLow && abs(eta2)<etaGapHigh) return false;
 	if(abs(eta1)>etaHigh||abs(eta2)>etaHigh) return false;
@@ -935,6 +945,7 @@ std::vector<TLorentzVector> GetDressedLeptons(int &idxDressedLead,int &idxDresse
 {
 	TLorentzVector dressed1;
 	TLorentzVector dressed2;
+	int nDileptons=0;
 
 	// loop over electrons and select two post-fsr gen-level electrons
 	for(int iLep=0;iLep<GENnPair;iLep++){
@@ -948,19 +959,19 @@ std::vector<TLorentzVector> GetDressedLeptons(int &idxDressedLead,int &idxDresse
 			if(GENLepton_ID[iLep]*GENLepton_ID[jLep]>0) continue;
 
 			// require that they be post-fsr
-			if(GENLepton_fromHardProcessFinalState[iLep]==1 && 
-			   GENLepton_fromHardProcessFinalState[jLep]==1){
+			if(!(GENLepton_fromHardProcessFinalState[iLep]==1 && 
+			   GENLepton_fromHardProcessFinalState[jLep]==1)) continue;
 
-				// determine which electron is lead and sub-lead
-				if(GENLepton_pT[iLep] > GENLepton_pT[jLep]){
-					idxDressedLead = iLep;
-					idxDressedSub = jLep;
-				}// end if iLep is leading electron
-				else{
-					idxDressedLead = jLep;
-					idxDressedSub = iLep;
-				}// end if jLep is leading electron
-			}// end if hard process
+			// determine which electron is lead and sub-lead
+			if(GENLepton_pT[iLep] > GENLepton_pT[jLep]){
+				idxDressedLead = iLep;
+				idxDressedSub = jLep;
+			}// end if iLep is leading electron
+			else{
+				idxDressedLead = jLep;
+				idxDressedSub = iLep;
+			}// end if jLep is leading electron
+			nDileptons++;
 		}//end inner loop over gen leptons
 	}//end outer loop over gen leptons
 
@@ -981,7 +992,6 @@ std::vector<TLorentzVector> GetDressedLeptons(int &idxDressedLead,int &idxDresse
 	double phi2 = GENLepton_phi[idxDressedSub];
 
 	double dRMin = 0.1;
-	TLorentzVector phoVec;
 	double etaPho,phiPho;
 	double etaDiff1,phiDiff1;
 
@@ -991,11 +1001,12 @@ std::vector<TLorentzVector> GetDressedLeptons(int &idxDressedLead,int &idxDresse
 	double pxPho,pyPho,pzPho,EPho;
 
 	// Photon loop
-	for(int iPho=0;iPho<nGenOthers;iPho++){
-		
-		// require that they be photons and are prompt final state
-		if(abs(GenOthers_ID[iPho])!=22 ||
-		   GenOthers_isPromptFinalState[iPho]!=1) continue;
+	if(nDileptons==1){
+		for(int iPho=0;iPho<nGenOthers;iPho++){
+			
+			// require that they be photons and are prompt final state
+			if(abs(GenOthers_ID[iPho])!=22 ||
+			   GenOthers_isPromptFinalState[iPho]!=1) continue;
 
 			// location of photon
 			etaPho = GenOthers_eta[iPho];
@@ -1018,11 +1029,12 @@ std::vector<TLorentzVector> GetDressedLeptons(int &idxDressedLead,int &idxDresse
 			pyPho = GenOthers_Py[iPho];
 			pzPho = GenOthers_Pz[iPho];
 			EPho  = GenOthers_E[iPho];
+			TLorentzVector phoVec;
 			phoVec.SetPxPyPzE(pxPho,pyPho,pzPho,EPho);
 
 			// only keep photon if it is within the cone dRMin
 			if(dR1>dRMin && dR2>dRMin) continue;
-
+			
 			// associate photon with whichever electron it is closest to 
 			if(dR1<dR2){
 				dressed1 += phoVec;				
@@ -1030,12 +1042,12 @@ std::vector<TLorentzVector> GetDressedLeptons(int &idxDressedLead,int &idxDresse
 			else{
 				dressed2 += phoVec;				
 			}
-	}// end loop over photons	
+		}// end loop over photons	
+	}
 
 	vector<TLorentzVector> returnVector;
 	returnVector.push_back(dressed1);
 	returnVector.push_back(dressed2);
-
 	return returnVector;
 }// end GetDressedLeptons()
 
