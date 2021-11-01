@@ -12,9 +12,7 @@ files_to_load=(
         crab_DoubleEG_RunHver3       # 7
 
         # MC Signal
-        DYLL_M10to50_EE_v1              # 8
-        DYLL_M10to50_EE_v2              # 8
-        DYLL_M10to50_EE_ext1v1              # 8
+        DYLL_M10to50_EE              # 8
         DYLL_M50to100_EE             # 9
         DYLL_M100to200_EE            # 10
         DYLL_M200to400_EE            # 11

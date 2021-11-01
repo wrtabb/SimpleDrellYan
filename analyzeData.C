@@ -35,9 +35,7 @@ vector<TString> files= {
 	"crab_DoubleEG_RunHver3",	// 7
 
 	// MC Signal
-	"DYLL_M10to50_EE_v1",		// 8
-	"DYLL_M10to50_EE_v2",		// 8
-	"DYLL_M10to50_EE_ext1v1",	// 8
+	"DYLL_M10to50_EE",		// 8
 	"DYLL_M50to100_EE",		// 9
 	"DYLL_M100to200_EE",		// 10
 	"DYLL_M200to400_EE",		// 11
@@ -94,9 +92,7 @@ vector<TString> files= {
 TString treeName = "recoTree/DYTree";
 vector<double> xSecVec = {
 	1,1,1,1,1,1,1,1,	//Data
-	18610.0/3,		//DYLL_10to50 v1 (NLO)
-	18610.0/3,		//DYLL_10to50 v2 (NLO)
-	18610.0/3,		//DYLL_10to50 ext1v1 (NLO)
+	18610.0/3,		//DYLL_10to50 (NLO)
 	1923.26,		//DYLL_50to100(NNLO)
 	78.1258,		//DYLL_100to200(NNLO)
 	2.73309,		//DYLL_200to400(NNLO) 
@@ -400,7 +396,7 @@ void analyzeData(TString fileName)
 	TString histNamePtLeadReco = histName+"PtLeadReco";
 	TString histNamePtSubReco = histName+"PtSubReco";
 
-	hInvMassReco = new TH1D(histNameInvMassReco,"",nMassBins,massbins);
+	hInvMassReco = new TH1D(histNameInvMassReco,"",nMassBins2,massbins2);
 	hRapidityReco = new TH1D(histNameRapidityReco,"",100,-2.5,2.5);
 	hPtLeadReco = new TH1D(histNamePtLeadReco,"",100,0,500);
 	hPtSubReco = new TH1D(histNamePtSubReco,"",100,0,500);

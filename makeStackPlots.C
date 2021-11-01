@@ -1,71 +1,75 @@
 
 vector<TString> file_data = {
-	"output_data/saveFile_EE_NoPVz_WithDressed_crab_DoubleEG_RunB.root",           // 0
-	"output_data/saveFile_EE_NoPVz_WithDressed_crab_DoubleEG_RunC.root",           // 1
-	"output_data/saveFile_EE_NoPVz_WithDressed_crab_DoubleEG_RunD.root",           // 2
-	"output_data/saveFile_EE_NoPVz_WithDressed_crab_DoubleEG_RunE.root",           // 3
-	"output_data/saveFile_EE_NoPVz_WithDressed_crab_DoubleEG_RunF.root",           // 4
-	"output_data/saveFile_EE_NoPVz_WithDressed_crab_DoubleEG_RunG.root",           // 5
-	"output_data/saveFile_EE_NoPVz_WithDressed_crab_DoubleEG_RunHver2.root",       // 6
-	"output_data/saveFile_EE_NoPVz_WithDressed_crab_DoubleEG_RunHver3.root"       // 7
+	"output_data/saveFile_EE_NoPVz_crab_DoubleEG_RunB.root",           // 0
+	"output_data/saveFile_EE_NoPVz_crab_DoubleEG_RunC.root",           // 1
+	"output_data/saveFile_EE_NoPVz_crab_DoubleEG_RunD.root",           // 2
+	"output_data/saveFile_EE_NoPVz_crab_DoubleEG_RunE.root",           // 3
+	"output_data/saveFile_EE_NoPVz_crab_DoubleEG_RunF.root",           // 4
+	"output_data/saveFile_EE_NoPVz_crab_DoubleEG_RunG.root",           // 5
+	"output_data/saveFile_EE_NoPVz_crab_DoubleEG_RunHver2.root",       // 6
+	"output_data/saveFile_EE_NoPVz_crab_DoubleEG_RunHver3.root"       // 7
 };
 
 vector<TString> file_ew= {
-	"output_data/saveFile_EE_NoPVz_WithDressed_WW.root",
-	"output_data/saveFile_EE_NoPVz_WithDressed_WZ.root",
-	"output_data/saveFile_EE_NoPVz_WithDressed_ZZ.root",
-	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M10to50_TauTau.root",
-	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M50to100_TauTau.root",
-	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M100to200_TauTau.root",
-	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M200to400_TauTau.root",
-	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M400to500_TauTau.root",
-	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M500to700_TauTau.root",
-	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M700to800_TauTau.root",
-	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M800to1000_TauTau.root",
-	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M1000to1500_TauTau.root",
-	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M1500to2000_TauTau.root",
-	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M2000to3000_TauTau.root"
+	"output_data/saveFile_EE_NoPVz_WW.root",
+	"output_data/saveFile_EE_NoPVz_WZ.root",
+	"output_data/saveFile_EE_NoPVz_ZZ.root",
+/*
+	"output_data/saveFile_EE_NoPVz_DYLL_M10to50_TauTau.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M50to100_TauTau.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M100to200_TauTau.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M200to400_TauTau.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M400to500_TauTau.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M500to700_TauTau.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M700to800_TauTau.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M800to1000_TauTau.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M1000to1500_TauTau.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M1500to2000_TauTau.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M2000to3000_TauTau.root"
+*/
 };
 
 vector<TString> file_DYLL = {
-	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M10to50_EE.root",
-	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M50to100_EE.root",
-	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M100to200_EE.root",
-	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M200to400_EE.root",
-	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M400to500_EE.root",
-	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M500to700_EE.root",
-	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M700to800_EE.root",
-	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M800to1000_EE.root",
-	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M1000to1500_EE.root",
-	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M1500to2000_EE.root",
-	"output_data/saveFile_EE_NoPVz_WithDressed_DYLL_M2000to3000_EE.root"
+	"output_data/saveFile_EE_NoPVz_DYLL_M10to50_EE_v1.root",
+//	"output_data/saveFile_EE_NoPVz_DYLL_M10to50_EE_v2.root",
+//	"output_data/saveFile_EE_NoPVz_DYLL_M10to50_EE_ext1v1.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M50to100_EE.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M100to200_EE.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M200to400_EE.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M400to500_EE.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M500to700_EE.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M700to800_EE.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M800to1000_EE.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M1000to1500_EE.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M1500to2000_EE.root",
+	"output_data/saveFile_EE_NoPVz_DYLL_M2000to3000_EE.root"
 };
 
 vector<TString> file_top = {
-	"output_data/saveFile_EE_NoPVz_WithDressed_ST_tW.root",
-	"output_data/saveFile_EE_NoPVz_WithDressed_ST_tbarW.root",
-	"output_data/saveFile_EE_NoPVz_WithDressed_ttbar_M0to700.root",
-	"output_data/saveFile_EE_NoPVz_WithDressed_ttbar_M700to1000.root",
-	"output_data/saveFile_EE_NoPVz_WithDressed_ttbar_M1000toInf.root"
+	"output_data/saveFile_EE_NoPVz_ST_tW.root",
+	"output_data/saveFile_EE_NoPVz_ST_tbarW.root",
+	"output_data/saveFile_EE_NoPVz_ttbar_M0to700.root",
+	"output_data/saveFile_EE_NoPVz_ttbar_M700to1000.root",
+	"output_data/saveFile_EE_NoPVz_ttbar_M1000toInf.root"
 };
 
 vector<TString> file_Fake = {
-	"output_data/saveFile_EE_NoPVz_WithDressed_WJetsToLNu_amcatnlo.root",
-	"output_data/saveFile_EE_NoPVz_WithDressed_WJetsToLNu_amcatnlo_ext.root",
-	"output_data/saveFile_EE_NoPVz_WithDressed_WJetsToLNu_amcatnlo_ext2v5.root"
+	"output_data/saveFile_EE_NoPVz_WJetsToLNu_amcatnlo.root",
+	"output_data/saveFile_EE_NoPVz_WJetsToLNu_amcatnlo_ext.root",
+	"output_data/saveFile_EE_NoPVz_WJetsToLNu_amcatnlo_ext2v5.root"
 };
 
 vector<TString> file_QCD = {
-	"output_data/saveFile_EE_NoPVz_WithDressed_QCDEMEnriched_Pt20to30.root",       
-	"output_data/saveFile_EE_NoPVz_WithDressed_QCDEMEnriched_Pt30to50.root",       
-	"output_data/saveFile_EE_NoPVz_WithDressed_QCDEMEnriched_Pt50to80.root",       
-	"output_data/saveFile_EE_NoPVz_WithDressed_QCDEMEnriched_Pt50to80_ext1.root",  
-	"output_data/saveFile_EE_NoPVz_WithDressed_QCDEMEnriched_Pt80to120.root",      
-	"output_data/saveFile_EE_NoPVz_WithDressed_QCDEMEnriched_Pt80to120_ext1.root", 
-	"output_data/saveFile_EE_NoPVz_WithDressed_QCDEMEnriched_Pt120to170.root",     
-	"output_data/saveFile_EE_NoPVz_WithDressed_QCDEMEnriched_Pt120to170_ext1.root",
-	"output_data/saveFile_EE_NoPVz_WithDressed_QCDEMEnriched_Pt170to300.root",     
-	"output_data/saveFile_EE_NoPVz_WithDressed_QCDEMEnriched_Pt300toInf.root"      
+	"output_data/saveFile_EE_NoPVz_QCDEMEnriched_Pt20to30.root",       
+	"output_data/saveFile_EE_NoPVz_QCDEMEnriched_Pt30to50.root",       
+	"output_data/saveFile_EE_NoPVz_QCDEMEnriched_Pt50to80.root",       
+	"output_data/saveFile_EE_NoPVz_QCDEMEnriched_Pt50to80_ext1.root",  
+	"output_data/saveFile_EE_NoPVz_QCDEMEnriched_Pt80to120.root",      
+	"output_data/saveFile_EE_NoPVz_QCDEMEnriched_Pt80to120_ext1.root", 
+	"output_data/saveFile_EE_NoPVz_QCDEMEnriched_Pt120to170.root",     
+	"output_data/saveFile_EE_NoPVz_QCDEMEnriched_Pt120to170_ext1.root",
+	"output_data/saveFile_EE_NoPVz_QCDEMEnriched_Pt170to300.root",     
+	"output_data/saveFile_EE_NoPVz_QCDEMEnriched_Pt300toInf.root"      
 };
 
 enum Variable{
@@ -87,9 +91,9 @@ void makeStackPlots()
 	//gROOT->SetBatch(true);
 	gStyle->SetOptStat(0);
 	MakePlots(INV_MASS);
-	MakePlots(RAPIDITY);
-	MakePlots(PT_LEAD);
-	MakePlots(PT_SUB);
+//	MakePlots(RAPIDITY);
+//	MakePlots(PT_LEAD);
+//	MakePlots(PT_SUB);
 
 }
 
