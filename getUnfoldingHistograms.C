@@ -50,6 +50,7 @@ void getUnfoldingHistograms()
 {
 	gStyle->SetOptStat(0);
 	gStyle->SetPalette(1);
+	gROOT->SetBatch(true);
 	TFile*file_data;
 	TFile*file_DYLL;
 	TFile*file_back;
@@ -137,6 +138,7 @@ void getUnfoldingHistograms()
 	c3->SaveAs("plots/invMassBackDYLLData.png");
 
 	hInvMassData->SetName("hInvMassData");
+	hInvMassDressed->SetName("hInvMassDressed");
 	hInvMassDYLL->SetName("hInvMassReco");
 	hInvMassBack->SetName("hInvMassBack");
 	hInvMassMatrix->SetName("hInvMassMatrix");
@@ -145,6 +147,8 @@ void getUnfoldingHistograms()
 	hInvMassData->Write();
 	hInvMassDYLL->Write();
 	hInvMassBack->Write();
+	hInvMassDressed->Write();
 	hInvMassMatrix->Write();
+
 	save_file->Close();
 }
