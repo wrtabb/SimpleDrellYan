@@ -58,9 +58,7 @@ vector<TString> files= {
 	"WW",				// 24
 	"WZ",				// 25
 	"ZZ",				// 26
-	"DYLL_M10to50_TauTau_v1",	// 27
-	"DYLL_M10to50_TauTau_v2",	// 27
-	"DYLL_M10to50_TauTau_ext1v1",	// 27
+	"DYLL_M10to50_TauTau",		// 27
 	"DYLL_M50to100_TauTau",		// 28
 	"DYLL_M100to200_TauTau",	// 29
 	"DYLL_M200to400_TauTau",	// 30
@@ -347,28 +345,28 @@ void analyzeData(TString fileName)
         double xSec = GetCrossSection(fileName);
 
 	TChain*chain;
-	TH1D*hInvMassReco;
-	TH1D*hRapidityReco;
-	TH1D*hPtLeadReco;
-	TH1D*hPtSubReco;
+	TH1F*hInvMassReco;
+	TH1F*hRapidityReco;
+	TH1F*hPtLeadReco;
+	TH1F*hPtSubReco;
 
-	TH1D*hInvMassHard;
-	TH1D*hRapidityHard;
-	TH1D*hPtLeadHard;
-	TH1D*hPtSubHard;
+	TH1F*hInvMassHard;
+	TH1F*hRapidityHard;
+	TH1F*hPtLeadHard;
+	TH1F*hPtSubHard;
 
-	TH1D*hInvMassDressed;
-	TH1D*hRapidityDressed;
-	TH1D*hPtLeadDressed;
-	TH1D*hPtSubDressed;
+	TH1F*hInvMassDressed;
+	TH1F*hRapidityDressed;
+	TH1F*hPtLeadDressed;
+	TH1F*hPtSubDressed;
 
-	TH2D*hMatrixInvMassHard;
-	TH2D*hMatrixInvMassDressed;
-	TH2D*hMatrixRapidityHard;
-	TH2D*hMatrixRapidityDressed;
+	TH2F*hMatrixInvMassHard;
+	TH2F*hMatrixInvMassDressed;
+	TH2F*hMatrixRapidityHard;
+	TH2F*hMatrixRapidityDressed;
 
-	TH2D*hDressedVsHard;
-        TH2D*hDressedVsFSR;
+	TH2F*hDressedVsHard;
+        TH2F*hDressedVsFSR;
 
 	// Get histograms needed for weights and scale factors
 	TFile*fRecoSF  = new TFile("data/Reco_SF.root");
@@ -381,7 +379,7 @@ void analyzeData(TString fileName)
 	TH2F*hMedIDSF = (TH2F*)fMedIDSF->Get("EGamma_SF2D");
 	TH2F*hLeg2SF  = (TH2F*)fLeg2SF->Get("EGamma_SF2D");
 	TH1F*hPileup  = (TH1F*)fPileup->Get("hPileupRatio");
-	TH1D*hPVzSF   = (TH1D*)fPVzSF->Get("PVz_SF");
+	TH1F*hPVzSF   = (TH1F*)fPVzSF->Get("PVz_SF");
 
 	// Load trees
 	TString loadFile = base_directory+fileName;
@@ -396,10 +394,10 @@ void analyzeData(TString fileName)
 	TString histNamePtLeadReco = histName+"PtLeadReco";
 	TString histNamePtSubReco = histName+"PtSubReco";
 
-	hInvMassReco = new TH1D(histNameInvMassReco,"",nMassBins2,massbins2);
-	hRapidityReco = new TH1D(histNameRapidityReco,"",100,-2.5,2.5);
-	hPtLeadReco = new TH1D(histNamePtLeadReco,"",100,0,500);
-	hPtSubReco = new TH1D(histNamePtSubReco,"",100,0,500);
+	hInvMassReco = new TH1F(histNameInvMassReco,"",nMassBins2,massbins2);
+	hRapidityReco = new TH1F(histNameRapidityReco,"",100,-2.5,2.5);
+	hPtLeadReco = new TH1F(histNamePtLeadReco,"",100,0,500);
+	hPtSubReco = new TH1F(histNamePtSubReco,"",100,0,500);
 
 	// Define Hard histograms
 	TString histNameInvMassHard = histName+"InvMassHard";
@@ -407,10 +405,10 @@ void analyzeData(TString fileName)
 	TString histNamePtLeadHard = histName+"PtLeadHard";
 	TString histNamePtSubHard = histName+"PtSubHard";
 
-	hInvMassHard = new TH1D(histNameInvMassHard,"",nMassBins,massbins);
-	hRapidityHard = new TH1D(histNameRapidityHard,"",100,-2.5,2.5);
-	hPtLeadHard = new TH1D(histNamePtLeadHard,"",100,0,500);
-	hPtSubHard = new TH1D(histNamePtSubHard,"",100,0,500);
+	hInvMassHard = new TH1F(histNameInvMassHard,"",nMassBins,massbins);
+	hRapidityHard = new TH1F(histNameRapidityHard,"",100,-2.5,2.5);
+	hPtLeadHard = new TH1F(histNamePtLeadHard,"",100,0,500);
+	hPtSubHard = new TH1F(histNamePtSubHard,"",100,0,500);
 
 	// Define Dressed histograms
 	TString histNameInvMassDressed = histName+"InvMassDressed";
@@ -418,10 +416,10 @@ void analyzeData(TString fileName)
 	TString histNamePtLeadDressed = histName+"PtLeadDressed";
 	TString histNamePtSubDressed = histName+"PtSubDressed";
 
-	hInvMassDressed = new TH1D(histNameInvMassDressed,"",nMassBins,massbins);
-	hRapidityDressed = new TH1D(histNameRapidityDressed,"",100,-2.5,2.5);
-	hPtLeadDressed = new TH1D(histNamePtLeadDressed,"",100,0,500);
-	hPtSubDressed = new TH1D(histNamePtSubDressed,"",100,0,500);
+	hInvMassDressed = new TH1F(histNameInvMassDressed,"",nMassBins,massbins);
+	hRapidityDressed = new TH1F(histNameRapidityDressed,"",100,-2.5,2.5);
+	hPtLeadDressed = new TH1F(histNamePtLeadDressed,"",100,0,500);
+	hPtSubDressed = new TH1F(histNamePtSubDressed,"",100,0,500);
 
 	// Define migration matrices
 	TString matrixName = "histMatrix";
@@ -432,19 +430,19 @@ void analyzeData(TString fileName)
 	TString matrixNameRapidityDressed = matrixName+"RapidityDressed";
 
 	hMatrixInvMassHard = new 
-		TH2D(matrixNameInvMassHard,"",nMassBins,massbins,nMassBins2,massbins2); 
+		TH2F(matrixNameInvMassHard,"",nMassBins,massbins,nMassBins2,massbins2); 
 	hMatrixInvMassDressed = new 
-		TH2D(matrixNameInvMassDressed,"",nMassBins,massbins,nMassBins2,massbins2); 
+		TH2F(matrixNameInvMassDressed,"",nMassBins,massbins,nMassBins2,massbins2); 
 	hMatrixRapidityHard = new 
-		TH2D(matrixNameRapidityHard,"",100,-2.5,2.5,200,-2.5,2.5); 
+		TH2F(matrixNameRapidityHard,"",100,-2.5,2.5,200,-2.5,2.5); 
 	hMatrixRapidityDressed = new 
-		TH2D(matrixNameRapidityDressed,"",100,-2.5,2.5,200,-2.5,2.5); 
+		TH2F(matrixNameRapidityDressed,"",100,-2.5,2.5,200,-2.5,2.5); 
 
 	// Define dressed vs hard and fsr histograms
 	TString DressedVsHard = "histDressedVsHard";
         TString DressedVsFSR  = "histDressedVsFSR";
-        hDressedVsHard = new TH2D(DressedVsHard,"",nMassBins,massbins,nMassBins,massbins);
-        hDressedVsFSR  = new TH2D(DressedVsFSR,"",nMassBins,massbins,nMassBins,massbins);;
+        hDressedVsHard = new TH2F(DressedVsHard,"",nMassBins,massbins,nMassBins,massbins);
+        hDressedVsFSR  = new TH2F(DressedVsFSR,"",nMassBins,massbins,nMassBins,massbins);;
 
 	Long64_t nEntries = chain->GetEntries();
 	cout << "Loading " << fileName << endl;
@@ -575,7 +573,6 @@ void analyzeData(TString fileName)
 		int idxRecoLead = -1;
 		int idxRecoSub  = -1;
 
-		// Find lead pT electron
 		if(passHLT){
 			bool recoLep = GetRecoLeptons(idxRecoLead,idxRecoSub);
 			if(recoLep){
@@ -621,7 +618,7 @@ void analyzeData(TString fileName)
 		int idxHardSub  = -1;
 
 		bool hardLep = GetHardLeptons(idxHardLead,idxHardSub);
-		if(hardLep){
+		if(hardLep && passHLT){
 			ptHardLead  = GENLepton_pT[idxHardLead];
 			ptHardSub   = GENLepton_pT[idxHardSub];
 			etaHardLead = GENLepton_eta[idxHardLead];
@@ -630,8 +627,9 @@ void analyzeData(TString fileName)
 			phiHardSub  = GENLepton_phi[idxHardSub];
 		}
 		bool passHardSelection = false;
-		if(ptHardLead >=0 || ptHardSub >= 0 || etaHardLead > -3 ||
-		   etaHardSub > -3 || phiHardLead > -100 || phiHardSub > -100){
+		if(ptHardLead >=0 && ptHardSub >= 0 && etaHardLead > -3 &&
+		   etaHardSub > -3 && phiHardLead > -100 && phiHardSub > -100&&
+		   idxHardLead > -1 && idxHardSub > -1){
 			passHardSelection = PassDileptonSelection(etaHardLead,etaHardSub,
 					   		          ptHardLead,ptHardSub);
 		}
@@ -686,7 +684,7 @@ void analyzeData(TString fileName)
 					        ptDressedSub,phiDressedLead,phiDressedSub);
 
 
-		if(passDressedSelection){
+		if(passDressedSelection && passHLT){
 			invMassDressed	= dressedVariables.at(0);
 			rapidityDressed	= dressedVariables.at(1);
 			leadPtDressed	= dressedVariables.at(2);
@@ -752,36 +750,41 @@ void analyzeData(TString fileName)
 		hPtLeadReco->Fill(leadPtReco,recoWeight);
 		hPtSubReco->Fill(subPtReco,recoWeight);
 
-		// Fill gen-level from hard process histograms
-		hInvMassHard->Fill(invMassHard,hardWeight);
-		hRapidityHard->Fill(rapidityHard,hardWeight);
-		hPtLeadHard->Fill(leadPtHard,hardWeight);
-		hPtSubHard->Fill(subPtHard,hardWeight);
 
-		// Fill dressed histograms
-		hInvMassDressed->Fill(invMassDressed,hardWeight);
-		hRapidityDressed->Fill(rapidityDressed,hardWeight);
-		hPtLeadDressed->Fill(leadPtDressed,hardWeight);
-		hPtSubDressed->Fill(subPtDressed,hardWeight);
 
 		// Fill migration matrices
-		hMatrixInvMassHard->Fill(invMassHard,invMassReco,recoWeight);
-		hMatrixInvMassHard->Fill(invMassHard,0.0,recoWeight*(1-sfWeight));
-		hMatrixInvMassDressed->Fill(invMassDressed,invMassReco,recoWeight); 
-		hMatrixInvMassDressed->Fill(invMassDressed,0.0,recoWeight*(1-sfWeight)); 
-		hMatrixRapidityHard->Fill(rapidityHard,rapidityReco,recoWeight); 
-		hMatrixRapidityHard->Fill(rapidityHard,0.0,recoWeight*(1-sfWeight)); 
-		hMatrixRapidityDressed->Fill(rapidityDressed,rapidityReco,recoWeight);
-		hMatrixRapidityDressed->Fill(rapidityDressed,rapidityReco,recoWeight*(1-sfWeight));
+		if(passHardSelection){
+			hMatrixInvMassHard->Fill(invMassHard,invMassReco,recoWeight);
+			hMatrixInvMassHard->Fill(invMassHard,0.0,recoWeight*(1-sfWeight));
+			hMatrixRapidityHard->Fill(rapidityHard,rapidityReco,recoWeight); 
+			hMatrixRapidityHard->Fill(rapidityHard,0.0,recoWeight*(1-sfWeight)); 
+			// Fill gen-level from hard process histograms
+			hInvMassHard->Fill(invMassHard,hardWeight);
+			hRapidityHard->Fill(rapidityHard,hardWeight);
+			hPtLeadHard->Fill(leadPtHard,hardWeight);
+			hPtSubHard->Fill(subPtHard,hardWeight);
+		}
+		if(passDressedSelection){
+			hMatrixInvMassDressed->Fill(invMassDressed,invMassReco,recoWeight); 
+			hMatrixInvMassDressed->Fill(invMassDressed,0.0,recoWeight*(1-sfWeight)); 
+			hMatrixRapidityDressed->Fill(rapidityDressed,rapidityReco,recoWeight);
+			hMatrixRapidityDressed->Fill(rapidityDressed,0.0,recoWeight*(1-sfWeight));
+			// Fill dressed histograms
+			hInvMassDressed->Fill(invMassDressed,hardWeight);
+			hRapidityDressed->Fill(rapidityDressed,hardWeight);
+			hPtLeadDressed->Fill(leadPtDressed,hardWeight);
+			hPtSubDressed->Fill(subPtDressed,hardWeight);
+
+		}
 
 		// Fill dressedVs histograms
-		hDressedVsHard->Fill(invMassDressed,invMassHard,hardWeight);
+		//hDressedVsHard->Fill(invMassDressed,invMassHard,hardWeight);
 		//hDressedVsFSR ->Fill(invMassDressed,invMassFSR);
 		
 	}// end loop over entries
 
 	// Save results to output file
-	TString saveName = "output_data/saveFile_EE_NoPVz_";
+	TString saveName = "output_data/newFile_EE_NoPVz_";
 	saveName += fileName;
 	saveName += ".root";
 	TFile*file;
@@ -802,7 +805,7 @@ void analyzeData(TString fileName)
 	hMatrixInvMassDressed->Write();
 	hMatrixRapidityHard->Write();
 	hMatrixRapidityDressed->Write();	
-	hDressedVsHard->Write();
+	//hDressedVsHard->Write();
 	//hDressedVsFSR->Write();
 	file->Close();
 }
@@ -921,6 +924,7 @@ double GetCrossSection(TString fileName)
                 if(fileName.CompareTo(files.at(i))==0) xsec = xSecVec.at(i);
         }// end loop over possible samples      
 
+	cout << "Cross section for sample " << fileName << " is " << xsec << endl;
         return xsec;
 }// end GetCrossSection()
 
