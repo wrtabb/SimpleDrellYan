@@ -102,7 +102,7 @@ vector<TString> files= {
 TString treeName = "recoTree/DYTree";
 vector<double> xSecVec = {
 	1,1,1,1,1,1,1,1,	//Data
-	18610.0/3,		//DYLL_10to50 v1,v2,ext1v1 combined (NLO)
+	18610.0/3,		//DYLL_10to50 (NLO)
 	1923.26,		//DYLL_50to100(NNLO)
 	78.1258,		//DYLL_100to200(NNLO)
 	2.73309,		//DYLL_200to400(NNLO) 
@@ -482,6 +482,10 @@ void analyzeData(TString fileName)
 	// Define branches
 	chain->SetBranchAddress("nMuon",&nMuon,&b_nMuon);
 	chain->SetBranchAddress("Muon_pT",&Muon_pT,&b_Muon_pT);
+	chain->SetBranchAddress("Muon_Px",&Muon_Px,&b_Muon_Px);
+	chain->SetBranchAddress("Muon_Py",&Muon_Py,&b_Muon_Py);
+	chain->SetBranchAddress("Muon_Pz",&Muon_Pz,&b_Muon_Pz);
+	chain->SetBranchAddress("Muon_Energy",&Muon_Energy,&b_Muon_Energy);
 	chain->SetBranchAddress("Muon_eta",&Muon_eta,&b_Muon_eta);
 	chain->SetBranchAddress("Muon_phi",&Muon_phi,&b_Muon_phi);
 	chain->SetBranchAddress("Muon_passTightID",&Muon_passTightID,
@@ -578,6 +582,8 @@ void analyzeData(TString fileName)
 	// Loop over events
 	for(Long64_t iEntry=0;iEntry<nEntries;iEntry++){
 		chain->GetEntry(iEntry);
+		Counter(iEntry,nEntries);
+
 		// Check if event passes HLT cut
 		TString trigName;
 		int trigNameSize = pHLT_trigName->size();
@@ -667,10 +673,10 @@ void analyzeData(TString fileName)
                                                                   idxHardLead,idxHardSub);
                 }
 
+		// Get Hard Variables
 		vector<double> hardVariables;
                 hardVariables = GetVariables(etaHardLead,etaHardSub,ptHardLead,ptHardSub,
                                              phiHardLead,phiHardSub);
-
 
                 if(passHardSelection){
                         invMassHard     = hardVariables.at(0);
@@ -680,23 +686,17 @@ void analyzeData(TString fileName)
                 }
 
 		//-----Get Dressed Quantities-----//
-		// initialize variables which will fill histograms
 		double invMassDressed   = -1000;
                 double rapidityDressed  = -1000;
                 double leadPtDressed    = -1000;
                 double subPtDressed     = -1000;
 
-		// initialize indices
                 int idxDressedLead = -1;
                 int idxDressedSub  = -1;
 
-		// get TLorentzVectors of two dressed leptons
-		// vector.at(0) will be the first TLorentzVector
-		// vector.at(1) will be the second TLorentzVector
                 vector<TLorentzVector> dressedLeptons =
                         GetDressedLeptons(idxDressedLead,idxDressedSub);
 
-		// initialize kinematic quantities
                 double ptDressedLead  = -1000;
                 double ptDressedSub   = -1000;
                 double etaDressedLead = -1000;
@@ -704,7 +704,6 @@ void analyzeData(TString fileName)
                 double phiDressedLead = -1000;
                 double phiDressedSub  = -1000;
 
-		// get kinematic quantities from TLorentzVector dressedLeptons
                 ptDressedLead  = dressedLeptons.at(0).Pt();
                 ptDressedSub   = dressedLeptons.at(1).Pt();
                 etaDressedLead = dressedLeptons.at(0).Eta();
@@ -712,21 +711,18 @@ void analyzeData(TString fileName)
                 phiDressedLead = dressedLeptons.at(0).Phi();
                 phiDressedSub  = dressedLeptons.at(1).Phi();
 
-		// get variables to fill histograms
-		vector<double> dressedVariables;
-                dressedVariables = GetVariables(etaDressedLead,etaDressedSub,ptDressedLead,
-                                                ptDressedSub,phiDressedLead,phiDressedSub);
-
-		// determine if event passes kinematic acceptance criteria
                 bool passDressedSelection = PassDileptonSelection(etaDressedLead,
                                                                   etaDressedSub,
                                                                   ptDressedLead,
                                                                   ptDressedSub,
                                                                   idxDressedLead,
                                                                   idxDressedSub);
-		// if the event passes kinematic acceptance, place calculated quantities
-		// into the variables
-		// Otherwise variables all remain -1000, and will go into the underflow
+
+		vector<double> dressedVariables;
+                dressedVariables = GetVariables(etaDressedLead,etaDressedSub,ptDressedLead,
+                                                ptDressedSub,phiDressedLead,phiDressedSub);
+
+
                 if(passDressedSelection){
                         invMassDressed  = dressedVariables.at(0);
                         rapidityDressed = dressedVariables.at(1);
@@ -735,26 +731,23 @@ void analyzeData(TString fileName)
                 }
 
 		double sfWeight 	= 1.0;
+		double pvzWeight	= 1.0;
 		double puWeight 	= 1.0;
 		double prefireWeight 	= 1.0;
 		double genWeight 	= 1.0;
 
-		// Before adding SFs, fix like with electrons - 
-		// Add intermediate pt and eta variables so the main ones
-		// Are not changed by SF calculation
 		// Need Rochester correction for muons for data and MC
 		double pt1 =  ptRecoLead;
 		double pt2 =  ptRecoSub;
 		double eta1 = etaRecoLead;
 		double eta2 = etaRecoSub;
+
 		if(isMC){
 			// Get Scale factors
 			if(pt1>ptBinHigh) pt1 = ptBinHigh;
 			if(pt2>ptBinHigh) pt2 = ptBinHigh;
-			if(eta1>etaBinHigh) eta1 = etaBinHigh;
-			if(eta2>etaBinHigh) eta2 = etaBinHigh;
-			if(eta1<etaBinLow) eta1 = etaBinLow;
-			if(eta2<etaBinLow) eta2 = etaBinLow;
+			if(pt1<ptBinLow) pt1 = ptBinLow;
+			if(pt2<ptBinLow) pt2 = ptBinLow;
 
 			if(!isFake){
 			double sfReco1 = 
@@ -782,8 +775,10 @@ void analyzeData(TString fileName)
 			prefireWeight = _prefiringweight;
 		}
 
-		double recoWeight = xSecWeight*genWeight*puWeight*prefireWeight*sfWeight;
-		double hardWeight = xSecWeight*genWeight*puWeight*prefireWeight;
+		double recoWeight = 
+			xSecWeight*genWeight*pvzWeight*puWeight*prefireWeight*sfWeight;
+		double hardWeight = 
+			xSecWeight*genWeight*pvzWeight*puWeight*prefireWeight;
 		if(!isMC) recoWeight = 1.0;
 
 		// Fill reco histograms
@@ -792,27 +787,31 @@ void analyzeData(TString fileName)
 		hPtLeadReco->Fill(leadPtReco,recoWeight);
 		hPtSubReco->Fill(subPtReco,recoWeight);
 
-		// Fill hard-process histograms
-		hInvMassHard->Fill(invMassHard,hardWeight);
-                hRapidityHard->Fill(rapidityHard,hardWeight);
-                hPtLeadHard->Fill(leadPtHard,hardWeight);
-                hPtSubHard->Fill(subPtHard,hardWeight);
+		if(passHardSelection){
+			hMatrixInvMassHard->Fill(invMassHard,invMassReco,recoWeight);
+			hMatrixInvMassHard->Fill(invMassHard,0.0,hardWeight*(1-sfWeight));
+			hMatrixRapidityHard->Fill(rapidityHard,rapidityReco,recoWeight);
+			hMatrixRapidityHard->Fill(rapidityHard,0.0,hardWeight*(1-sfWeight));
+			// Fill hard-process histograms
+			hInvMassHard->Fill(invMassHard,hardWeight);
+			hRapidityHard->Fill(rapidityHard,hardWeight);
+			hPtLeadHard->Fill(leadPtHard,hardWeight);
+			hPtSubHard->Fill(subPtHard,hardWeight);
+		}// end if passHardSelection
 
-		// Fill dressed histograms
-		hInvMassDressed->Fill(invMassDressed,hardWeight);
-                hRapidityDressed->Fill(rapidityDressed,hardWeight);
-                hPtLeadDressed->Fill(leadPtDressed,hardWeight);
-                hPtSubDressed->Fill(subPtDressed,hardWeight);		
+		if(passDressedSelection){
+			// Fill dressed histograms
+			hInvMassDressed->Fill(invMassDressed,hardWeight);
+			hRapidityDressed->Fill(rapidityDressed,hardWeight);
+			hPtLeadDressed->Fill(leadPtDressed,hardWeight);
+			hPtSubDressed->Fill(subPtDressed,hardWeight);		
 
-		// Fill matrices
-		hMatrixInvMassHard->Fill(invMassHard,invMassReco,recoWeight);
-                hMatrixInvMassHard->Fill(invMassHard,0.0,hardWeight*(1-sfWeight));
-                hMatrixInvMassDressed->Fill(invMassDressed,invMassReco,recoWeight);
-                hMatrixInvMassDressed->Fill(invMassDressed,0.0,hardWeight*(1-sfWeight));
-                hMatrixRapidityHard->Fill(rapidityHard,rapidityReco,recoWeight);
-                hMatrixRapidityHard->Fill(rapidityHard,0.0,hardWeight*(1-sfWeight));
-                hMatrixRapidityDressed->Fill(rapidityDressed,rapidityReco,recoWeight);
-                hMatrixRapidityDressed->Fill(rapidityDressed,rapidityReco,hardWeight*(1-sfWeight));
+			// Fill matrices
+			hMatrixInvMassDressed->Fill(invMassDressed,invMassReco,recoWeight);
+			hMatrixInvMassDressed->Fill(invMassDressed,0.0,hardWeight*(1-sfWeight));
+			hMatrixRapidityDressed->Fill(rapidityDressed,rapidityReco,recoWeight);
+			hMatrixRapidityDressed->Fill(rapidityDressed,rapidityReco,hardWeight*(1-sfWeight));
+		}
 	}// end loop over entries
 
 	// Save results to output file
@@ -837,8 +836,6 @@ void analyzeData(TString fileName)
         hMatrixInvMassDressed->Write();
         hMatrixRapidityHard->Write();
         hMatrixRapidityDressed->Write();
-	hDressedVsHard->Write();
-	//hDressedVsFSR ->Write();
 	file->Close();
 }// end analyze
 
@@ -864,8 +861,6 @@ bool IsSampleFake(TString fileName)
 
 bool PassDileptonSelection(double eta1,double eta2,double pt1,double pt2,int idx1,int idx2)
 {
-	if(eta1<0||eta2<0||pt1<0||pt2<0||idx1<0||idx2<0) return false;
-
         if(abs(eta1)>etaGapLow && abs(eta1)<etaGapHigh) return false;
         if(abs(eta2)>etaGapLow && abs(eta2)<etaGapHigh) return false;
         if(abs(eta1)>etaHigh||abs(eta2)>etaHigh) return false;
@@ -956,14 +951,13 @@ bool GetRecoLeptons(int &idxRecoLead, int &idxRecoSub)
 			else{
 				idxRecoLead = jMu;
 				idxRecoSub  = iMu;
-
 			} 
 			nDileptons++;
 		}//end inner muon loop
 	}// end outer muon loop 
 
-	if(nDileptons!=1) return false; //two muons were not selected
-	else return true;
+	if(nDileptons==1) return true; 
+	else return false;
 }// end GetRecoLeptons()
 
 bool GetHardLeptons(int &idxHardLead,int &idxHardSub)
@@ -1005,6 +999,7 @@ std::vector<TLorentzVector> GetDressedLeptons(int &idxDressedLead,int &idxDresse
 {
         TLorentzVector dressed1;
         TLorentzVector dressed2;
+	int nDileptons = 0;
 
 	// Loop over muons and select two post-fsr gen-level muons 
         for(int iLep=0;iLep<GENnPair;iLep++){
@@ -1018,19 +1013,19 @@ std::vector<TLorentzVector> GetDressedLeptons(int &idxDressedLead,int &idxDresse
                         if(GENLepton_ID[iLep]*GENLepton_ID[jLep]>0) continue;
 			
 			// require that they be post-fsr
-                        if(GENLepton_fromHardProcessFinalState[iLep]==1 &&
-                           GENLepton_fromHardProcessFinalState[jLep]==1){
+                        if(!(GENLepton_fromHardProcessFinalState[iLep]==1 &&
+                           GENLepton_fromHardProcessFinalState[jLep]==1))
 
-				// determine which is lead and which is sub-lead
-                                if(GENLepton_pT[iLep] > GENLepton_pT[jLep]){
-                                        idxDressedLead = iLep;
-                                        idxDressedSub = jLep;
-                                }// end if iLep is leading electron
-                                else{
-                                        idxDressedLead = jLep;
-                                        idxDressedSub = iLep;
-                                }// end if jLep is leading electron
-                        }// end if hard process
+			// determine which is lead and which is sub-lead
+			if(GENLepton_pT[iLep] > GENLepton_pT[jLep]){
+				idxDressedLead = iLep;
+				idxDressedSub = jLep;
+			}// end if iLep is leading electron
+			else{
+				idxDressedLead = jLep;
+				idxDressedSub = iLep;
+			}// end if jLep is leading electron
+			nDileptons++;
                 }//end inner loop over gen leptons
         }//end outer loop over gen leptons
 
@@ -1061,46 +1056,48 @@ std::vector<TLorentzVector> GetDressedLeptons(int &idxDressedLead,int &idxDresse
         double pxPho,pyPho,pzPho,EPho;
 
 	// Loop over photons
-        for(int iPho=0;iPho<nGenOthers;iPho++){
-		// require that they be photons and are prompt final state
-                if(abs(GenOthers_ID[iPho])!=22 ||
-                   GenOthers_isPromptFinalState[iPho]!=1) continue;
+	if(nDileptons==1){
+		for(int iPho=0;iPho<nGenOthers;iPho++){
+			// require that they be photons and are prompt final state
+			if(abs(GenOthers_ID[iPho])!=22 ||
+			   GenOthers_isPromptFinalState[iPho]!=1) continue;
 
-		// define location of photon in the eta-phi plane
-		etaPho = GenOthers_eta[iPho];
-		phiPho = GenOthers_phi[iPho];
+			// define location of photon in the eta-phi plane
+			etaPho = GenOthers_eta[iPho];
+			phiPho = GenOthers_phi[iPho];
 
-		// find distance, dR1, of photon from muon1
-		etaDiff1 = eta1-etaPho;
-		phiDiff1 = phi1-phiPho;
-		dR1Squared = etaDiff1*etaDiff1+phiDiff1*phiDiff1;
-		dR1 = sqrt(dR1Squared);
+			// find distance, dR1, of photon from muon1
+			etaDiff1 = eta1-etaPho;
+			phiDiff1 = phi1-phiPho;
+			dR1Squared = etaDiff1*etaDiff1+phiDiff1*phiDiff1;
+			dR1 = sqrt(dR1Squared);
 
-		// find distance, dR2, of photon from muon2
-		etaDiff2 = eta2-etaPho;
-		phiDiff2 = phi2-phiPho;
-		dR2Squared = etaDiff2*etaDiff2+phiDiff2*phiDiff2;
-		dR2 = sqrt(dR2Squared);
+			// find distance, dR2, of photon from muon2
+			etaDiff2 = eta2-etaPho;
+			phiDiff2 = phi2-phiPho;
+			dR2Squared = etaDiff2*etaDiff2+phiDiff2*phiDiff2;
+			dR2 = sqrt(dR2Squared);
 
-		// create lorentz vector for photon
-		pxPho = GenOthers_Px[iPho];
-		pyPho = GenOthers_Py[iPho];
-		pzPho = GenOthers_Pz[iPho];
-		EPho  = GenOthers_E[iPho];
-		phoVec.SetPxPyPzE(pxPho,pyPho,pzPho,EPho);
+			// create lorentz vector for photon
+			pxPho = GenOthers_Px[iPho];
+			pyPho = GenOthers_Py[iPho];
+			pzPho = GenOthers_Pz[iPho];
+			EPho  = GenOthers_E[iPho];
+			phoVec.SetPxPyPzE(pxPho,pyPho,pzPho,EPho);
 
-		// only keep photons which are closer than 0.1 from one of the muons
-		if(dR1>dRMin && dR2>dRMin) continue;
+			// only keep photons which are closer than 0.1 from one of the muons
+			if(dR1>dRMin && dR2>dRMin) continue;
 
-		// add its four momentum to the four momentum of the muon
-		// it is closest to
-		if(dR1<dR2){
-			dressed1 += phoVec;
-		}
-		else{
-			dressed2 += phoVec;
-		}
-        }// end loop over photons       
+			// add its four momentum to the four momentum of the muon
+			// it is closest to
+			if(dR1<dR2){
+				dressed1 += phoVec;
+			}
+			else{
+				dressed2 += phoVec;
+			}
+		}// end loop over photons       
+	}// end if nDileptons==1
 
 	// after looping over each photon, the dressed vectors should contain the 
 	// original post-fsr muons with the associated photons added to them
