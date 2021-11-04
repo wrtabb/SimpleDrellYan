@@ -50,7 +50,7 @@ void getUnfoldingHistograms()
 {
 	gStyle->SetOptStat(0);
 	gStyle->SetPalette(1);
-	gROOT->SetBatch(true);
+	//gROOT->SetBatch(true);
 	TFile*file_data;
 	TFile*file_DYLL;
 	TFile*file_back;
@@ -94,6 +94,10 @@ void getUnfoldingHistograms()
 		}
 	}// end loop over DYLL files
 	
+	TH1F*projX = (TH1F*)hInvMassMatrix->ProjectionX();
+	projX->SetLineColor(kBlue);
+	TH1F*projY = (TH1F*)hInvMassMatrix->ProjectionY();
+	projY->SetLineColor(kRed);
 
 	hInvMassData->SetMarkerStyle(20);
 	hInvMassDressed->SetMinimum(0.1);
@@ -136,6 +140,21 @@ void getUnfoldingHistograms()
 	hStack->Draw("hist");		
 	hInvMassData->Draw("pe,same");
 	c3->SaveAs("plots/invMassBackDYLLData.png");
+
+
+	TCanvas*c4 = new TCanvas("c4","",0,0,1000,1000);
+	c4->SetGrid();
+	c4->SetLogy();
+	c4->SetLogx();
+	hInvMassDressed->SetMarkerStyle(20);
+	hInvMassDressed->SetMarkerColor(kBlue);
+	hInvMassDYLL->SetMarkerStyle(20);
+	hInvMassDYLL->SetMarkerColor(kRed);
+	hInvMassDressed->Draw("pe,same");
+	hInvMassDYLL->Draw("pe,same");
+	projX->Draw("hist,same");
+	projY->Draw("hist,same");
+	c4->SaveAs("plots/invMassMatrixProjections.png");
 
 	hInvMassData->SetName("hInvMassData");
 	hInvMassDressed->SetName("hInvMassDressed");

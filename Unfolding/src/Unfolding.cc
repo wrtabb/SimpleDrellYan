@@ -7,7 +7,7 @@ Unfold::Unfold()
 
 }
 
-TH1F*Unfold::unfoldTUnfold(RegType regType,TH1F*hReco,TH1F*hTrue,TH2F*hMatrix)
+TH1F*Unfold::unfoldTUnfold(RegType regType,TH1F*hReco,TH1F*hBack,TH1F*hTrue,TH2F*hMatrix)
 {
 	cout << endl;
 	cout << "*****************************************" << endl;
@@ -52,14 +52,18 @@ TH1F*Unfold::unfoldTUnfold(RegType regType,TH1F*hReco,TH1F*hTrue,TH2F*hMatrix)
 	/////////////////////////////////////
 	//  Horizontal vs Vertical Output  //
 	/////////////////////////////////////
-	TUnfold::EHistMap outputMap = TUnfold::kHistMapOutputVert;
-	//TUnfold::EHistMap outputMap = TUnfold::kHistMapOutputHoriz;
+	//TUnfold::EHistMap outputMap = TUnfold::kHistMapOutputVert;
+	TUnfold::EHistMap outputMap = TUnfold::kHistMapOutputHoriz;
 	
 	//////////////////////////////////////
 	//  Constructor for TUnfoldDensity  //
 	//////////////////////////////////////
 	TUnfoldDensity unfold(hMatrix,outputMap,regMode,constraintMode,densityFlags);
 	unfold.SetInput(hReco);//the measured distribution
+
+	double backScale = 1.0;
+	double backScaleError = 0.0;//scale error for background
+	unfold.SubtractBackground(hBack,"background",backScale,backScaleError);
 
 	///////////////////////
 	//  Begin Unfolding  //

@@ -738,7 +738,7 @@ void analyzeData(TString fileName)
 		}// end isMC for weight calculation
 
 		double recoWeight = 
-			xSecWeight*genWeight*sfWeight*pvzWeight*puWeight*prefireWeight;
+			xSecWeight*genWeight*pvzWeight*puWeight*prefireWeight*sfWeight;
 		double hardWeight = 
 			xSecWeight*genWeight*pvzWeight*puWeight*prefireWeight;
 
@@ -750,32 +750,30 @@ void analyzeData(TString fileName)
 		hPtLeadReco->Fill(leadPtReco,recoWeight);
 		hPtSubReco->Fill(subPtReco,recoWeight);
 
-
-
-		// Fill migration matrices
 		if(passHardSelection){
+			// Fill migration matrices
 			hMatrixInvMassHard->Fill(invMassHard,invMassReco,recoWeight);
-			hMatrixInvMassHard->Fill(invMassHard,0.0,recoWeight*(1-sfWeight));
+			hMatrixInvMassHard->Fill(invMassHard,0.0,hardWeight*(1-sfWeight));
 			hMatrixRapidityHard->Fill(rapidityHard,rapidityReco,recoWeight); 
-			hMatrixRapidityHard->Fill(rapidityHard,0.0,recoWeight*(1-sfWeight)); 
+			hMatrixRapidityHard->Fill(rapidityHard,0.0,hardWeight*(1-sfWeight)); 
 			// Fill gen-level from hard process histograms
 			hInvMassHard->Fill(invMassHard,hardWeight);
 			hRapidityHard->Fill(rapidityHard,hardWeight);
 			hPtLeadHard->Fill(leadPtHard,hardWeight);
 			hPtSubHard->Fill(subPtHard,hardWeight);
-		}
+		}// end passHardSelection
 		if(passDressedSelection){
+			// Fill migration matrices
 			hMatrixInvMassDressed->Fill(invMassDressed,invMassReco,recoWeight); 
-			hMatrixInvMassDressed->Fill(invMassDressed,0.0,recoWeight*(1-sfWeight)); 
+			hMatrixInvMassDressed->Fill(invMassDressed,0.0,hardWeight*(1-sfWeight)); 
 			hMatrixRapidityDressed->Fill(rapidityDressed,rapidityReco,recoWeight);
-			hMatrixRapidityDressed->Fill(rapidityDressed,0.0,recoWeight*(1-sfWeight));
+			hMatrixRapidityDressed->Fill(rapidityDressed,0.0,hardWeight*(1-sfWeight));
 			// Fill dressed histograms
 			hInvMassDressed->Fill(invMassDressed,hardWeight);
 			hRapidityDressed->Fill(rapidityDressed,hardWeight);
 			hPtLeadDressed->Fill(leadPtDressed,hardWeight);
 			hPtSubDressed->Fill(subPtDressed,hardWeight);
-
-		}
+		}// end passDressedSelection
 
 		// Fill dressedVs histograms
 		//hDressedVsHard->Fill(invMassDressed,invMassHard,hardWeight);

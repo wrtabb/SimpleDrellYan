@@ -1,7 +1,7 @@
 #include "include/ToyModel.hh"
 #include "include/Unfolding.hh"
 
-TString inputDistribution = "data/unfoldingHistograms.root";
+TString inputDistribution = "../data/unfoldingHistograms.root";
 vector<TString> histograms = {
 	"hInvMassData",	
 	"hInvMassReco",	
@@ -11,6 +11,8 @@ vector<TString> histograms = {
 };
 void unfold()
 {
+	gStyle->SetOptStat(0);
+	gStyle->SetPalette(1);
 	TFile*loadFile = new TFile(inputDistribution);
 	int nHistograms = histograms.size();
 	
@@ -25,12 +27,23 @@ void unfold()
 
 	TH1F*hUnfoldedClosure;
 	TH1F*hUnfolded;
-	hUnfoldedClosure = unfold->unfoldTUnfold(regType,hReco,hTrue,hMatrix);
-	hUnfolded = unfold->unfoldTUnfold(regType,hReco,hTrue,hMatrix);
+	//hUnfoldedClosure = unfold->unfoldTUnfold(regType,hData,hTrue,hMatrix);
+	hUnfolded = unfold->unfoldTUnfold(regType,hReco,hBack,hTrue,hMatrix);
 	hUnfolded->SetMarkerStyle(25);
 	hUnfolded->SetMarkerColor(kBlue+2);
 	hUnfolded->SetLineColor(kBlue+2);
 
 	bool logPlot = true;
-	TCanvas*c1 = unfold->plotUnfolded("c1","Closure Test",hReco,hTrue,hUnfoldedClosure,logPlot);
+	TCanvas*c1 = unfold->plotUnfolded("c1","Unfold Data",hData,hTrue,hUnfolded,logPlot);
+
+	TH2F*hResponse = unfold->makeResponseMatrix(hMatrix);
+	TCanvas*c2 = new TCanvas("c2","",0,0,1000,1000);
+	c2->SetGrid();
+	c2->SetLogy();
+	c2->SetLogx();
+	hResponse->Draw("colz");
+
+	TH1F*hUnfoldInv;
+	hUnfoldInv = unfold->unfoldInversion(hReco,hTrue,hMatrix);
+	TCanvas*c3 = unfold->plotUnfolded("c3","Unfold Reco Inv",hReco,hTrue,hUnfolded,logPlot);
 }
