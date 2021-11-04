@@ -486,7 +486,6 @@ void analyzeData(TString fileName)
 	chain->SetBranchAddress("Muon_Px",&Muon_Px,&b_Muon_Px);
 	chain->SetBranchAddress("Muon_Py",&Muon_Py,&b_Muon_Py);
 	chain->SetBranchAddress("Muon_Pz",&Muon_Pz,&b_Muon_Pz);
-	chain->SetBranchAddress("Muon_Energy",&Muon_Energy,&b_Muon_Energy);
 	chain->SetBranchAddress("Muon_eta",&Muon_eta,&b_Muon_eta);
 	chain->SetBranchAddress("Muon_phi",&Muon_phi,&b_Muon_phi);
 	chain->SetBranchAddress("Muon_passTightID",&Muon_passTightID,
@@ -1015,7 +1014,7 @@ std::vector<TLorentzVector> GetDressedLeptons(int &idxDressedLead,int &idxDresse
 			
 			// require that they be post-fsr
                         if(!(GENLepton_fromHardProcessFinalState[iLep]==1 &&
-                           GENLepton_fromHardProcessFinalState[jLep]==1))
+                           GENLepton_fromHardProcessFinalState[jLep]==1)) continue;
 
 			// determine which is lead and which is sub-lead
 			if(GENLepton_pT[iLep] > GENLepton_pT[jLep]){
