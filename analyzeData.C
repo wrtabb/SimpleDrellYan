@@ -782,7 +782,7 @@ void analyzeData(TString fileName)
 			prefireWeight = _prefiringweight;
 		}
 
-		double recoWeight = xSecWeight*genWeight*sfWeight*puWeight*prefireWeight;
+		double recoWeight = xSecWeight*genWeight*puWeight*prefireWeight*sfWeight;
 		double hardWeight = xSecWeight*genWeight*puWeight*prefireWeight;
 		if(!isMC) recoWeight = 1.0;
 
@@ -806,17 +806,13 @@ void analyzeData(TString fileName)
 
 		// Fill matrices
 		hMatrixInvMassHard->Fill(invMassHard,invMassReco,recoWeight);
-                hMatrixInvMassHard->Fill(invMassHard,0.0,recoWeight*(1-sfWeight));
+                hMatrixInvMassHard->Fill(invMassHard,0.0,hardWeight*(1-sfWeight));
                 hMatrixInvMassDressed->Fill(invMassDressed,invMassReco,recoWeight);
-                hMatrixInvMassDressed->Fill(invMassDressed,0.0,recoWeight*(1-sfWeight));
+                hMatrixInvMassDressed->Fill(invMassDressed,0.0,hardWeight*(1-sfWeight));
                 hMatrixRapidityHard->Fill(rapidityHard,rapidityReco,recoWeight);
-                hMatrixRapidityHard->Fill(rapidityHard,0.0,recoWeight*(1-sfWeight));
+                hMatrixRapidityHard->Fill(rapidityHard,0.0,hardWeight*(1-sfWeight));
                 hMatrixRapidityDressed->Fill(rapidityDressed,rapidityReco,recoWeight);
-                hMatrixRapidityDressed->Fill(rapidityDressed,rapidityReco,recoWeight*(1-sfWeight));
-
-		// Fill dressedVs histograms
-		hDressedVsHard->Fill(invMassDressed,invMassHard,hardWeight);
-		//hDressedVsFSR ->Fill(invMassDressed,invMassFSR);
+                hMatrixRapidityDressed->Fill(rapidityDressed,rapidityReco,hardWeight*(1-sfWeight));
 	}// end loop over entries
 
 	// Save results to output file
