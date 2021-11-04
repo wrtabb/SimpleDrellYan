@@ -169,6 +169,7 @@ const double ptLow = 17;
 const double ptHigh = 28;
 const float dRMinCut = 0.3;
 const double ptBinHigh = 499;
+const double ptBinLow = 26;
 const double etaBinLow = -2.5;
 const double etaBinHigh = 2.5;
 const double pi = TMath::Pi();
@@ -1035,8 +1036,9 @@ std::vector<TLorentzVector> GetDressedLeptons(int &idxDressedLead,int &idxDresse
         double py2 = GENLepton_Py[idxDressedSub];
         double pz1 = GENLepton_Pz[idxDressedLead];
         double pz2 = GENLepton_Pz[idxDressedSub];
-        double E1 = GENLepton_E[idxDressedLead];
-        double E2 = GENLepton_E[idxDressedSub];
+        double E1 = sqrt(px1*px1+py1*py1+pz1*pz1+muMass*muMass);
+        double E2 = sqrt(px2*px2+py2*py2+pz2*pz2+muMass*muMass);
+
         dressed1.SetPxPyPzE(px1,py1,pz1,E1);
         dressed2.SetPxPyPzE(px2,py2,pz2,E2);
 
