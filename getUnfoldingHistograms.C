@@ -162,7 +162,7 @@ void getUnfoldingHistograms()
 	hInvMassBack->SetName("hInvMassBack");
 	hInvMassMatrix->SetName("hInvMassMatrix");
 
-	TFile*save_file = new TFile("data/unfoldingHistograms.root","recreate");
+	TFile*save_file = new TFile("data/unfoldingHistogramsEE.root","recreate");
 	hInvMassData->Write();
 	hInvMassDYLL->Write();
 	hInvMassBack->Write();
