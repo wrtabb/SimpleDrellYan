@@ -12,7 +12,7 @@
 // Functions
 double GetCrossSection(TString fileName);
 bool IsSampleFake(TString fileName);
-bool PassDileptonSelection(double eta1,double eta2,double pt1,double pt2,int idx1,int idx2);
+bool PassDileptonSelection(double eta1,double eta2,double pt1,double pt2);
 vector<double> GetVariables(double eta1,double eta2,double pt1,double pt2,double phi1,
                             double phi2);
 bool GetRecoLeptons(int &idxRecoLead, int &idxRecoSub);
@@ -627,8 +627,7 @@ void analyzeData(TString fileName)
 		}// end if passHLT
 
 		bool passRecoSelection = PassDileptonSelection(etaRecoLead,etaRecoSub,
-							       ptRecoLead,ptRecoSub,
-                                  			       phiRecoLead,phiRecoSub);
+							       ptRecoLead,ptRecoSub);
 		vector<double> recoVariables;
                 recoVariables = GetVariables(etaRecoLead,etaRecoSub,ptRecoLead,ptRecoSub,
                                              phiRecoLead,phiRecoSub);
@@ -669,8 +668,7 @@ void analyzeData(TString fileName)
                 if(ptHardLead >=0 && ptHardSub >= 0 && etaHardLead > -3 &&
                    etaHardSub > -3 && phiHardLead > -100 && phiHardSub > -100){
                         passHardSelection = PassDileptonSelection(etaHardLead,etaHardSub,
-                                                                  ptHardLead,ptHardSub,
-                                                                  idxHardLead,idxHardSub);
+                                                                  ptHardLead,ptHardSub);
                 }
 
 		// Get Hard Variables
@@ -714,9 +712,7 @@ void analyzeData(TString fileName)
                 bool passDressedSelection = PassDileptonSelection(etaDressedLead,
                                                                   etaDressedSub,
                                                                   ptDressedLead,
-                                                                  ptDressedSub,
-                                                                  idxDressedLead,
-                                                                  idxDressedSub);
+                                                                  ptDressedSub);
 
 		vector<double> dressedVariables;
                 dressedVariables = GetVariables(etaDressedLead,etaDressedSub,ptDressedLead,
@@ -810,7 +806,7 @@ void analyzeData(TString fileName)
 			hMatrixInvMassDressed->Fill(invMassDressed,invMassReco,recoWeight);
 			hMatrixInvMassDressed->Fill(invMassDressed,0.0,hardWeight*(1-sfWeight));
 			hMatrixRapidityDressed->Fill(rapidityDressed,rapidityReco,recoWeight);
-			hMatrixRapidityDressed->Fill(rapidityDressed,rapidityReco,hardWeight*(1-sfWeight));
+			hMatrixRapidityDressed->Fill(rapidityDressed,0.0,hardWeight*(1-sfWeight));
 		}
 	}// end loop over entries
 
@@ -859,7 +855,7 @@ bool IsSampleFake(TString fileName)
 	return false;
 }// end IsSampleFake()
 
-bool PassDileptonSelection(double eta1,double eta2,double pt1,double pt2,int idx1,int idx2)
+bool PassDileptonSelection(double eta1,double eta2,double pt1,double pt2)
 {
         if(abs(eta1)>etaGapLow && abs(eta1)<etaGapHigh) return false;
         if(abs(eta2)>etaGapLow && abs(eta2)<etaGapHigh) return false;
