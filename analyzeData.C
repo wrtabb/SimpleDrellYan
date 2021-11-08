@@ -13,6 +13,8 @@
 double GetCrossSection(TString fileName);
 bool IsSampleFake(TString fileName);
 bool PassDileptonSelection(double eta1,double eta2,double pt1,double pt2);
+bool PassMuonAngle(double pt1,double eta1,double phi1,double mass1,
+                   double pt2,double eta2,double phi2,double mass2);
 vector<double> GetVariables(double eta1,double eta2,double pt1,double pt2,double phi1,
                             double phi2);
 bool GetRecoLeptons(int &idxRecoLead, int &idxRecoSub);
@@ -917,7 +919,9 @@ bool GetRecoLeptons(int &idxRecoLead, int &idxRecoSub)
 	double neutralIso;
 	double gammaIso;
 	double sumPUPt;
-	double pT;  
+	double pt1,pt2;  
+	double eta1,eta2;
+	double phi1,phi2;
 	double iso_dBeta;
 	double charge1,charge2;
 
@@ -932,9 +936,11 @@ bool GetRecoLeptons(int &idxRecoLead, int &idxRecoSub)
 		neutralIso = Muon_PfNeutralHadronIsoR04[iMu];
 		gammaIso = Muon_PfGammaIsoR04[iMu];
 		sumPUPt = Muon_PFSumPUIsoR04[iMu];
-		pT = Muon_pT[iMu];
+		pt1 = Muon_pT[iMu];
+		eta1 = Muon_eta[iMu];
+		phi1 = Muon_phi[iMu];
 		iso_dBeta = 
-			(chargedIso+max(0.0,neutralIso+gammaIso-0.5*sumPUPt))/pT;
+			(chargedIso+max(0.0,neutralIso+gammaIso-0.5*sumPUPt))/pt1;
 		if(iso_dBeta > 0.15) continue;
 		charge1 = Muon_charge[iMu]; 
 
@@ -944,15 +950,19 @@ bool GetRecoLeptons(int &idxRecoLead, int &idxRecoSub)
 			neutralIso = Muon_PfNeutralHadronIsoR04[jMu];
 			gammaIso = Muon_PfGammaIsoR04[jMu];
 			sumPUPt = Muon_PFSumPUIsoR04[jMu];
-			pT = Muon_pT[jMu];
+			pt2 = Muon_pT[jMu];
+			eta2 = Muon_eta[jMu];
+			phi2 = Muon_phi[jMu];
 			iso_dBeta = 
-				(chargedIso+max(0.0,neutralIso+gammaIso-0.5*sumPUPt))/pT;
+				(chargedIso+max(0.0,neutralIso+gammaIso-0.5*sumPUPt))/pt2;
 			if(iso_dBeta > 0.15) continue;
 			charge2 = Muon_charge[jMu]; 
 			
 			// ensure muons with opposite charge
 			if(charge1*charge2 > 0) continue;
 
+			if(!PassMuonAngle(pt1,eta1,phi1,muMass,pt2,eta2,phi2,muMass)) 
+				continue;
 			// Temporary measure: keep two muons with highest pt
 			if(Muon_pT[iMu] > Muon_pT[jMu]){
 				idxRecoLead = iMu;
@@ -1120,4 +1130,19 @@ std::vector<TLorentzVector> GetDressedLeptons(int &idxDressedLead,int &idxDresse
         return returnVector;
 }// end GetDressedLeptons()
 
+bool PassMuonAngle(double pt1,double eta1,double phi1,double mass1,
+                   double pt2,double eta2,double phi2,double mass2)
+{
+	double angle;
+	double limit = pi - 0.005;
+	TLorentzVector v1;
+	TLorentzVector v2;
+	
+	v1.SetPtEtaPhiM(pt1,eta1,phi1,mass1);
+	v2.SetPtEtaPhiM(pt2,eta2,phi2,mass2);
+	
+	angle = v1.Angle(v2.Vect());
 
+	if(angle<limit) return false;
+	else return true;
+}
