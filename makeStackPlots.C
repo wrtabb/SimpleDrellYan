@@ -1,58 +1,58 @@
 
 vector<TString> file_data = {
-	"output_data/saveFile_MuMu_SingleMuon_Run2016B.root",
-	"output_data/saveFile_MuMu_SingleMuon_Run2016C.root",
-	"output_data/saveFile_MuMu_SingleMuon_Run2016D.root",
-	"output_data/saveFile_MuMu_SingleMuon_Run2016E.root",
-	"output_data/saveFile_MuMu_SingleMuon_Run2016F.root",
-	"output_data/saveFile_MuMu_SingleMuon_Run2016G.root",
-	"output_data/saveFile_MuMu_SingleMuon_Run2016Hver2.root",
-	"output_data/saveFile_MuMu_SingleMuon_Run2016Hver3.root"
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_SingleMuon_Run2016B.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_SingleMuon_Run2016C.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_SingleMuon_Run2016D.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_SingleMuon_Run2016E.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_SingleMuon_Run2016F.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_SingleMuon_Run2016G.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_SingleMuon_Run2016Hver2.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_SingleMuon_Run2016Hver3.root"
 };
 
 vector<TString> file_ew= {
-	"output_data/saveFile_MuMu_WW.root",
-	"output_data/saveFile_MuMu_WZ.root",
-	"output_data/saveFile_MuMu_ZZ.root",
-	"output_data/saveFile_MuMu_DYLL_M10to50_TauTau.root",
-	"output_data/saveFile_MuMu_DYLL_M50to100_TauTau.root",
-	"output_data/saveFile_MuMu_DYLL_M100to200_TauTau.root",
-	"output_data/saveFile_MuMu_DYLL_M200to400_TauTau.root",
-	"output_data/saveFile_MuMu_DYLL_M400to500_TauTau.root",
-	"output_data/saveFile_MuMu_DYLL_M500to700_TauTau.root",
-	"output_data/saveFile_MuMu_DYLL_M700to800_TauTau.root",
-	"output_data/saveFile_MuMu_DYLL_M800to1000_TauTau.root",
-	"output_data/saveFile_MuMu_DYLL_M1000to1500_TauTau.root",
-	"output_data/saveFile_MuMu_DYLL_M1500to2000_TauTau.root",
-	"output_data/saveFile_MuMu_DYLL_M2000to3000_TauTau.root"
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_WW.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_WZ.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_ZZ.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_DYLL_M10to50_TauTau.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_DYLL_M50to100_TauTau.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_DYLL_M100to200_TauTau.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_DYLL_M200to400_TauTau.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_DYLL_M400to500_TauTau.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_DYLL_M500to700_TauTau.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_DYLL_M700to800_TauTau.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_DYLL_M800to1000_TauTau.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_DYLL_M1000to1500_TauTau.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_DYLL_M1500to2000_TauTau.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_DYLL_M2000to3000_TauTau.root"
 };
 
 vector<TString> file_DYLL = {
-	"output_data/saveFile_MuMu_DYLL_M10to50_MuMu.root",
-	"output_data/saveFile_MuMu_DYLL_M50to100_MuMu.root",
-	"output_data/saveFile_MuMu_DYLL_M100to200_MuMu.root",
-	"output_data/saveFile_MuMu_DYLL_M200to400_MuMu.root",
-	"output_data/saveFile_MuMu_DYLL_M400to500_MuMu.root",
-	"output_data/saveFile_MuMu_DYLL_M500to700_MuMu.root",
-	"output_data/saveFile_MuMu_DYLL_M700to800_MuMu.root",
-	"output_data/saveFile_MuMu_DYLL_M800to1000_MuMu.root",
-	"output_data/saveFile_MuMu_DYLL_M1000to1500_MuMu.root",
-	"output_data/saveFile_MuMu_DYLL_M1500to2000_MuMu.root",
-	"output_data/saveFile_MuMu_DYLL_M2000to3000_MuMu.root"
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_DYLL_M10to50_MuMu.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_DYLL_M50to100_MuMu.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_DYLL_M100to200_MuMu.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_DYLL_M200to400_MuMu.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_DYLL_M400to500_MuMu.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_DYLL_M500to700_MuMu.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_DYLL_M700to800_MuMu.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_DYLL_M800to1000_MuMu.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_DYLL_M1000to1500_MuMu.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_DYLL_M1500to2000_MuMu.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_DYLL_M2000to3000_MuMu.root"
 };
 
 vector<TString> file_top = {
-	"output_data/saveFile_MuMu_ST_tW.root",
-	"output_data/saveFile_MuMu_ST_tbarW.root",
-	"output_data/saveFile_MuMu_ttbar_M0to700.root",
-	"output_data/saveFile_MuMu_ttbar_M700to1000.root",
-	"output_data/saveFile_MuMu_ttbar_M1000toInf.root"
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_ST_tW.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_ST_tbarW.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_ttbar_M0to700.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_ttbar_M700to1000.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_ttbar_M1000toInf.root"
 };
 
 vector<TString> file_Fake = {
-	"output_data/saveFile_MuMu_WJetsToLNu_amcatnlo.root",
-	"output_data/saveFile_MuMu_WJetsToLNu_amcatnlo_ext.root",
-	"output_data/saveFile_MuMu_WJetsToLNu_amcatnlo_ext2v5.root"
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_WJetsToLNu_amcatnlo.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_WJetsToLNu_amcatnlo_ext.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_WJetsToLNu_amcatnlo_ext2v5.root"
 };
 
 enum Variable{
@@ -106,14 +106,14 @@ void MakePlots(Variable var)
 	hSumName += plotProperties.at(0); 
 	TH1D*hSum = (TH1D*)hDYLL->Clone(hSumName);
 	hSum->Add(hTops);
-	hSum->Add(hFake);
+//	hSum->Add(hFake);
 	hSum->Add(hEW);
 
 	// Place signal and background into a stack
 	TString stackName = "hStack";
 	stackName += plotProperties.at(0);
 	THStack*hStack = new THStack(stackName,"");
-	hStack->Add(hFake);
+//	hStack->Add(hFake);
 	hStack->Add(hEW);
 	hStack->Add(hTops);
 	hStack->Add(hDYLL);
@@ -164,7 +164,7 @@ void MakePlots(Variable var)
 	legend->AddEntry(hDYLL,"#gamma^{*}/Z #rightarrow #mu^{-}#mu^{+}");
 	legend->AddEntry(hTops,"t#bar{t}+tW+#bar{t}W");
 	legend->AddEntry(hEW,"diboson + #gamma^{*}/Z #rightarrow #tau^{-}#tau^{+}");
-	legend->AddEntry(hFake,"W+Jets");
+//	legend->AddEntry(hFake,"W+Jets");
 	legend->Draw("same");
 
 	// Stack properties
@@ -274,6 +274,7 @@ TH1D*GetHistogram(vector<TString> filesvector,TString variable)
 		loadFile = filesvector.at(i);
 		loadHist = "hist";
 		loadHist += variable;
+		loadHist += "Reco";
 		cout << "********************************************" << endl;
 		cout << "Loading histogram: " << loadHist << endl;
 		cout << "From file: " << loadFile << endl; 
