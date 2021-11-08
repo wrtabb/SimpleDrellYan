@@ -929,7 +929,7 @@ bool GetRecoLeptons(int &idxRecoLead, int &idxRecoSub)
 			(chargedIso+max(0.0,neutralIso+gammaIso-0.5*sumPUPt))/pT;
 		if(iso_dBeta > 0.15) continue;
 
-		for(int jMu=0;jMu<nMuon;jMu++){
+		for(int jMu=iMu+1;jMu<nMuon;jMu++){
 			if(!Muon_passTightID[jMu]) continue;
 			chargedIso = Muon_PfChargedHadronIsoR04[jMu];
 			neutralIso = Muon_PfNeutralHadronIsoR04[jMu];
