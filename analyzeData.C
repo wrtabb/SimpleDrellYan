@@ -21,6 +21,7 @@ bool GetRecoLeptons(int &idxRecoLead, int &idxRecoSub);
 bool GetHardLeptons(int &idxHard1,int &idxHard2);
 std::vector<TLorentzVector> GetDressedLeptons(int &idxHardLead,int &idxHardSub);
 void Counter(Long64_t event,Long64_t total);
+double GetVertexChi2(double pt1,double pt2);
 
 TString base_directory = "root://xrootd-local.unl.edu///store/user/wtabb/DrellYan_13TeV_2016/v2p6/skims/skims_MuMu/";
 
@@ -207,6 +208,7 @@ double Muon_Py[MPSIZE];
 double Muon_Pz[MPSIZE];
 double Muon_eta[MPSIZE];
 double Muon_phi[MPSIZE];
+double Muon_Inner_pT[MPSIZE];
 int Muon_charge[MPSIZE];
 double Muon_dxy[MPSIZE];
 double Muon_dz[MPSIZE];
@@ -258,6 +260,7 @@ TBranch*b_Muon_Py;
 TBranch*b_Muon_Pz;
 TBranch*b_Muon_eta;
 TBranch*b_Muon_phi;
+TBranch*b_Muon_Inner_pT;
 TBranch*b_Muon_charge;
 TBranch*b_Muon_dxy;
 TBranch*b_Muon_dz;
@@ -490,6 +493,7 @@ void analyzeData(TString fileName)
 	chain->SetBranchAddress("Muon_Pz",&Muon_Pz,&b_Muon_Pz);
 	chain->SetBranchAddress("Muon_eta",&Muon_eta,&b_Muon_eta);
 	chain->SetBranchAddress("Muon_phi",&Muon_phi,&b_Muon_phi);
+	chain->SetBranchAddress("Muon_Inner_pT",&Muon_Inner_pT,&b_Muon_Inner_pT);
 	chain->SetBranchAddress("Muon_passTightID",&Muon_passTightID,
 				&b_Muon_passTightID);
 	chain->SetBranchAddress("Muon_charge",&Muon_charge,&b_Muon_charge);
@@ -821,7 +825,7 @@ void analyzeData(TString fileName)
 	}// end loop over entries
 
 	// Save results to output file
-	TString saveName = "output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_";
+	TString saveName = "output_data/testFile_MuMu_NoSF_NoPVz_WithDressed_NewCuts_";
 	saveName += fileName;
 	saveName += ".root";
 	TFile*file;
@@ -924,6 +928,7 @@ bool GetRecoLeptons(int &idxRecoLead, int &idxRecoSub)
 	double phi1,phi2;
 	double iso_dBeta;
 	double charge1,charge2;
+	double chi2Old = 1000000000;
 
 	int nDileptons = 0;
 
@@ -963,16 +968,24 @@ bool GetRecoLeptons(int &idxRecoLead, int &idxRecoSub)
 
 			if(!PassMuonAngle(pt1,eta1,phi1,muMass,pt2,eta2,phi2,muMass)) 
 				continue;
-			// Temporary measure: keep two muons with highest pt
-			if(Muon_pT[iMu] > Muon_pT[jMu]){
-				idxRecoLead = iMu;
-				idxRecoSub  = jMu;
-			}
-			else{
-				idxRecoLead = jMu;
-				idxRecoSub  = iMu;
-			} 
-			nDileptons++;
+
+			double ptIn1 = Muon_Inner_pT[iMu];
+			double ptIn2 = Muon_Inner_pT[jMu];
+			double chi2 = GetVertexChi2(ptIn1,ptIn2);
+			if(chi2>0 && chi2<chi2Old){
+				cout << chi2 << endl;
+				chi2Old = chi2;
+				
+				if(pt1 > pt2){
+					idxRecoLead = iMu;
+					idxRecoSub  = jMu;
+				}
+				else{
+					idxRecoLead = jMu;
+					idxRecoSub  = iMu;
+				} 
+				nDileptons++;
+			}// end if chi2>0 and chi2 < chi2old
 		}//end inner muon loop
 	}// end outer muon loop 
 
@@ -1145,4 +1158,19 @@ bool PassMuonAngle(double pt1,double eta1,double phi1,double mass1,
 
 	if(angle<limit) return false;
 	else return true;
+}
+
+double GetVertexChi2(double pt1,double pt2)
+{
+	int nPt1 = vtxTrkCkt1Pt.size();
+	int nPt2 = vtxTrkCkt2Pt.size();
+	double chi2_dof = -1000;
+	if(nPt1 != nPt2) cout << "nPt1 = " << nPt1 << ", nPt2 = " << nPt2 << endl;
+
+	for(int i=0;i<nPt1;i++){
+		if( (vtxTrkCkt1Pt.at(i) == pt1 && vtxTrkCkt2Pt.at(i) == pt2) ||
+		    (vtxTrkCkt1Pt.at(i) == pt2 && vtxTrkCkt2Pt.at(i) == pt1))
+			chi2_dof = vtxTrkChi2[i]/vtxTrkNdof[i];
+	}
+	return chi2_dof;	
 }

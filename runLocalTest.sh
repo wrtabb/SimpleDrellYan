@@ -2,5 +2,5 @@
 
 root -l << EOF
 .L analyzeData.C+
-analyzeData("DYLL_M500to700_MuMu")
+analyzeData("DYLL_M100to200_MuMu")
 EOF
