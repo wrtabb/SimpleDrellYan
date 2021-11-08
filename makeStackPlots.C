@@ -128,9 +128,9 @@ void MakePlots(Variable var)
 	hSumName += plotProperties.at(0); 
 	TH1D*hSum = (TH1D*)hDYLL->Clone(hSumName);
 	hSum->Add(hTops);
-	hSum->Add(hFake);
+//	hSum->Add(hFake);
       	hSum->Add(hEW);
-	hSum->Add(hQCD);
+//	hSum->Add(hQCD);
 
 	// Some samples can have negative bin contents due to weightings
 	// Set any negative bins to zero
@@ -147,8 +147,8 @@ void MakePlots(Variable var)
 	TString stackName = "hStack";
 	stackName += plotProperties.at(0);
 	THStack*hStack = new THStack(stackName,"");
-	hStack->Add(hQCD);
-	hStack->Add(hFake);
+//	hStack->Add(hQCD);
+//	hStack->Add(hFake);
 	hStack->Add(hEW);
 	hStack->Add(hTops);
 	hStack->Add(hDYLL);

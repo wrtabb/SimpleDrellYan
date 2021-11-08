@@ -38,7 +38,7 @@ void unfold()
 	TH1F*hUnfoldedClosure;
 	TH1F*hUnfolded;
 	hUnfoldedClosure = unfold->unfoldTUnfold(regType,hReco,hBack0,hTrue,hMatrix);
-	hUnfolded = unfold->unfoldTUnfold(regType,hData,hBack,hTrue,hMatrix);
+	//hUnfolded = unfold->unfoldTUnfold(regType,hData,hBack,hTrue,hMatrix);
 	hUnfolded->SetMarkerStyle(25);
 	hUnfolded->SetMarkerColor(kBlue+2);
 	hUnfolded->SetLineColor(kBlue+2);
