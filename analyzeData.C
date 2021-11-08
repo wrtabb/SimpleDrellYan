@@ -184,8 +184,8 @@ double GENLepton_Py[MPSIZE];
 double GENLepton_Pz[MPSIZE];
 double GENLepton_E[MPSIZE];
 int GENLepton_ID[MPSIZE];
-bool GENLepton_isHardProcess[MPSIZE];
-bool GENLepton_fromHardProcessFinalState[MPSIZE];
+int GENLepton_isHardProcess[MPSIZE];
+int GENLepton_fromHardProcessFinalState[MPSIZE];
 int nGenOthers;
 double GenOthers_phi[MPSIZE];
 double GenOthers_eta[MPSIZE];
@@ -524,6 +524,14 @@ void analyzeData(TString fileName)
 					&b_GENLepton_phi);
 		chain->SetBranchAddress("GENLepton_pT",&GENLepton_pT, 
 					&b_GENLepton_pT);
+		chain->SetBranchAddress("GENLepton_Px",&GENLepton_Px,
+					&b_GENLepton_Px);
+		chain->SetBranchAddress("GENLepton_Py",&GENLepton_Py,
+					&b_GENLepton_Py);
+		chain->SetBranchAddress("GENLepton_Pz",&GENLepton_Pz,
+					&b_GENLepton_Pz);
+		chain->SetBranchAddress("GENLepton_E",&GENLepton_E,
+					&b_GENLepton_E);
 		chain->SetBranchAddress("GENLepton_ID",&GENLepton_ID, 
 					&b_GENLepton_ID);
 		chain->SetBranchAddress("GENLepton_isHardProcess",
@@ -631,7 +639,6 @@ void analyzeData(TString fileName)
 		vector<double> recoVariables;
                 recoVariables = GetVariables(etaRecoLead,etaRecoSub,ptRecoLead,ptRecoSub,
                                              phiRecoLead,phiRecoSub);
-
 		if(passRecoSelection){
                         invMassReco     = recoVariables.at(0);
                         rapidityReco    = recoVariables.at(1);
@@ -666,7 +673,8 @@ void analyzeData(TString fileName)
                 }
                 bool passHardSelection = false;
                 if(ptHardLead >=0 && ptHardSub >= 0 && etaHardLead > -3 &&
-                   etaHardSub > -3 && phiHardLead > -100 && phiHardSub > -100){
+                   etaHardSub > -3 && phiHardLead > -100 && phiHardSub > -100 &&
+		   idxHardLead > -1 && idxHardSub > -1){
                         passHardSelection = PassDileptonSelection(etaHardLead,etaHardSub,
                                                                   ptHardLead,ptHardSub);
                 }
@@ -811,7 +819,8 @@ void analyzeData(TString fileName)
 	}// end loop over entries
 
 	// Save results to output file
-	TString saveName = "output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_";
+//	TString saveName = "output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_";
+	TString saveName = "test";
 	saveName += fileName;
 	saveName += ".root";
 	TFile*file;
@@ -911,13 +920,13 @@ bool GetRecoLeptons(int &idxRecoLead, int &idxRecoSub)
 	double sumPUPt;
 	double pT;  
 	double iso_dBeta;
+	double charge1,charge2;
 
 	int nDileptons = 0;
 
 	// NOTE: Need to choose two muons by smallest vertex chi2
 	// Choosing highest two pT is a temporary placeholder 
 	// Add angular cut for muons
-	// Add opposite sign criteria
 	for(int iMu=0;iMu<nMuon;iMu++){
 		if(!Muon_passTightID[iMu]) continue;
 		chargedIso = Muon_PfChargedHadronIsoR04[iMu];
@@ -928,6 +937,7 @@ bool GetRecoLeptons(int &idxRecoLead, int &idxRecoSub)
 		iso_dBeta = 
 			(chargedIso+max(0.0,neutralIso+gammaIso-0.5*sumPUPt))/pT;
 		if(iso_dBeta > 0.15) continue;
+		charge1 = Muon_charge[iMu]; 
 
 		for(int jMu=iMu+1;jMu<nMuon;jMu++){
 			if(!Muon_passTightID[jMu]) continue;
@@ -939,7 +949,12 @@ bool GetRecoLeptons(int &idxRecoLead, int &idxRecoSub)
 			iso_dBeta = 
 				(chargedIso+max(0.0,neutralIso+gammaIso-0.5*sumPUPt))/pT;
 			if(iso_dBeta > 0.15) continue;
+			charge2 = Muon_charge[jMu]; 
 			
+			// ensure muons with opposite charge
+			if(charge1*charge2 > 0) continue;
+
+			// Temporary measure: keep two muons with highest pt
 			if(Muon_pT[iMu] > Muon_pT[jMu]){
 				idxRecoLead = iMu;
 				idxRecoSub  = jMu;
@@ -1031,8 +1046,8 @@ std::vector<TLorentzVector> GetDressedLeptons(int &idxDressedLead,int &idxDresse
         double py2 = GENLepton_Py[idxDressedSub];
         double pz1 = GENLepton_Pz[idxDressedLead];
         double pz2 = GENLepton_Pz[idxDressedSub];
-        double E1 = sqrt(px1*px1+py1*py1+pz1*pz1+muMass*muMass);
-        double E2 = sqrt(px2*px2+py2*py2+pz2*pz2+muMass*muMass);
+        double E1 =  GENLepton_E[idxDressedLead];
+        double E2 =  GENLepton_E[idxDressedSub];
 
         dressed1.SetPxPyPzE(px1,py1,pz1,E1);
         dressed2.SetPxPyPzE(px2,py2,pz2,E2);
@@ -1043,7 +1058,6 @@ std::vector<TLorentzVector> GetDressedLeptons(int &idxDressedLead,int &idxDresse
         double phi2 = GENLepton_phi[idxDressedSub];
 
         double dRMin = 0.1;
-        TLorentzVector phoVec;
         double etaPho,phiPho;
         double etaDiff1,phiDiff1;
 
@@ -1080,6 +1094,7 @@ std::vector<TLorentzVector> GetDressedLeptons(int &idxDressedLead,int &idxDresse
 			pyPho = GenOthers_Py[iPho];
 			pzPho = GenOthers_Pz[iPho];
 			EPho  = GenOthers_E[iPho];
+			TLorentzVector phoVec;
 			phoVec.SetPxPyPzE(pxPho,pyPho,pzPho,EPho);
 
 			// only keep photons which are closer than 0.1 from one of the muons
