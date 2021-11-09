@@ -184,7 +184,7 @@ TCanvas*Unfold::plotUnfolded(TString canvasName,TString titleName,TH1F*hReco,TH1
 
 	if(logPlot){
 		xChiLabel = xRange*0.2+xMin;
-		yChiLabel = yMax*0.15;
+		yChiLabel = yMax*0.01;
 	}
 	else {
 		xChiLabel = xRange*0.66+xMin;
@@ -281,23 +281,24 @@ TH2F*Unfold::makeResponseMatrix(TH2F*hist)
 	TH2F*hResponse = (TH2F*)hist->Clone("hResponse");
 	int nBinsX = hResponse->GetNbinsX();
 	int nBinsY = hResponse->GetNbinsY();
-	double nEntriesX;
+	double nEntriesY;
 	double binContent;
 	double scaledContent;
 	
-	//Loop over all true bins (the y-axis)
-	for(int j=0;j<=nBinsY+1;j++){
-		nEntriesX = 0.0;
+	//Loop over all true bins (the x-axis)
+	for(int j=0;j<=nBinsX+1;j++){
+		nEntriesY = 0.0;
 		//for each true bin, sum up the number of events across all reco bins
-		for(int i=0;i<=nBinsX+1;i++){
-			binContent = hist->GetBinContent(i,j);
-			nEntriesX += binContent;
+		for(int i=0;i<=nBinsY+1;i++){
+			binContent = hist->GetBinContent(j,i);
+			nEntriesY += binContent;
 		}//end first loop over reco bins
+
 		//For each true bin scale the bin content by the number of entries in all
 		//reco bins, then place this content into the new matrix
-		for(int i=0;i<=nBinsX+1;i++){
-			scaledContent = hist->GetBinContent(i,j)/nEntriesX;
-			hResponse->SetBinContent(i,j,scaledContent);
+		for(int i=0;i<=nBinsY+1;i++){
+			scaledContent = hist->GetBinContent(j,i)/nEntriesY;
+			hResponse->SetBinContent(j,i,scaledContent);
 		}//end second loop over reco bins
 	}//end loop over true bins
 

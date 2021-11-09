@@ -107,14 +107,8 @@ void getUnfoldingHistograms()
 	hInvMassBack->SetMarkerColor(kBlue);
 	hInvMassBack->SetMarkerStyle(20);
 
-	TCanvas*c1 = new TCanvas("c1","",0,0,1000,1000);
-	c1->SetGrid();
-	c1->SetLogy();
-	c1->SetLogx();
-	hInvMassDressed->Draw("hist,same");
-	hInvMassData->Draw("pe,same");
-	hInvMassBack->Draw("pe,same");
 
+	// Plot migration matrix
 	TCanvas*c2 = new TCanvas("c2","",0,0,1000,1000);
 	c2->SetGrid();
 	c2->SetLogy();
@@ -127,36 +121,100 @@ void getUnfoldingHistograms()
 	hInvMassMatrix->GetXaxis()->SetTitle("m_{ee,true} [GeV]");
 	hInvMassMatrix->GetYaxis()->SetTitle("m_{ee,obs} [GeV]");
 	hInvMassMatrix->Draw("colz");
-	c2->SaveAs("plots/invMassMatrixDressed.png");
+//	c2->SaveAs("plots/invMassMatrixDressed.png");
 
-	hInvMassDYLL->SetFillColor(kOrange-2);
-	hInvMassDYLL->SetLineColor(kOrange+3);
-	hInvMassBack->SetFillColor(kViolet+2);
-	THStack*hStack = new THStack("hStack","");
-	hStack->Add(hInvMassBack);
-	hStack->Add(hInvMassDYLL);
-	TCanvas*c3 = new TCanvas("c3","",0,0,1000,1000);
-	c3->SetGrid();
-	c3->SetLogy();
-	c3->SetLogx();
-	hStack->SetMinimum(0.1);
-	hStack->Draw("hist");		
-	hInvMassData->Draw("pe,same");
-	c3->SaveAs("plots/invMassBackDYLLData.png");
 
+	// Plot Matrix projections alongside 1D distributions
+	// These should be identical
+	double ratioRange = 0.003;
+	double upperBound = 1.0-ratioRange;
+	double lowerBound = 1.0+ratioRange;
+	TH1F*hRatioTrue = (TH1F*)hInvMassDressed->Clone("trueRatio");
+	hRatioTrue->Divide(projX);
+	hRatioTrue->SetMarkerStyle(20);
+	hRatioTrue->SetMarkerColor(kBlue);
+	hRatioTrue->SetMinimum(1.0-ratioRange);
+	hRatioTrue->SetMaximum(1.0+ratioRange);
+	TH1F*hRatioReco = (TH1F*)hInvMassDYLL->Clone("recoRatio");
+	hRatioReco->Divide(projY);
+	hRatioReco->SetMarkerStyle(20);
+	hRatioReco->SetMarkerColor(kRed);
+	hRatioReco->SetMinimum(1.0-ratioRange);
+	hRatioReco->SetMaximum(1.0+ratioRange);
+
+	TLegend*legend = new TLegend(0.65,0.9,0.9,0.75);
+        legend->SetTextSize(0.02);
+        legend->AddEntry(hInvMassDressed,"True Distribution");
+        legend->AddEntry(hInvMassDYLL,"Observed Distribution");
+        legend->AddEntry(projX,"Matrix x-projection");
+        legend->AddEntry(projY,"Matrix y-projection");
 
 	TCanvas*c4 = new TCanvas("c4","",0,0,1000,1000);
-	c4->SetGrid();
-	c4->SetLogy();
-	c4->SetLogx();
+	const float padmargins = 0.03;
+        const float yAxisMinimum = 0.1;
+        const float yAxisMaximum = 1e7;
+        TPad*pad1 = new TPad("","",0,0.3,1.0,1.0);
+	pad1->SetLogx();
+	pad1->SetLogy();
+	pad1->SetBottomMargin(padmargins);
+        pad1->SetGrid();
+        pad1->SetTicks(1,1);
+        pad1->Draw();
+        pad1->cd();
+	hInvMassDressed->SetTitle("1D Distributions vs. Matrix Projections");
+	hInvMassDressed->SetLabelSize(0);
+	hInvMassDressed->SetTitleSize(0);
+	hInvMassDressed->SetMinimum(0.1);
 	hInvMassDressed->SetMarkerStyle(20);
 	hInvMassDressed->SetMarkerColor(kBlue);
 	hInvMassDYLL->SetMarkerStyle(20);
 	hInvMassDYLL->SetMarkerColor(kRed);
+	hInvMassDYLL->SetLineColor(kRed);
+
 	hInvMassDressed->Draw("pe,same");
 	hInvMassDYLL->Draw("pe,same");
 	projX->Draw("hist,same");
 	projY->Draw("hist,same");
+	legend->Draw("same");
+
+	double ratioSplit = 0.18;
+	c4->cd();
+	TPad*pad2 = new TPad("","",0,ratioSplit,1,0.3);
+	pad2->SetLogx();
+	pad2->SetTopMargin(padmargins);
+        pad2->SetBottomMargin(0.2);
+        pad2->SetGrid();
+        pad2->SetTicks(1,1);
+        pad2->Draw();
+        pad2->cd();
+	hRatioTrue->GetYaxis()->SetLabelSize(0.06);
+        hRatioTrue->GetYaxis()->SetTitleSize(0.08);
+        hRatioTrue->GetYaxis()->SetTitleOffset(0.3);
+        hRatioTrue->GetYaxis()->SetTitle("1D/projection");
+        hRatioTrue->GetXaxis()->SetLabelSize(0);
+        hRatioTrue->GetXaxis()->SetTitleSize(0);
+	hRatioTrue->Draw("pe");
+
+	c4->cd();
+	TPad*pad3 = new TPad("","",0,0.05,1,ratioSplit);
+	pad3->SetLogx();
+	pad3->SetTopMargin(padmargins);
+        pad3->SetBottomMargin(0.2);
+        pad3->SetGrid();
+        pad3->SetTicks(1,1);
+        pad3->Draw();
+        pad3->cd();
+	hRatioReco->GetYaxis()->SetLabelSize(0.06);
+        hRatioReco->GetYaxis()->SetTitleSize(0.08);
+        hRatioReco->GetYaxis()->SetTitleOffset(0.3);
+        hRatioReco->GetYaxis()->SetTitle("1D/projection");
+        hRatioReco->GetXaxis()->SetLabelSize(0.1);
+        hRatioReco->GetXaxis()->SetTitleSize(0.1);
+        hRatioReco->GetXaxis()->SetNoExponent();
+        hRatioReco->GetXaxis()->SetMoreLogLabels();
+        hRatioReco->GetXaxis()->SetTitle("mass [GeV]");
+	hRatioReco->Draw("pe");
+
 	c4->SaveAs("plots/invMassMatrixProjections.png");
 
 	hInvMassData->SetName("hInvMassData");
