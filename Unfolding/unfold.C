@@ -25,20 +25,13 @@ void unfold()
 	TH1F*hTrue   = (TH1F*)loadFile->Get(histograms.at(3));
 	TH2F*hMatrix = (TH2F*)loadFile->Get(histograms.at(4));
 
-	TH1F*hBack0 = (TH1F*)hBack->Clone("hBack0");
-	int nBins = hBack0->GetNbinsX();
-	for(int i=0;i<nBins;i++){
-		// hBack0 will be blank for a closure test
-		hBack0->SetBinContent(i,0);
-	}
-
 	Unfold*unfold = new Unfold();
 	Unfold::RegType regType = unfold->NO_REG;
 
 	TH1F*hUnfoldedClosure;
 	TH1F*hUnfolded;
-	hUnfoldedClosure = unfold->unfoldTUnfold(regType,hReco,hBack0,hTrue,hMatrix);
-	//hUnfolded = unfold->unfoldTUnfold(regType,hData,hBack,hTrue,hMatrix);
+	//hUnfoldedClosure = unfold->unfoldTUnfold(regType,hReco,hBack,hTrue,hMatrix);
+	hUnfolded = unfold->unfoldTUnfold(regType,hData,hBack,hTrue,hMatrix);
 	hUnfolded->SetMarkerStyle(25);
 	hUnfolded->SetMarkerColor(kBlue+2);
 	hUnfolded->SetLineColor(kBlue+2);
