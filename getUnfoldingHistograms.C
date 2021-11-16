@@ -1,4 +1,6 @@
 
+TH2D*GetResponseMatrix(TH2D*hMatrix);
+
 vector<TString> fileList_DYLL = {
         "output_data/saveFile_EE_NoPVz_DYLL_M10to50_EE.root",
         "output_data/saveFile_EE_NoPVz_DYLL_M50to100_EE.root",
@@ -44,8 +46,8 @@ vector<TString> fileList_back = {
         "output_data/saveFile_EE_NoPVz_DYLL_M1000to1500_TauTau.root",
         "output_data/saveFile_EE_NoPVz_DYLL_M1500to2000_TauTau.root",
         "output_data/saveFile_EE_NoPVz_DYLL_M2000to3000_TauTau.root",
-	"output_data/saveFile_EE_NoPVz_WJetsToLNu_amcatnlo_ext.root",
-	"output_data/saveFile_EE_NoPVz_WJetsToLNu_amcatnlo_ext2v5.root",
+//	"output_data/saveFile_EE_NoPVz_WJetsToLNu_amcatnlo_ext.root",
+//	"output_data/saveFile_EE_NoPVz_WJetsToLNu_amcatnlo_ext2v5.root",
 };
 
 void getUnfoldingHistograms()
@@ -121,7 +123,7 @@ void getUnfoldingHistograms()
 	hInvMassMatrix->GetXaxis()->SetTitle("m_{ee,true} [GeV]");
 	hInvMassMatrix->GetYaxis()->SetTitle("m_{ee,obs} [GeV]");
 	hInvMassMatrix->Draw("colz");
-//	c2->SaveAs("plots/invMassMatrixDressed.png");
+	c2->SaveAs("plots/invMassMatrixDressed.png");
 
 
 	// Plot Matrix projections alongside 1D distributions
@@ -222,6 +224,14 @@ void getUnfoldingHistograms()
 	hInvMassDYLL->SetName("hInvMassReco");
 	hInvMassBack->SetName("hInvMassBack");
 	hInvMassMatrix->SetName("hInvMassMatrix");
+	TH2D*hInvMassResponse = GetResponseMatrix(hInvMassMatrix);
+
+	TCanvas*c5=new TCanvas("c5","",0,0,1000,1000);
+	c5->SetGrid();
+	c5->SetLogx();
+	c5->SetLogy();
+	hInvMassResponse->Draw("colz");
+	c5->SaveAs("plots/invMassResponseMatrix.png");
 
 	TFile*save_file = new TFile("data/unfoldingHistogramsEE.root","recreate");
 	hInvMassData->Write();
@@ -229,6 +239,32 @@ void getUnfoldingHistograms()
 	hInvMassBack->Write();
 	hInvMassDressed->Write();
 	hInvMassMatrix->Write();
-
+	hInvMassResponse->Write();
 	save_file->Close();
+}
+
+TH2D*GetResponseMatrix(TH2D*hMatrix)
+{
+	TH2D*hist = (TH2D*)hMatrix->Clone("hInvMassResponse");
+	double sumReco;
+	int nBinsTrue = hMatrix->GetNbinsX();
+	int nBinsReco = hMatrix->GetNbinsY();
+	if(nBinsTrue>=nBinsReco){
+		cout << "Need more reco bins than true bins for unfolding" << endl;
+		cout << "Fix this and try again" << endl;
+		return hist;
+	}
+
+	for(int i=1;i<=nBinsTrue;i++){
+		sumReco = 0.0;
+		for(int j=1;j<=nBinsReco;j++){
+			sumReco += hMatrix->GetBinContent(i,j);
+		}// loop over reco bins
+		for(int j=1;j<=nBinsReco;j++){
+			hist->SetBinContent(i,j,hMatrix->GetBinContent(i,j)/sumReco);
+		}// loop over reco bins
+	}// loop over true bins
+	hist->RebinY(2);
+
+	return hist;
 }

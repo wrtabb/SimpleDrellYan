@@ -48,6 +48,6 @@ cout << "Condition number of response matrix: " << condition << endl;
 	hResponse->Draw("colz");
 
 	c1->SaveAs("../plots/unfoldedEE_ClosureTest.png");
-	c2->SaveAs("../plots/unfoldedEE_Data.png");
+	c2->SaveAs("../plots/unfoldedEE_Data_NoFakes.png");
 	c3->SaveAs("../plots/unfoldedEE_ResponseMatrix.png");
 }
