@@ -118,6 +118,8 @@ void getUnfoldingHistograms()
 	c2->SetLogy();
 	c2->SetLogx();
 	c2->SetLogz();
+	c2->SetRightMargin(0.13);
+	c2->SetLeftMargin(0.13);
 	hInvMassMatrix->GetXaxis()->SetMoreLogLabels();
 	hInvMassMatrix->GetYaxis()->SetMoreLogLabels();
 	hInvMassMatrix->GetXaxis()->SetNoExponent();
@@ -146,6 +148,8 @@ void getUnfoldingHistograms()
 	c4->SetGrid();
 	c4->SetLogy();
 	c4->SetLogx();
+	c4->SetRightMargin(0.13);
+	c4->SetLeftMargin(0.13);
 	hInvMassDressed->SetMarkerStyle(20);
 	hInvMassDressed->SetMarkerColor(kBlue);
 	hInvMassDYLL->SetMarkerStyle(20);

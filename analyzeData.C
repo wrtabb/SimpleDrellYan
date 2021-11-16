@@ -1166,16 +1166,11 @@ double GetVertexChi2(double pt1,double pt2)
 	int nPt2 = vtxTrkCkt2Pt.size();
 	double chi2_dof = -1000;
 	if(nPt1 != nPt2) cout << "nPt1 = " << nPt1 << ", nPt2 = " << nPt2 << endl;
-cout << "Check vertex chi2 calculations: " << endl;
+
 	for(int i=0;i<nPt1;i++){
-	cout << "vtx1: " << vtxTrkCkt1Pt.at(i) << ", " << pt1 << endl; 
-	cout << "vtx1: " << vtxTrkCkt1Pt.at(i) << ", " << pt2 << endl; 
-	cout << "vtx2: " << vtxTrkCkt2Pt.at(i) << ", " << pt1 << endl; 
-	cout << "vtx2: " << vtxTrkCkt2Pt.at(i) << ", " << pt2 << endl; 
 		if( (vtxTrkCkt1Pt.at(i) == pt1 && vtxTrkCkt2Pt.at(i) == pt2) ||
 		    (vtxTrkCkt1Pt.at(i) == pt2 && vtxTrkCkt2Pt.at(i) == pt1))
 			chi2_dof = vtxTrkChi2[i]/vtxTrkNdof[i];
-	cout << "chi2 = " << chi2_dof << endl;
 	}
 	return chi2_dof;	
 }
