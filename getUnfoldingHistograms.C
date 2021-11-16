@@ -115,6 +115,8 @@ void getUnfoldingHistograms()
 	c2->SetGrid();
 	c2->SetLogy();
 	c2->SetLogx();
+	c2->SetRightMargin(0.13);
+        c2->SetLeftMargin(0.13);
 	c2->SetLogz();
 	hInvMassMatrix->GetXaxis()->SetMoreLogLabels();
 	hInvMassMatrix->GetYaxis()->SetMoreLogLabels();
@@ -230,6 +232,8 @@ void getUnfoldingHistograms()
 	c5->SetGrid();
 	c5->SetLogx();
 	c5->SetLogy();
+	c5->SetRightMargin(0.13);
+        c5->SetLeftMargin(0.13);
 	hInvMassResponse->Draw("colz");
 	c5->SaveAs("plots/invMassResponseMatrix.png");
 
