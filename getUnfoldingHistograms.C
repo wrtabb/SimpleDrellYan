@@ -50,7 +50,7 @@ void getUnfoldingHistograms()
 {
 	gStyle->SetOptStat(0);
 	gStyle->SetPalette(1);
-	//gROOT->SetBatch(true);
+	gROOT->SetBatch(true);
 	TFile*file_data;
 	TFile*file_DYLL;
 	TFile*file_back;

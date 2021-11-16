@@ -825,7 +825,7 @@ void analyzeData(TString fileName)
 	}// end loop over entries
 
 	// Save results to output file
-	TString saveName = "output_data/testFile_MuMu_NoSF_NoPVz_WithDressed_NewCuts_";
+	TString saveName = "output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_NewCuts_";
 	saveName += fileName;
 	saveName += ".root";
 	TFile*file;
@@ -972,8 +972,8 @@ bool GetRecoLeptons(int &idxRecoLead, int &idxRecoSub)
 			double ptIn1 = Muon_Inner_pT[iMu];
 			double ptIn2 = Muon_Inner_pT[jMu];
 			double chi2 = GetVertexChi2(ptIn1,ptIn2);
+
 			if(chi2>0 && chi2<chi2Old){
-				cout << chi2 << endl;
 				chi2Old = chi2;
 				
 				if(pt1 > pt2){
@@ -1156,7 +1156,7 @@ bool PassMuonAngle(double pt1,double eta1,double phi1,double mass1,
 	
 	angle = v1.Angle(v2.Vect());
 
-	if(angle<limit) return false;
+	if(angle>limit) return false;
 	else return true;
 }
 
@@ -1166,11 +1166,16 @@ double GetVertexChi2(double pt1,double pt2)
 	int nPt2 = vtxTrkCkt2Pt.size();
 	double chi2_dof = -1000;
 	if(nPt1 != nPt2) cout << "nPt1 = " << nPt1 << ", nPt2 = " << nPt2 << endl;
-
+cout << "Check vertex chi2 calculations: " << endl;
 	for(int i=0;i<nPt1;i++){
+	cout << "vtx1: " << vtxTrkCkt1Pt.at(i) << ", " << pt1 << endl; 
+	cout << "vtx1: " << vtxTrkCkt1Pt.at(i) << ", " << pt2 << endl; 
+	cout << "vtx2: " << vtxTrkCkt2Pt.at(i) << ", " << pt1 << endl; 
+	cout << "vtx2: " << vtxTrkCkt2Pt.at(i) << ", " << pt2 << endl; 
 		if( (vtxTrkCkt1Pt.at(i) == pt1 && vtxTrkCkt2Pt.at(i) == pt2) ||
 		    (vtxTrkCkt1Pt.at(i) == pt2 && vtxTrkCkt2Pt.at(i) == pt1))
 			chi2_dof = vtxTrkChi2[i]/vtxTrkNdof[i];
+	cout << "chi2 = " << chi2_dof << endl;
 	}
 	return chi2_dof;	
 }
