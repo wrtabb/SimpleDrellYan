@@ -426,7 +426,7 @@ void analyzeData(TString fileName)
 	TString histNamePtLead = histName+"PtLeadReco";
 	TString histNamePtSub = histName+"PtSubReco";
 
-	hInvMassReco = new TH1D(histNameInvMass,"",nMassBins,massbins);
+	hInvMassReco = new TH1D(histNameInvMass,"",nMassBins2,massbins2);
 	hRapidityReco = new TH1D(histNameRapidity,"",100,-2.5,2.5);
 	hPtLeadReco = new TH1D(histNamePtLead,"",100,0,500);
 	hPtSubReco = new TH1D(histNamePtSub,"",100,0,500);
