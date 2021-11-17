@@ -797,31 +797,27 @@ void analyzeData(TString fileName)
 		hPtLeadReco->Fill(leadPtReco,recoWeight);
 		hPtSubReco->Fill(subPtReco,recoWeight);
 
-		if(passHardSelection){
-			hMatrixInvMassHard->Fill(invMassHard,invMassReco,recoWeight);
-			hMatrixInvMassHard->Fill(invMassHard,0.0,hardWeight*(1-sfWeight));
-			hMatrixRapidityHard->Fill(rapidityHard,rapidityReco,recoWeight);
-			hMatrixRapidityHard->Fill(rapidityHard,0.0,hardWeight*(1-sfWeight));
-			// Fill hard-process histograms
-			hInvMassHard->Fill(invMassHard,hardWeight);
-			hRapidityHard->Fill(rapidityHard,hardWeight);
-			hPtLeadHard->Fill(leadPtHard,hardWeight);
-			hPtSubHard->Fill(subPtHard,hardWeight);
-		}// end if passHardSelection
+		hMatrixInvMassHard->Fill(invMassHard,invMassReco,recoWeight);
+		hMatrixInvMassHard->Fill(invMassHard,0.0,hardWeight*(1-sfWeight));
+		hMatrixRapidityHard->Fill(rapidityHard,rapidityReco,recoWeight);
+		hMatrixRapidityHard->Fill(rapidityHard,0.0,hardWeight*(1-sfWeight));
+		// Fill hard-process histograms
+		hInvMassHard->Fill(invMassHard,hardWeight);
+		hRapidityHard->Fill(rapidityHard,hardWeight);
+		hPtLeadHard->Fill(leadPtHard,hardWeight);
+		hPtSubHard->Fill(subPtHard,hardWeight);
 
-		if(passDressedSelection){
-			// Fill dressed histograms
-			hInvMassDressed->Fill(invMassDressed,hardWeight);
-			hRapidityDressed->Fill(rapidityDressed,hardWeight);
-			hPtLeadDressed->Fill(leadPtDressed,hardWeight);
-			hPtSubDressed->Fill(subPtDressed,hardWeight);		
+		// Fill dressed histograms
+		hInvMassDressed->Fill(invMassDressed,hardWeight);
+		hRapidityDressed->Fill(rapidityDressed,hardWeight);
+		hPtLeadDressed->Fill(leadPtDressed,hardWeight);
+		hPtSubDressed->Fill(subPtDressed,hardWeight);		
 
-			// Fill matrices
-			hMatrixInvMassDressed->Fill(invMassDressed,invMassReco,recoWeight);
-			hMatrixInvMassDressed->Fill(invMassDressed,0.0,hardWeight*(1-sfWeight));
-			hMatrixRapidityDressed->Fill(rapidityDressed,rapidityReco,recoWeight);
-			hMatrixRapidityDressed->Fill(rapidityDressed,0.0,hardWeight*(1-sfWeight));
-		}
+		// Fill matrices
+		hMatrixInvMassDressed->Fill(invMassDressed,invMassReco,recoWeight);
+		hMatrixInvMassDressed->Fill(invMassDressed,0.0,hardWeight*(1-sfWeight));
+		hMatrixRapidityDressed->Fill(rapidityDressed,rapidityReco,recoWeight);
+		hMatrixRapidityDressed->Fill(rapidityDressed,0.0,hardWeight*(1-sfWeight));
 	}// end loop over entries
 
 	// Save results to output file

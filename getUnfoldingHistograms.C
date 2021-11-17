@@ -137,7 +137,7 @@ void getUnfoldingHistograms()
 	hInvMassData->Draw("pe,same");
 	c3->SaveAs("plots/invMassBackDYLLData_MuMu.png");
 
-	double ratioRange = 0.3;
+	double ratioRange = 0.003;
         double upperBound = 1.0-ratioRange;
         double lowerBound = 1.0+ratioRange;
         TH1F*hRatioTrue = (TH1F*)hInvMassDressed->Clone("trueRatio");

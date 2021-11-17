@@ -1,7 +1,7 @@
 #include "include/ToyModel.hh"
 #include "include/Unfolding.hh"
 
-TString inputDistribution = "../data/unfoldingHistograms.root";
+TString inputDistribution = "../data/unfoldingHistogramsMuMu.root";
 vector<TString> histograms = {
 	"hInvMassData",	
 	"hInvMassReco",	
