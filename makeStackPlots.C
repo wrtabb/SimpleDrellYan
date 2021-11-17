@@ -94,9 +94,9 @@ void makeStackPlots()
 	//gROOT->SetBatch(true);
 	gStyle->SetOptStat(0);
 	MakePlots(INV_MASS);
-	MakePlots(RAPIDITY);
-	MakePlots(PT_LEAD);
-	MakePlots(PT_SUB);
+//	MakePlots(RAPIDITY);
+//	MakePlots(PT_LEAD);
+//	MakePlots(PT_SUB);
 
 }
 
@@ -239,7 +239,7 @@ void MakePlots(Variable var)
 	line->Draw("same");
 	canvas->Update();
 
-	TString saveName = "plots/dataVsMC_MuMu_";
+	TString saveName = "plots/dataVsMC_MuMu_WithFakes_";
 	saveName += plotProperties.at(0);
 	saveName += ".png";
 	canvas->SaveAs(saveName);
