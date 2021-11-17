@@ -27,6 +27,26 @@ vector<TString> file_ew= {
 	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_NewCuts_DYLL_M2000to3000_TauTau.root"
 };
 
+vector<TString> file_qcd = {
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_NewCuts_QCDMuEnriched_Pt1000toInf.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_NewCuts_QCDMuEnriched_Pt1000toInf_ext1.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_NewCuts_QCDMuEnriched_Pt120to170.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_NewCuts_QCDMuEnriched_Pt15to20.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_NewCuts_QCDMuEnriched_Pt170to300.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_NewCuts_QCDMuEnriched_Pt170to300_ext1.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_NewCuts_QCDMuEnriched_Pt300to470.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_NewCuts_QCDMuEnriched_Pt470to600.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_NewCuts_QCDMuEnriched_Pt50to80.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_NewCuts_QCDMuEnriched_Pt600to800.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_NewCuts_QCDMuEnriched_Pt600to800_backup.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_NewCuts_QCDMuEnriched_Pt600to800_ext1.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_NewCuts_QCDMuEnriched_Pt800to1000.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_NewCuts_QCDMuEnriched_Pt800to1000_ext1.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_NewCuts_QCDMuEnriched_Pt800to1000_ext2.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_NewCuts_QCDMuEnriched_Pt80to120.root",
+	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_NewCuts_QCDMuEnriched_Pt80to120_ext1.root",
+};
+
 vector<TString> file_DYLL = {
 	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_NewCuts_DYLL_M10to50_MuMu.root",
 	"output_data/saveFile_MuMu_NoSF_NoPVz_WithDressed_NewCuts_DYLL_M50to100_MuMu.root",
@@ -88,22 +108,27 @@ void MakePlots(Variable var)
 	TH1D*hDYLL = GetHistogram(file_DYLL,plotProperties.at(0));
 	hDYLL->SetFillColor(kOrange-2);
 	hDYLL->SetLineColor(kOrange+3);
+	hDYLL->Rebin(2);
 	// Top quarks
 	TH1D*hTops = GetHistogram(file_top,plotProperties.at(0));
 	hTops->SetFillColor(kBlue+2);
 	hTops->SetLineColor(kBlue+3);
+	hTops->Rebin(2);
 	// W+Jets
 	TH1D*hFake = GetHistogram(file_Fake,plotProperties.at(0));
 	hFake->SetFillColor(kViolet+5);
 	hFake->SetLineColor(kViolet+3);
+	hFake->Rebin(2);
 	// EW
 	TH1D*hEW = GetHistogram(file_ew,plotProperties.at(0));
 	hEW->SetFillColor(kRed+2);
 	hEW->SetLineColor(kRed+4);
+	hEW->Rebin(2);
 	// QCD
 	TH1D*hQCD = GetHistogram(file_qcd,plotProperties.at(0));
-	hQCD->SetFillColor(kRed+2);
-	hQCD->SetLineColor(kRed+4);
+	hQCD->SetFillColor(kGreen+2);
+        hQCD->SetLineColor(kGreen+4);
+	hQCD->Rebin(2);
 
 	// Total MC sum
 	TString hSumName = "hSum";
@@ -112,13 +137,13 @@ void MakePlots(Variable var)
 	hSum->Add(hTops);
 	hSum->Add(hFake);
 	hSum->Add(hEW);
-	hSum->Add(hQCD);
+//	hSum->Add(hQCD);
 
 	// Place signal and background into a stack
 	TString stackName = "hStack";
 	stackName += plotProperties.at(0);
 	THStack*hStack = new THStack(stackName,"");
-	hStack->Add(hQCD);
+//	hStack->Add(hQCD);
 	hStack->Add(hFake);
 	hStack->Add(hEW);
 	hStack->Add(hTops);
@@ -128,6 +153,7 @@ void MakePlots(Variable var)
 	TH1D*hData = GetHistogram(file_data,plotProperties.at(0));
 	hData->SetMarkerStyle(20);
 	hData->SetMarkerColor(kBlack);
+	hData->Rebin(2);
 
 	// Data over MC ratio
 	TString ratioName = "ratio";
@@ -170,7 +196,7 @@ void MakePlots(Variable var)
 	legend->AddEntry(hDYLL,"#gamma^{*}/Z #rightarrow #mu^{-}#mu^{+}");
 	legend->AddEntry(hTops,"t#bar{t}+tW+#bar{t}W");
 	legend->AddEntry(hEW,"diboson + #gamma^{*}/Z #rightarrow #tau^{-}#tau^{+}");
-	legend->AddEntry(hQCD,"QCD");
+//	legend->AddEntry(hQCD,"QCD");
 	legend->AddEntry(hFake,"W+Jets");
 	legend->Draw("same");
 
