@@ -1,7 +1,7 @@
-#include "include/ToyModel.hh"
 #include "include/Unfolding.hh"
 
-TString inputDistribution = "../data/unfoldingHistogramsMuMu.root";
+TString inputDistribution = "../data/unfoldingHistograms";
+
 vector<TString> histograms = {
 	"hInvMassData",	
 	"hInvMassReco",	
@@ -11,6 +11,8 @@ vector<TString> histograms = {
 };
 void unfold()
 {
+	inputDistribution += "MuMu";
+	inputDistribution += ".root";
 	gStyle->SetOptStat(0);
 	gStyle->SetPalette(1);
 	TFile*loadFile = new TFile(inputDistribution);
@@ -25,25 +27,27 @@ void unfold()
 	Unfold*unfold = new Unfold();
 	Unfold::RegType regType = unfold->NO_REG;
 
-	TH1F*hUnfoldedClosure;
-	TH1F*hUnfolded;
-	//hUnfoldedClosure = unfold->unfoldTUnfold(regType,hData,hTrue,hMatrix);
-	hUnfolded = unfold->unfoldTUnfold(regType,hReco,hBack,hTrue,hMatrix);
-	hUnfolded->SetMarkerStyle(25);
-	hUnfolded->SetMarkerColor(kBlue+2);
-	hUnfolded->SetLineColor(kBlue+2);
+	hReco->Add(hBack);
+	TH1F*hUnfoldClosure = unfold->unfoldTUnfold(regType,hReco,hBack,hTrue,hMatrix);
+	TH1F*hUnfold = unfold->unfoldTUnfold(regType,hData,hBack,hTrue,hMatrix);
 
 	bool logPlot = true;
-	TCanvas*c1 = unfold->plotUnfolded("c1","Unfold Data",hData,hTrue,hUnfolded,logPlot);
+	hTrue->SetMarkerColor(kRed+2);
+	TCanvas*c1 = 
+		unfold->plotUnfolded("c1","Closure Test",hReco,hTrue,hUnfoldClosure,logPlot);
+	TCanvas*c2 = 
+		unfold->plotUnfolded("c2","Data Unfold",hData,hTrue,hUnfold,logPlot);
 
 	TH2F*hResponse = unfold->makeResponseMatrix(hMatrix);
-	TCanvas*c2 = new TCanvas("c2","",0,0,1000,1000);
-	c2->SetGrid();
-	c2->SetLogy();
-	c2->SetLogx();
+	double condition = unfold->GetConditionNumber(hResponse);
+cout << "Condition number of response matrix: " << condition << endl;
+	TCanvas*c3 = new TCanvas("c3","",0,0,1000,1000);
+	c3->SetGrid();
+	c3->SetLogy();
+	c3->SetLogx();
 	hResponse->Draw("colz");
 
-	TH1F*hUnfoldInv;
-	hUnfoldInv = unfold->unfoldInversion(hReco,hTrue,hMatrix);
-	TCanvas*c3 = unfold->plotUnfolded("c3","Unfold Reco Inv",hReco,hTrue,hUnfolded,logPlot);
+	c1->SaveAs("../plots/unfoldedMuMu_ClosureTest.png");
+	c2->SaveAs("../plots/unfoldedMuMu_Data.png");
+	c3->SaveAs("../plots/unfoldedMuMu_ResponseMatrix.png");
 }

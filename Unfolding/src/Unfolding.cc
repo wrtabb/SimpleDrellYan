@@ -203,7 +203,7 @@ TCanvas*Unfold::plotUnfolded(TString canvasName,TString titleName,TH1F*hReco,TH1
 	//Draw canvas and pads to make plot
 	TCanvas*canvas = new TCanvas(canvasName,"",0,0,1000,1000);
 	const float padmargins = 0.03;
-	const float yAxisMinimum = 100;
+	const float yAxisMinimum = 0.1;
 	const float yAxisMaximum = 1e7;
 	TPad*pad1 = new TPad("","",0,0.3,1.0,1.0);
 	if(logPlot){
