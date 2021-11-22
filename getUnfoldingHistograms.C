@@ -237,6 +237,7 @@ void getUnfoldingHistograms()
 	hInvMassResponse->Draw("colz");
 	c5->SaveAs("plots/invMassResponseMatrix.png");
 
+hInvMassDYLL->SetBinContent(0,0);
 	TFile*save_file = new TFile("data/unfoldingHistogramsEE.root","recreate");
 	hInvMassData->Write();
 	hInvMassDYLL->Write();
