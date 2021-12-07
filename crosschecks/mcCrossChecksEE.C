@@ -19,7 +19,7 @@ bool GetHardLeptons(int &idxHard1,int &idxHard2);
 void Counter(Long64_t event,Long64_t total);
 
 //TString base_directory = "root://xrootd-local.unl.edu///store/user/wtabb/DrellYan_13TeV_2016/v2p6/DYLL_M50toInf/base/";
-TString base_directory = "/mnt/hadoop/user/uscms01/pnfs/unl.edu/data4/cms/store/user/wtabb/DrellYan_13TeV_2016/v2p6/skims/skims_EE/";
+TString base_directory = "/mnt/hadoop/user/uscms01/pnfs/unl.edu/data4/cms/store/user/wtabb/DrellYan_13TeV_2016/v2p6/DYLL_M50toInf/base/";
 
 TString treeName = "recoTree/DYTree";
 int dataLuminosity = 35867;
@@ -88,6 +88,22 @@ void teamCrossChecks(TString fileName)
 	TTree*chain=(TTree*)loadFile->Get(treeName);
 
 	//-----Define histograms-----/
+	// gen electrons
+	TH1D*h_gen_el_pt     = new TH1D("h_gen_el_pt","",10000,0,10000);
+	TH1D*h_gen_el_eta    = new TH1D("h_gen_el_eta","",200,-10,10);
+	TH1D*h_gen_el_phi    = new TH1D("h_gen_el_phi","",80,-4,4);
+	TH1D*h_gen_diEl_mass = new TH1D("h_gen_diEl_mass","",10000,0,10000);
+	TH1D*h_gen_diEl_pt   = new TH1D("h_gen_diEl_pt","",10000,0,10000);
+	TH1D*h_gen_diEl_rap  = new TH1D("h_gen_diEl_rap","",200,-10,10);
+
+	// gen electrons passing acceptance
+	TH1D*h_gen_acc_el_pt     = new TH1D("h_gen_acc_el_pt","",10000,0,10000);
+	TH1D*h_gen_acc_el_eta    = new TH1D("h_gen_acc_el_eta","",200,-10,10);
+	TH1D*h_gen_acc_el_phi    = new TH1D("h_gen_acc_el_phi","",80,-4,4);
+	TH1D*h_gen_acc_diEl_mass = new TH1D("h_gen_acc_diEl_mass","",10000,0,10000);
+	TH1D*h_gen_acc_diEl_pt   = new TH1D("h_gen_acc_diEl_pt","",10000,0,10000);
+	TH1D*h_gen_acc_diEl_rap  = new TH1D("h_gen_acc_diEl_rap","",200,-10,10);
+
 	// reco electrons
 	TH1D*h_reco_el_pt 	= new TH1D("h_reco_el_pt","",10000,0,10000);
 	TH1D*h_reco_el_eta 	= new TH1D("h_reco_el_eta","",60,-3,3);
@@ -123,6 +139,25 @@ void teamCrossChecks(TString fileName)
 	chain->SetBranchAddress("HLT_trigFired",&HLT_trigFired,&b_HLT_trigFired);
 	chain->SetBranchAddress("HLT_trigName",&pHLT_trigName);
 
+	if(isMC){
+		chain->SetBranchAddress("GENnPair", &GENnPair, &b_GENnPair);
+		chain->SetBranchAddress("GENLepton_eta", &GENLepton_eta, 
+					&b_GENLepton_eta);
+		chain->SetBranchAddress("GENLepton_phi",&GENLepton_phi, 
+					&b_GENLepton_phi);
+		chain->SetBranchAddress("GENLepton_pT",&GENLepton_pT, 
+					&b_GENLepton_pT);
+		chain->SetBranchAddress("GENLepton_ID",&GENLepton_ID, 
+					&b_GENLepton_ID);
+		chain->SetBranchAddress("GENLepton_fromHardProcessFinalState",
+					&GENLepton_fromHardProcessFinalState,
+					&b_GENLepton_fromHardProcessFinalState);
+		chain->SetBranchAddress("GENEvt_weight",&GENEvt_weight,
+                                        &b_GENEvt_weight);
+	}// end if monte carlo
+
+	// Find the gen weight sum
+
 	// Loop over events
 	for(Long64_t iEntry=0;iEntry<nEntries;iEntry++){
 		chain->GetEntry(iEntry);
@@ -141,6 +176,42 @@ void teamCrossChecks(TString fileName)
 		}// end loop over triggers
 
 		if(!passHLT) continue;
+		//-----Get Hard Process Quantities-----//
+		double invMassHard	= -1000;
+		double rapidityHard	= -1000;
+		double diPtHard		= -1000;
+		double leadPtHard	= -1000;
+		double subPtHard	= -1000;
+
+		double ptHard1  = -1000;
+		double ptHard2   = -1000;
+		double etaHard1 = -1000;
+		double etaHard2  = -1000;
+		double phiHard1 = -1000;
+		double phiHard2  = -1000;
+
+		int idxHard1 = -1;
+		int idxHard2  = -1;
+
+		bool hardLep = GetHardLeptons(idxHard1,idxHard2);
+		if(!hardLep) continue;
+
+		ptHard1  = GENLepton_pT[idxHard1];
+		ptHard2   = GENLepton_pT[idxHard2];
+		etaHard1 = GENLepton_eta[idxHard1];
+		etaHard2  = GENLepton_eta[idxHard2];
+		phiHard1 = GENLepton_phi[idxHard1];
+		phiHard2  = GENLepton_phi[idxHard2];
+
+		TLorentzVector v1;
+		TLorentzVector v2;
+
+		v1.SetPtEtaPhiM(ptHard1,etaHard1,phiHard1,eMass);
+		v2.SetPtEtaPhiM(ptHard2,etaHard2,phiHard2,eMass);
+
+		invMassHard     = (v1+v2).M();
+                rapidityHard    = (v1+v2).Rapidity();
+		diPtHard	= (v1+v2).Pt();
 
 		//-----Get Reconstructed Quantities-----//
 		double invMassReco	= -1000;
@@ -165,8 +236,6 @@ void teamCrossChecks(TString fileName)
 		phiRecoLead = Electron_phi[idxRecoLead];
 		phiRecoSub  = Electron_phi[idxRecoSub];
 
-		TLorentzVector v1;
-		TLorentzVector v2;
 		v1.SetPtEtaPhiM(ptRecoLead,etaRecoLead,phiRecoLead,eMass);
 		v2.SetPtEtaPhiM(ptRecoSub,etaRecoSub,phiRecoSub,eMass);
 
@@ -174,27 +243,58 @@ void teamCrossChecks(TString fileName)
                 rapidityReco    = (v1+v2).Rapidity();
 		diPtReco	= (v1+v2).Pt();
 
+		double genWeight = 1.0;
+		if(isMC){
+			if(GENEvt_weight<0) genWeight = -1.0;
+		}// end isMC for gen weight sum calculation
+
+		// fill gen histograms
+		h_gen_el_pt	->Fill(ptHard1,genWeight);
+		h_gen_el_pt	->Fill(ptHard2,genWeight);
+		h_gen_el_eta	->Fill(etaHard1,genWeight);
+		h_gen_el_eta	->Fill(etaHard2,genWeight);
+		h_gen_el_phi	->Fill(phiHard1,genWeight);
+		h_gen_el_phi	->Fill(phiHard2,genWeight);
+		h_gen_diEl_mass	->Fill(invMassHard,genWeight);
+		h_gen_diEl_pt	->Fill(diPtHard,genWeight);
+		h_gen_diEl_rap	->Fill(rapidityHard,genWeight);
+
+		bool passGenAcc = PassDileptonSelection(etaHard1,etaHard2,ptHard1,ptHard2);
+		if(passGenAcc){
+			// fill gen histograms for leptons within acceptance
+			h_gen_acc_el_pt		->Fill(ptHard1,genWeight);
+			h_gen_acc_el_pt		->Fill(ptHard2,genWeight);
+			h_gen_acc_el_eta	->Fill(etaHard1,genWeight);
+			h_gen_acc_el_eta	->Fill(etaHard2,genWeight);
+			h_gen_acc_el_phi	->Fill(phiHard1,genWeight);
+			h_gen_acc_el_phi	->Fill(phiHard2,genWeight);
+			h_gen_acc_diEl_mass	->Fill(invMassHard,genWeight);
+			h_gen_acc_diEl_pt	->Fill(diPtHard,genWeight);
+			h_gen_acc_diEl_rap	->Fill(rapidityHard,genWeight);
+		}
+
 		if(!recoLep) continue;
 
 		bool passRecoAcc = PassDileptonSelection(etaRecoLead,etaRecoSub,
 				   		         ptRecoLead,ptRecoSub);
-		if(!passRecoAcc) continue;
-		// fill reco histograms
-		h_reco_diEl_mass	->Fill(invMassReco);
-		h_reco_diEl_pt		->Fill(diPtReco);
-		h_reco_diEl_rap		->Fill(rapidityReco);
-		h_reco_el_pt		->Fill(ptRecoLead);
-		h_reco_el_pt		->Fill(ptRecoSub);
-		h_reco_el_eta		->Fill(etaRecoLead);
-		h_reco_el_eta		->Fill(etaRecoSub);
-		h_reco_el_phi		->Fill(phiRecoLead);
-		h_reco_el_phi		->Fill(phiRecoSub);
-		h_reco_el_lead_pt	->Fill(ptRecoLead);
-		h_reco_el_lead_eta	->Fill(etaRecoLead);
-		h_reco_el_lead_phi	->Fill(phiRecoLead);
-		h_reco_el_sub_pt	->Fill(ptRecoSub);
-		h_reco_el_sub_eta	->Fill(etaRecoSub);
-		h_reco_el_sub_phi	->Fill(phiRecoSub);
+		if(passRecoAcc){
+			// fill reco histograms
+			h_reco_diEl_mass	->Fill(invMassReco,genWeight);
+			h_reco_diEl_pt		->Fill(diPtReco,genWeight);
+			h_reco_diEl_rap		->Fill(rapidityReco,genWeight);
+			h_reco_el_pt		->Fill(ptRecoLead,genWeight);
+			h_reco_el_pt		->Fill(ptRecoSub,genWeight);
+			h_reco_el_eta		->Fill(etaRecoLead,genWeight);
+			h_reco_el_eta		->Fill(etaRecoSub,genWeight);
+			h_reco_el_phi		->Fill(phiRecoLead,genWeight);
+			h_reco_el_phi		->Fill(phiRecoSub,genWeight);
+			h_reco_el_lead_pt	->Fill(ptRecoLead,genWeight);
+			h_reco_el_lead_eta	->Fill(etaRecoLead,genWeight);
+			h_reco_el_lead_phi	->Fill(phiRecoLead,genWeight);
+			h_reco_el_sub_pt	->Fill(ptRecoSub,genWeight);
+			h_reco_el_sub_eta	->Fill(etaRecoSub,genWeight);
+			h_reco_el_sub_phi	->Fill(phiRecoSub,genWeight);
+		}
 	}// end loop over entries
 
 	// Save results to output file
@@ -203,6 +303,25 @@ void teamCrossChecks(TString fileName)
 	saveName += ".root";
 	TFile*file;
 	file = new TFile(saveName,"recreate");
+	h_gen_el_pt		->Write();
+	h_gen_el_pt		->Write();
+	h_gen_el_eta		->Write();
+	h_gen_el_eta		->Write();
+	h_gen_el_phi		->Write();
+	h_gen_el_phi		->Write();
+	h_gen_diEl_mass		->Write();
+	h_gen_diEl_pt		->Write();
+	h_gen_diEl_rap		->Write();
+
+	h_gen_acc_el_pt		->Write();
+	h_gen_acc_el_pt		->Write();
+	h_gen_acc_el_eta	->Write();
+	h_gen_acc_el_eta	->Write();
+	h_gen_acc_el_phi	->Write();
+	h_gen_acc_el_phi	->Write();
+	h_gen_acc_diEl_mass	->Write();
+	h_gen_acc_diEl_pt	->Write();
+	h_gen_acc_diEl_rap	->Write();
 
 	h_reco_el_pt		->Write();
 	h_reco_el_pt		->Write();
@@ -256,6 +375,26 @@ bool GetRecoLeptons(int &idxRecoLead, int &idxRecoSub)
 	if(nDileptons==1) return true;
 	else return false;
 }// end GetRecoLeptons()
+
+bool GetHardLeptons(int &idxHard1,int &idxHard2)
+{
+	int nHardLeptons = 0;
+	for(int iLep=0;iLep<GENnPair;iLep++){
+		for(int jLep=iLep+1;jLep<GENnPair;jLep++){
+			if(!(abs(GENLepton_ID[iLep])==11 && abs(GENLepton_ID[jLep])==11))
+				continue;
+			if(GENLepton_fromHardProcessFinalState[iLep]==1 && 
+			   GENLepton_fromHardProcessFinalState[jLep]==1){
+				idxHard1 = iLep;
+				idxHard2 = jLep;
+				nHardLeptons++;
+			}// end if hard process
+		}//end inner loop over gen leptons
+	}//end outer loop over gen leptons
+
+	if(nHardLeptons==1) return true;
+	else return false;
+}// end GetHardLeptons()
 
 void Counter(Long64_t event,Long64_t total)
 {

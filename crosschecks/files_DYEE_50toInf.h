@@ -1,3 +1,6 @@
+#ifndef files_DYEE_50toInf_H
+#define files_DYEE_50toInf_H
+
 vector<TString> files = {
 	"ntuple_skim_sig_1.root",
 	"ntuple_skim_sig_10.root",
@@ -1451,3 +1454,5 @@ vector<TString> files = {
 	"ntuple_skim_sig_998.root",
 	"ntuple_skim_sig_999.root",
 };
+
+#endif
