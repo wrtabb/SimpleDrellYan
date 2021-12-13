@@ -161,6 +161,8 @@ void teamCrossChecks(TString fileName)
 		chain->SetBranchAddress("GENLepton_fromHardProcessFinalState",
 					&GENLepton_fromHardProcessFinalState,
 					&b_GENLepton_fromHardProcessFinalState);
+		chain->SetBranchAddress("GENEvt_weight",&GENEvt_weight,
+                                        &b_GENEvt_weight);
 	}// end if monte carlo
 
 	// Loop over events
@@ -181,8 +183,6 @@ void teamCrossChecks(TString fileName)
 				break;
 			} // end if trigName
 		}// end loop over triggers
-
-		if(!passHLT) continue;
 
 		//-----Get Hard Process Quantities-----//
 		double invMassHard      = -1000;
@@ -272,7 +272,7 @@ void teamCrossChecks(TString fileName)
 		bool passGenAcc = PassDileptonSelection(etaHardLead,etaHardSub,
 			   			        ptHardLead,ptHardSub);
 
-		if(passGenAcc){
+		if(passGenAcc&&passHLT){
                         h_gen_acc_mu_pt         ->Fill(ptHardLead,genWeight);
                         h_gen_acc_mu_pt         ->Fill(ptHardSub,genWeight);
                         h_gen_acc_mu_eta        ->Fill(etaHardLead,genWeight);
@@ -289,7 +289,7 @@ void teamCrossChecks(TString fileName)
 
 		bool passRecoAcc = PassDileptonSelection(etaRecoLead,etaRecoSub,
 							 ptRecoLead,ptRecoSub);
-		if(passRecoAcc){
+		if(passRecoAcc&&passHLT){
 			h_reco_mu_pt            ->Fill(ptRecoLead,genWeight);
 			h_reco_mu_pt            ->Fill(ptRecoSub,genWeight);
 			h_reco_mu_eta           ->Fill(etaRecoLead,genWeight);

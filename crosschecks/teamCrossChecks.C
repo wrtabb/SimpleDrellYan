@@ -3,27 +3,36 @@
 #include <TString.h>
 #include <TFile.h>
 #include <TH1D.h>
-#include <TH2D.h>
 #include <TChain.h>
 #include <TLorentzVector.h>
 #include <TH2F.h>
 #include <TH1F.h>
-
 #include <iostream>
-#include "files_DYEE_50toInf.h"
 
-//-----Functions-----//
+enum LepVariables{
+	PT_LEAD,
+	PT_SUB,
+	ETA_LEAD,
+	ETA_SUB,
+	PHI_LEAD,
+	PHI_SUB,
+	MASS,
+	RAPIDITY,
+	DI_PT
+};
+
+// Functions
 bool PassDileptonSelection(double eta1,double eta2,double pt1,double pt2);
+double GetVar(LepVariables var,int idxLead,int idxSub);
 bool GetRecoLeptons(int &idxRecoLead, int &idxRecoSub);
-bool GetHardLeptons(int &idxHard1,int &idxHard2);
 void Counter(Long64_t event,Long64_t total);
 
-//TString base_directory = "root://xrootd-local.unl.edu///store/user/wtabb/DrellYan_13TeV_2016/v2p6/DYLL_M50toInf/base/";
-TString base_directory = "/mnt/hadoop/user/uscms01/pnfs/unl.edu/data4/cms/store/user/wtabb/DrellYan_13TeV_2016/v2p6/skims/skims_EE/";
+TString base_directory = "/mnt/hadoop/user/uscms01/pnfs/unl.edu/data4/cms/store/user/wtabb/DrellYan_13TeV_2016/v2p6/skims/skims_MuMu/";
 
 TString treeName = "recoTree/DYTree";
 int dataLuminosity = 35867;
-const TString electronTrigger = "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*";
+const TString muonTrigger1 = "HLT_IsoMu24_v*";
+const TString muonTrigger2 = "HLT_IsoTkMu24_v*";
 const double etaGapLow = 1.4442;
 const double etaGapHigh = 1.566;
 const double etaHigh = 2.4;
@@ -43,32 +52,37 @@ double GENLepton_eta[MPSIZE];
 double GENLepton_pT[MPSIZE];
 int GENLepton_ID[MPSIZE];
 int GENLepton_fromHardProcessFinalState[MPSIZE];
-int Nelectrons;
-double Electron_pT[MPSIZE];
-double Electron_eta[MPSIZE];
-double Electron_phi[MPSIZE];
-double Electron_etaSC[MPSIZE]; //no muon
-double Electron_phiSC[MPSIZE]; //no muon
-double Electron_etSC[MPSIZE]; //no muon
-bool Electron_passMediumID[MPSIZE];
-double eMass = 0.000510998;
+int nMuon;
+double Muon_pT[MPSIZE];
+double Muon_eta[MPSIZE];
+double Muon_phi[MPSIZE];
+bool Muon_passTightID[MPSIZE];
+double Muon_PfChargedHadronIsoR04[MPSIZE];
+double Muon_PfNeutralHadronIsoR04[MPSIZE];
+double Muon_PfGammaIsoR04[MPSIZE];
+double Muon_PFSumPUIsoR04[MPSIZE];
+double Muon_trkiso[MPSIZE];
+double muMass = 0.1056583715;
 int HLT_ntrig;
 int HLT_trigType[MPSIZE];
 int HLT_trigFired[MPSIZE];
 std::vector<std::string> HLT_trigName;
 std::vector<std::string> *pHLT_trigName = &HLT_trigName;
 
-TBranch*b_Nelectrons;
 TBranch*b_HLT_ntrig;
 TBranch*b_HLT_trigType;
 TBranch*b_HLT_trigFired;
-TBranch*b_Electron_pT;
-TBranch*b_Electron_eta;
-TBranch*b_Electron_phi;
-TBranch*b_Electron_etaSC;
-TBranch*b_Electron_phiSC;
-TBranch*b_Electron_etSC;
-TBranch*b_Electron_passMediumID;
+TBranch*b_nMuon;
+TBranch*b_Muon_pT;
+TBranch*b_Muon_eta;
+TBranch*b_Muon_phi;
+TBranch*b_Muon_Inner_pT;
+TBranch*b_Muon_passTightID;
+TBranch*b_Muon_PfChargedHadronIsoR04;
+TBranch*b_Muon_PfNeutralHadronIsoR04;
+TBranch*b_Muon_PfGammaIsoR04;
+TBranch*b_Muon_PFSumPUIsoR04;
+TBranch*b_Muon_trkiso;
 TBranch*b_GENnPair;
 TBranch*b_GENLepton_phi;
 TBranch*b_GENLepton_eta;
@@ -80,27 +94,24 @@ TBranch*b_GENEvt_weight;
 void teamCrossChecks(TString fileName)
 {
 	TH1::SetDefaultSumw2();
-
 	TString loadName = base_directory;
-	loadName += fileName;
-	loadName += ".root";
-	TFile*loadFile = new TFile(loadName);
-	TTree*chain=(TTree*)loadFile->Get(treeName);
+        loadName += fileName;
+        loadName += ".root";
+        TFile*loadFile = new TFile(loadName);
+        TTree*chain=(TTree*)loadFile->Get(treeName);
 
-	//-----Define histograms-----/
-	// reco electrons
-	TH1D*h_reco_el_pt 	= new TH1D("h_reco_el_pt","",10000,0,10000);
-	TH1D*h_reco_el_eta 	= new TH1D("h_reco_el_eta","",60,-3,3);
-	TH1D*h_reco_el_phi 	= new TH1D("h_reco_el_phi","",80,-4,4);
-	TH1D*h_reco_el_lead_pt 	= new TH1D("h_reco_el_lead_pt","",10000,0,10000);
-	TH1D*h_reco_el_lead_eta = new TH1D("h_reco_el_lead_eta","",60,-3,3);
-	TH1D*h_reco_el_lead_phi = new TH1D("h_reco_el_lead_phi","",80,-4,4);
-	TH1D*h_reco_el_sub_pt 	= new TH1D("h_reco_el_sub_pt","",10000,0,10000);
-	TH1D*h_reco_el_sub_eta 	= new TH1D("h_reco_el_sub_eta","",60,-3,3);
-	TH1D*h_reco_el_sub_phi 	= new TH1D("h_reco_el_sub_phi","",80,-4,4);
-	TH1D*h_reco_diEl_mass 	= new TH1D("h_reco_diEl_mass","",10000,0,10000);
-	TH1D*h_reco_diEl_pt 	= new TH1D("h_reco_diEl_pt","",10000,0,10000);
-	TH1D*h_reco_diEl_rap 	= new TH1D("h_reco_diEl_rap","",60,-3,3);
+        TH1D*h_reco_mu_pt       = new TH1D("h_reco_mu_pt","",10000,0,10000);
+        TH1D*h_reco_mu_eta      = new TH1D("h_reco_mu_eta","",60,-3,3);
+        TH1D*h_reco_mu_phi      = new TH1D("h_reco_mu_phi","",80,-4,4);
+        TH1D*h_reco_mu_lead_pt  = new TH1D("h_reco_mu_lead_pt","",10000,0,10000);
+        TH1D*h_reco_mu_lead_eta = new TH1D("h_reco_mu_lead_eta","",60,-3,3);
+        TH1D*h_reco_mu_lead_phi = new TH1D("h_reco_mu_lead_phi","",80,-4,4);
+        TH1D*h_reco_mu_sub_pt   = new TH1D("h_reco_mu_sub_pt","",10000,0,10000);
+        TH1D*h_reco_mu_sub_eta  = new TH1D("h_reco_mu_sub_eta","",60,-3,3);
+        TH1D*h_reco_mu_sub_phi  = new TH1D("h_reco_mu_sub_phi","",80,-4,4);
+        TH1D*h_reco_diMu_mass   = new TH1D("h_reco_diMu_mass","",10000,0,10000);
+        TH1D*h_reco_diMu_pt     = new TH1D("h_reco_diMu_pt","",10000,0,10000);
+        TH1D*h_reco_diMu_rap    = new TH1D("h_reco_diMu_rap","",60,-3,3);
 
 	Long64_t nEntries = chain->GetEntries();
 	cout << nEntries << " entries loaded. " << endl;
@@ -111,13 +122,24 @@ void teamCrossChecks(TString fileName)
 	if(!testBranch) isMC = false;
 
 	// Define branches
-	chain->SetBranchAddress("Nelectrons",&Nelectrons,&b_Nelectrons);
-	chain->SetBranchAddress("Electron_pT",&Electron_pT,&b_Electron_pT);
-	chain->SetBranchAddress("Electron_eta",&Electron_eta,&b_Electron_eta);
-	chain->SetBranchAddress("Electron_etaSC",&Electron_etaSC,&b_Electron_etaSC);
-	chain->SetBranchAddress("Electron_phi",&Electron_phi,&b_Electron_phi);
-	chain->SetBranchAddress("Electron_passMediumID",&Electron_passMediumID,
-				 &b_Electron_passMediumID);
+	chain->SetBranchAddress("nMuon",&nMuon,&b_nMuon);
+	chain->SetBranchAddress("Muon_pT",&Muon_pT,&b_Muon_pT);
+	chain->SetBranchAddress("Muon_eta",&Muon_eta,&b_Muon_eta);
+	chain->SetBranchAddress("Muon_phi",&Muon_phi,&b_Muon_phi);
+	chain->SetBranchAddress("Muon_passTightID",&Muon_passTightID,
+				&b_Muon_passTightID);
+	chain->SetBranchAddress("Muon_PfChargedHadronIsoR04",
+				&Muon_PfChargedHadronIsoR04,
+				&b_Muon_PfChargedHadronIsoR04);
+	chain->SetBranchAddress("Muon_PfNeutralHadronIsoR04",
+				&Muon_PfNeutralHadronIsoR04,
+				&b_Muon_PfNeutralHadronIsoR04);
+	chain->SetBranchAddress("Muon_PfGammaIsoR04",
+				&Muon_PfGammaIsoR04,
+				&b_Muon_PfGammaIsoR04);
+	chain->SetBranchAddress("Muon_PFSumPUIsoR04",
+				&Muon_PFSumPUIsoR04,
+				&b_Muon_PFSumPUIsoR04);
 	chain->SetBranchAddress("HLT_ntrig",&HLT_ntrig,&b_HLT_ntrig);
 	chain->SetBranchAddress("HLT_trigType",&HLT_trigType,&b_HLT_trigType);
 	chain->SetBranchAddress("HLT_trigFired",&HLT_trigFired,&b_HLT_trigFired);
@@ -126,7 +148,7 @@ void teamCrossChecks(TString fileName)
 	// Loop over events
 	for(Long64_t iEntry=0;iEntry<nEntries;iEntry++){
 		chain->GetEntry(iEntry);
-//		Counter(iEntry,nEntries);
+		Counter(iEntry,nEntries);
 
 		// Check if event passes HLT cut
 		TString trigName;
@@ -134,7 +156,9 @@ void teamCrossChecks(TString fileName)
 		bool passHLT = false;
 		for(int iHLT=0;iHLT<trigNameSize;iHLT++){
 			trigName = pHLT_trigName->at(iHLT);
-			if(trigName.CompareTo(electronTrigger==0) && HLT_trigFired[iHLT]==1){
+			if(((trigName.CompareTo(muonTrigger1)==0)||
+			    (trigName.CompareTo(muonTrigger2)==0)) && 
+			     HLT_trigFired[iHLT]==1){
 				passHLT = true;
 				break;
 			} // end if trigName
@@ -143,59 +167,55 @@ void teamCrossChecks(TString fileName)
 		if(!passHLT) continue;
 
 		//-----Get Reconstructed Quantities-----//
-		double invMassReco	= -1000;
-		double rapidityReco	= -1000;
-		double diPtReco		= -1000;
-
-		double ptRecoLead  = -1000;
-		double ptRecoSub   = -1000;
-		double etaRecoLead = -1000;
-		double etaRecoSub  = -1000;
-		double phiRecoLead = -1000;
-		double phiRecoSub  = -1000;
+		double invMassReco      = -1000;
+                double rapidityReco     = -1000;
+		double diPtReco         = -1000;
+		double ptRecoLead  	= -1000;
+		double ptRecoSub   	= -1000;
+		double etaRecoLead 	= -1000;
+		double etaRecoSub  	= -1000;
+		double phiRecoLead 	= -1000;
+		double phiRecoSub  	= -1000;
 
 		int idxRecoLead = -1;
 		int idxRecoSub  = -1;
 
 		bool recoLep = GetRecoLeptons(idxRecoLead,idxRecoSub);
-		ptRecoLead  = Electron_pT[idxRecoLead];
-		ptRecoSub   = Electron_pT[idxRecoSub];
-		etaRecoLead = Electron_etaSC[idxRecoLead];
-		etaRecoSub  = Electron_etaSC[idxRecoSub];
-		phiRecoLead = Electron_phi[idxRecoLead];
-		phiRecoSub  = Electron_phi[idxRecoSub];
 
-		TLorentzVector v1;
-		TLorentzVector v2;
-		v1.SetPtEtaPhiM(ptRecoLead,etaRecoLead,phiRecoLead,eMass);
-		v2.SetPtEtaPhiM(ptRecoSub,etaRecoSub,phiRecoSub,eMass);
-
-		invMassReco     = (v1+v2).M();
-                rapidityReco    = (v1+v2).Rapidity();
-		diPtReco	= (v1+v2).Pt();
+		ptRecoLead  	= GetVar(PT_LEAD,idxRecoLead,idxRecoSub);
+		ptRecoSub   	= GetVar(PT_SUB,idxRecoLead,idxRecoSub);
+		etaRecoLead 	= GetVar(ETA_LEAD,idxRecoLead,idxRecoSub);
+		etaRecoSub  	= GetVar(ETA_SUB,idxRecoLead,idxRecoSub);
+		phiRecoLead 	= GetVar(PHI_LEAD,idxRecoLead,idxRecoSub);
+		phiRecoSub  	= GetVar(PHI_SUB,idxRecoLead,idxRecoSub);
+		invMassReco 	= GetVar(MASS,idxRecoLead,idxRecoSub);
+		rapidityReco	= GetVar(RAPIDITY,idxRecoLead,idxRecoSub);
+		diPtReco	= GetVar(DI_PT,idxRecoLead,idxRecoSub);	
 
 		if(!recoLep) continue;
 
 		bool passRecoAcc = PassDileptonSelection(etaRecoLead,etaRecoSub,
-				   		         ptRecoLead,ptRecoSub);
+							 ptRecoLead,ptRecoSub);
 		if(!passRecoAcc) continue;
-		// fill reco histograms
-		h_reco_diEl_mass	->Fill(invMassReco);
-		h_reco_diEl_pt		->Fill(diPtReco);
-		h_reco_diEl_rap		->Fill(rapidityReco);
-		h_reco_el_pt		->Fill(ptRecoLead);
-		h_reco_el_pt		->Fill(ptRecoSub);
-		h_reco_el_eta		->Fill(etaRecoLead);
-		h_reco_el_eta		->Fill(etaRecoSub);
-		h_reco_el_phi		->Fill(phiRecoLead);
-		h_reco_el_phi		->Fill(phiRecoSub);
-		h_reco_el_lead_pt	->Fill(ptRecoLead);
-		h_reco_el_lead_eta	->Fill(etaRecoLead);
-		h_reco_el_lead_phi	->Fill(phiRecoLead);
-		h_reco_el_sub_pt	->Fill(ptRecoSub);
-		h_reco_el_sub_eta	->Fill(etaRecoSub);
-		h_reco_el_sub_phi	->Fill(phiRecoSub);
+
+		h_reco_mu_pt            ->Fill(ptRecoLead);
+		h_reco_mu_pt            ->Fill(ptRecoSub);
+		h_reco_mu_eta           ->Fill(etaRecoLead);
+		h_reco_mu_eta           ->Fill(etaRecoSub);
+		h_reco_mu_phi           ->Fill(phiRecoLead);
+		h_reco_mu_phi           ->Fill(phiRecoSub);
+		h_reco_mu_lead_pt       ->Fill(ptRecoLead);
+		h_reco_mu_lead_eta      ->Fill(etaRecoLead);
+		h_reco_mu_lead_phi      ->Fill(phiRecoLead);
+		h_reco_mu_sub_pt        ->Fill(ptRecoSub);
+		h_reco_mu_sub_eta       ->Fill(etaRecoSub);
+		h_reco_mu_sub_phi       ->Fill(phiRecoSub);
+		h_reco_diMu_mass        ->Fill(invMassReco);
+		h_reco_diMu_pt          ->Fill(diPtReco);
+		h_reco_diMu_rap         ->Fill(rapidityReco);
+
 	}// end loop over entries
+
 
 	// Save results to output file
 	TString saveName = "output_data/";
@@ -203,64 +223,131 @@ void teamCrossChecks(TString fileName)
 	saveName += ".root";
 	TFile*file;
 	file = new TFile(saveName,"recreate");
+        h_reco_mu_pt            ->Write();
+        h_reco_mu_pt            ->Write();
+        h_reco_mu_eta           ->Write();
+        h_reco_mu_eta           ->Write();
+        h_reco_mu_phi           ->Write();
+        h_reco_mu_phi           ->Write();
+        h_reco_mu_lead_pt       ->Write();
+        h_reco_mu_lead_eta      ->Write();
+        h_reco_mu_lead_phi      ->Write();
+        h_reco_mu_sub_pt        ->Write();
+        h_reco_mu_sub_eta       ->Write();
+        h_reco_mu_sub_phi       ->Write();
 
-	h_reco_el_pt		->Write();
-	h_reco_el_pt		->Write();
-	h_reco_el_eta		->Write();
-	h_reco_el_eta		->Write();
-	h_reco_el_phi		->Write();
-	h_reco_el_phi		->Write();
-	h_reco_el_lead_pt	->Write();
-	h_reco_el_lead_eta	->Write();
-	h_reco_el_lead_phi	->Write();
-	h_reco_el_sub_pt	->Write();
-	h_reco_el_sub_eta	->Write();
-	h_reco_el_sub_phi	->Write();
-
-	h_reco_diEl_mass	->Write();
-	h_reco_diEl_pt		->Write();
-	h_reco_diEl_rap		->Write();
+        h_reco_diMu_mass        ->Write();
+        h_reco_diMu_pt          ->Write();
+        h_reco_diMu_rap         ->Write();
 	file->Close();
-}
-
+}// end analyze
 
 bool PassDileptonSelection(double eta1,double eta2,double pt1,double pt2)
 {
-	if(abs(eta1)>etaGapLow && abs(eta1)<etaGapHigh) return false;
-	if(abs(eta2)>etaGapLow && abs(eta2)<etaGapHigh) return false;
-	if(abs(eta1)>etaHigh || abs(eta2)>etaHigh) return false;
-	if(pt1>pt2 && (pt1<ptHigh || pt2<ptLow)) return false;
-	if(pt2>pt1 && (pt2<ptHigh || pt1<ptLow)) return false;
+        if(abs(eta1)>etaHigh || abs(eta2)>etaHigh) return false;
+        if(pt1>pt2 && (pt1<ptHigh || pt2<ptLow)) return false;
+        if(pt2>pt1 && (pt2<ptHigh || pt1<ptLow)) return false;
 
-	return true;
-}
+        return true;
+}// end PassDileptonSelection()
 
 bool GetRecoLeptons(int &idxRecoLead, int &idxRecoSub)
 {
+	// isolation-related variables
+	double chargedIso;
+	double neutralIso;
+	double gammaIso;
+	double sumPUPt;
+	double iso_dBeta;
+
+	// kinematic variables
+	double pt1,pt2;  
+	double eta1,eta2;
+	double phi1,phi2;
+
 	int nDileptons = 0;
-	for(int iEle=0;iEle<Nelectrons;iEle++){
-		if(!Electron_passMediumID[iEle]) continue;
-		for(int jEle=iEle+1;jEle<Nelectrons;jEle++){
-			if(!Electron_passMediumID[jEle]) continue;
-			if(Electron_pT[iEle] > Electron_pT[jEle]){
-				idxRecoLead = iEle;
-				idxRecoSub = jEle;
-			}// end if iEle is leading electron
+
+	for(int iMu=0;iMu<nMuon;iMu++){
+		if(!Muon_passTightID[iMu]) continue;
+		chargedIso = Muon_PfChargedHadronIsoR04[iMu];
+		neutralIso = Muon_PfNeutralHadronIsoR04[iMu];
+		gammaIso   = Muon_PfGammaIsoR04[iMu];
+		sumPUPt    = Muon_PFSumPUIsoR04[iMu];
+		pt1        = Muon_pT[iMu];
+		eta1       = Muon_eta[iMu];
+		phi1       = Muon_phi[iMu];
+		iso_dBeta = 
+			(chargedIso+max(0.0,neutralIso+gammaIso-0.5*sumPUPt))/pt1;
+		if(iso_dBeta > 0.15) continue;
+
+		for(int jMu=iMu+1;jMu<nMuon;jMu++){
+			if(!Muon_passTightID[jMu]) continue;
+			chargedIso = Muon_PfChargedHadronIsoR04[jMu];
+			neutralIso = Muon_PfNeutralHadronIsoR04[jMu];
+			gammaIso   = Muon_PfGammaIsoR04[jMu];
+			sumPUPt    = Muon_PFSumPUIsoR04[jMu];
+			pt2        = Muon_pT[jMu];
+			eta2       = Muon_eta[jMu];
+			phi2       = Muon_phi[jMu];
+			iso_dBeta = 
+				(chargedIso+max(0.0,neutralIso+gammaIso-0.5*sumPUPt))/pt2;
+			if(iso_dBeta > 0.15) continue;
+
+			if(pt1 > pt2){
+				idxRecoLead = iMu;
+				idxRecoSub  = jMu;
+			}
 			else{
-				idxRecoLead = jEle;
-				idxRecoSub = iEle;
-			}// end if jEle is leading electron
+				idxRecoLead = jMu;
+				idxRecoSub  = iMu;
+			} 
 			nDileptons++;
-		}// end inner reco lepton loop
-	}// end reco lepton Loop
-	if(nDileptons==1) return true;
+		}//end inner muon loop
+	}// end outer muon loop 
+
+	if(nDileptons==1) return true; 
 	else return false;
 }// end GetRecoLeptons()
 
 void Counter(Long64_t event,Long64_t total)
 {
-	int P = 100*(event)/(total);
-	if(event%(total/100)==0)
-		cout << P << "%" << endl;
-	 return;
+        int P = 100*(event)/(total);
+        if(event%(total/100)==0) 
+                cout << P << "%" << endl;
+         return;
+}
+
+
+double GetVar(LepVariables var,int idxLead,int idxSub)
+{
+	double ptLead	= Muon_pT[idxLead];
+	double ptSub	= Muon_pT[idxSub];
+	double etaLead	= Muon_eta[idxLead];
+	double etaSub	= Muon_eta[idxSub];
+	double phiLead	= Muon_phi[idxLead];
+	double phiSub	= Muon_phi[idxSub];
+
+	TLorentzVector v1;
+	TLorentzVector v2;
+	v1.SetPtEtaPhiM(ptLead,etaLead,phiLead,muMass);
+	v2.SetPtEtaPhiM(ptSub,etaSub,phiSub,muMass);
+
+	double invMass	= (v1+v2).M();
+	double rapidity	= (v1+v2).Rapidity();
+	double diPt	= (v1+v2).Pt();
+
+	if(var==PT_LEAD)	return ptLead;
+	else if(var==PT_SUB)	return ptSub;
+	else if(var==ETA_LEAD)	return etaLead;
+	else if(var==ETA_SUB)	return etaSub;
+	else if(var==PHI_LEAD)	return phiLead;
+	else if(var==PHI_SUB)	return phiSub;
+	else if(var==MASS)	return invMass;
+	else if(var==RAPIDITY)	return rapidity;
+	else if(var==DI_PT)	return diPt;
+
+	else{
+		cout << "LepVariables enum not properly defined for GetVar()" << endl;
+		return -10000;
+	}
 }

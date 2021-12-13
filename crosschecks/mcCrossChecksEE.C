@@ -175,7 +175,6 @@ void teamCrossChecks(TString fileName)
 			} // end if trigName
 		}// end loop over triggers
 
-		if(!passHLT) continue;
 		//-----Get Hard Process Quantities-----//
 		double invMassHard	= -1000;
 		double rapidityHard	= -1000;
@@ -220,6 +219,8 @@ void teamCrossChecks(TString fileName)
 
 		double ptRecoLead  = -1000;
 		double ptRecoSub   = -1000;
+		double etaSCRecoLead = -1000;
+		double etaSCRecoSub  = -1000;
 		double etaRecoLead = -1000;
 		double etaRecoSub  = -1000;
 		double phiRecoLead = -1000;
@@ -228,13 +229,15 @@ void teamCrossChecks(TString fileName)
 		int idxRecoLead = -1;
 		int idxRecoSub  = -1;
 
-		bool recoLep = GetRecoLeptons(idxRecoLead,idxRecoSub);
-		ptRecoLead  = Electron_pT[idxRecoLead];
-		ptRecoSub   = Electron_pT[idxRecoSub];
-		etaRecoLead = Electron_etaSC[idxRecoLead];
-		etaRecoSub  = Electron_etaSC[idxRecoSub];
-		phiRecoLead = Electron_phi[idxRecoLead];
-		phiRecoSub  = Electron_phi[idxRecoSub];
+		bool recoLep 	= GetRecoLeptons(idxRecoLead,idxRecoSub);
+		ptRecoLead  	= Electron_pT[idxRecoLead];
+		ptRecoSub   	= Electron_pT[idxRecoSub];
+		etaSCRecoLead 	= Electron_etaSC[idxRecoLead];
+		etaSCRecoSub  	= Electron_etaSC[idxRecoSub];
+		etaRecoLead 	= Electron_eta[idxRecoLead];
+		etaRecoSub  	= Electron_eta[idxRecoSub];
+		phiRecoLead 	= Electron_phi[idxRecoLead];
+		phiRecoSub  	= Electron_phi[idxRecoSub];
 
 		v1.SetPtEtaPhiM(ptRecoLead,etaRecoLead,phiRecoLead,eMass);
 		v2.SetPtEtaPhiM(ptRecoSub,etaRecoSub,phiRecoSub,eMass);
@@ -260,7 +263,7 @@ void teamCrossChecks(TString fileName)
 		h_gen_diEl_rap	->Fill(rapidityHard,genWeight);
 
 		bool passGenAcc = PassDileptonSelection(etaHard1,etaHard2,ptHard1,ptHard2);
-		if(passGenAcc){
+		if(passGenAcc && passHLT){
 			// fill gen histograms for leptons within acceptance
 			h_gen_acc_el_pt		->Fill(ptHard1,genWeight);
 			h_gen_acc_el_pt		->Fill(ptHard2,genWeight);
@@ -275,9 +278,9 @@ void teamCrossChecks(TString fileName)
 
 		if(!recoLep) continue;
 
-		bool passRecoAcc = PassDileptonSelection(etaRecoLead,etaRecoSub,
+		bool passRecoAcc = PassDileptonSelection(etaSCRecoLead,etaSCRecoSub,
 				   		         ptRecoLead,ptRecoSub);
-		if(passRecoAcc){
+		if(passRecoAcc && passHLT){
 			// fill reco histograms
 			h_reco_diEl_mass	->Fill(invMassReco,genWeight);
 			h_reco_diEl_pt		->Fill(diPtReco,genWeight);

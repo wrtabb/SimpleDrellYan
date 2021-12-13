@@ -12,10 +12,21 @@
 #include <iostream>
 #include "files_DYEE_50toInf.h"
 
+enum LepVariables{
+        PT_LEAD,
+        PT_SUB,
+        ETA_LEAD,
+        ETA_SUB,
+        PHI_LEAD,
+        PHI_SUB,
+        MASS,
+        RAPIDITY,
+        DI_PT
+};
 //-----Functions-----//
 bool PassDileptonSelection(double eta1,double eta2,double pt1,double pt2);
+double GetVar(LepVariables var,int idxLead,int idxSub);
 bool GetRecoLeptons(int &idxRecoLead, int &idxRecoSub);
-bool GetHardLeptons(int &idxHard1,int &idxHard2);
 void Counter(Long64_t event,Long64_t total);
 
 //TString base_directory = "root://xrootd-local.unl.edu///store/user/wtabb/DrellYan_13TeV_2016/v2p6/DYLL_M50toInf/base/";
@@ -146,37 +157,33 @@ void teamCrossChecks(TString fileName)
 		double invMassReco	= -1000;
 		double rapidityReco	= -1000;
 		double diPtReco		= -1000;
-
-		double ptRecoLead  = -1000;
-		double ptRecoSub   = -1000;
-		double etaRecoLead = -1000;
-		double etaRecoSub  = -1000;
-		double phiRecoLead = -1000;
-		double phiRecoSub  = -1000;
+		double ptRecoLead  	= -1000;
+		double ptRecoSub   	= -1000;
+		double etaRecoLead 	= -1000;
+		double etaRecoSub  	= -1000;
+		double phiRecoLead 	= -1000;
+		double phiRecoSub  	= -1000;
 
 		int idxRecoLead = -1;
 		int idxRecoSub  = -1;
 
 		bool recoLep = GetRecoLeptons(idxRecoLead,idxRecoSub);
-		ptRecoLead  = Electron_pT[idxRecoLead];
-		ptRecoSub   = Electron_pT[idxRecoSub];
-		etaRecoLead = Electron_etaSC[idxRecoLead];
-		etaRecoSub  = Electron_etaSC[idxRecoSub];
-		phiRecoLead = Electron_phi[idxRecoLead];
-		phiRecoSub  = Electron_phi[idxRecoSub];
 
-		TLorentzVector v1;
-		TLorentzVector v2;
-		v1.SetPtEtaPhiM(ptRecoLead,etaRecoLead,phiRecoLead,eMass);
-		v2.SetPtEtaPhiM(ptRecoSub,etaRecoSub,phiRecoSub,eMass);
+		ptRecoLead      = GetVar(PT_LEAD,idxRecoLead,idxRecoSub);
+		ptRecoSub       = GetVar(PT_SUB,idxRecoLead,idxRecoSub);
+		etaRecoLead     = GetVar(ETA_LEAD,idxRecoLead,idxRecoSub);
+		etaRecoSub      = GetVar(ETA_SUB,idxRecoLead,idxRecoSub);
+		phiRecoLead     = GetVar(PHI_LEAD,idxRecoLead,idxRecoSub);
+		phiRecoSub      = GetVar(PHI_SUB,idxRecoLead,idxRecoSub);
+		invMassReco     = GetVar(MASS,idxRecoLead,idxRecoSub);
+		rapidityReco    = GetVar(RAPIDITY,idxRecoLead,idxRecoSub);
+		diPtReco        = GetVar(DI_PT,idxRecoLead,idxRecoSub);
 
-		invMassReco     = (v1+v2).M();
-                rapidityReco    = (v1+v2).Rapidity();
-		diPtReco	= (v1+v2).Pt();
-
+		double etaSCRecoLead	= Electron_etaSC[idxRecoLead];
+		double etaSCRecoSub	= Electron_etaSC[idxRecoSub];
 		if(!recoLep) continue;
 
-		bool passRecoAcc = PassDileptonSelection(etaRecoLead,etaRecoSub,
+		bool passRecoAcc = PassDileptonSelection(etaSCRecoLead,etaSCRecoSub,
 				   		         ptRecoLead,ptRecoSub);
 		if(!passRecoAcc) continue;
 		// fill reco histograms
@@ -263,4 +270,37 @@ void Counter(Long64_t event,Long64_t total)
 	if(event%(total/100)==0)
 		cout << P << "%" << endl;
 	 return;
+}
+double GetVar(LepVariables var,int idxLead,int idxSub)
+{
+        double ptLead   = Electron_pT[idxLead];
+        double ptSub    = Electron_pT[idxSub];
+        double etaLead  = Electron_eta[idxLead];
+        double etaSub   = Electron_eta[idxSub];
+        double phiLead  = Electron_phi[idxLead];
+        double phiSub   = Electron_phi[idxSub];
+
+        TLorentzVector v1;
+        TLorentzVector v2;
+        v1.SetPtEtaPhiM(ptLead,etaLead,phiLead,eMass);
+        v2.SetPtEtaPhiM(ptSub,etaSub,phiSub,eMass);
+
+        double invMass  = (v1+v2).M();
+        double rapidity = (v1+v2).Rapidity();
+        double diPt     = (v1+v2).Pt();
+
+        if(var==PT_LEAD)        return ptLead;
+        else if(var==PT_SUB)    return ptSub;
+        else if(var==ETA_LEAD)  return etaLead;
+        else if(var==ETA_SUB)   return etaSub;
+        else if(var==PHI_LEAD)  return phiLead;
+        else if(var==PHI_SUB)   return phiSub;
+        else if(var==MASS)      return invMass;
+        else if(var==RAPIDITY)  return rapidity;
+        else if(var==DI_PT)     return diPt;
+
+        else{
+                cout << "diLepVariables enum not properly defined for GetVar()" << endl;
+                return -10000;
+        }
 }

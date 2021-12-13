@@ -9,10 +9,21 @@
 #include <TH1F.h>
 #include <iostream>
 
+enum LepVariables{
+	PT_LEAD,
+	PT_SUB,
+	ETA_LEAD,
+	ETA_SUB,
+	PHI_LEAD,
+	PHI_SUB,
+	MASS,
+	RAPIDITY,
+	DI_PT
+};
+
 // Functions
 bool PassDileptonSelection(double eta1,double eta2,double pt1,double pt2);
-vector<double> GetVariables(double eta1,double eta2,double pt1,double pt2,double phi1,
-                            double phi2);
+double GetVar(LepVariables var,int idxLead,int idxSub);
 bool GetRecoLeptons(int &idxRecoLead, int &idxRecoSub);
 void Counter(Long64_t event,Long64_t total);
 
@@ -158,37 +169,29 @@ void teamCrossChecks(TString fileName)
 		//-----Get Reconstructed Quantities-----//
 		double invMassReco      = -1000;
                 double rapidityReco     = -1000;
-                double leadPtReco       = -1000;
-                double subPtReco        = -1000;
 		double diPtReco         = -1000;
-
-		double ptRecoLead  = -1000;
-		double ptRecoSub   = -1000;
-		double etaRecoLead = -1000;
-		double etaRecoSub  = -1000;
-		double phiRecoLead = -1000;
-		double phiRecoSub  = -1000;
+		double ptRecoLead  	= -1000;
+		double ptRecoSub   	= -1000;
+		double etaRecoLead 	= -1000;
+		double etaRecoSub  	= -1000;
+		double phiRecoLead 	= -1000;
+		double phiRecoSub  	= -1000;
 
 		int idxRecoLead = -1;
-		int idxRecoSub = -1;
+		int idxRecoSub  = -1;
 
 		bool recoLep = GetRecoLeptons(idxRecoLead,idxRecoSub);
-		ptRecoLead  = Muon_pT[idxRecoLead]; 
-		ptRecoSub   = Muon_pT[idxRecoSub];
-		etaRecoLead = Muon_eta[idxRecoLead];
-		etaRecoSub  = Muon_eta[idxRecoSub];
-		phiRecoLead = Muon_phi[idxRecoLead];
-		phiRecoSub  = Muon_phi[idxRecoSub];
 
-		vector<double> recoVariables;
-                recoVariables = GetVariables(etaRecoLead,etaRecoSub,ptRecoLead,ptRecoSub,
-                                             phiRecoLead,phiRecoSub);
-		invMassReco     = recoVariables.at(0);
-		rapidityReco    = recoVariables.at(1);
-		leadPtReco      = recoVariables.at(2);
-		subPtReco       = recoVariables.at(3);
-		diPtReco	= recoVariables.at(4);
-	
+		ptRecoLead  	= GetVar(PT_LEAD,idxRecoLead,idxRecoSub);
+		ptRecoSub   	= GetVar(PT_SUB,idxRecoLead,idxRecoSub);
+		etaRecoLead 	= GetVar(ETA_LEAD,idxRecoLead,idxRecoSub);
+		etaRecoSub  	= GetVar(ETA_SUB,idxRecoLead,idxRecoSub);
+		phiRecoLead 	= GetVar(PHI_LEAD,idxRecoLead,idxRecoSub);
+		phiRecoSub  	= GetVar(PHI_SUB,idxRecoLead,idxRecoSub);
+		invMassReco 	= GetVar(MASS,idxRecoLead,idxRecoSub);
+		rapidityReco	= GetVar(RAPIDITY,idxRecoLead,idxRecoSub);
+		diPtReco	= GetVar(DI_PT,idxRecoLead,idxRecoSub);	
+
 		if(!recoLep) continue;
 
 		bool passRecoAcc = PassDileptonSelection(etaRecoLead,etaRecoSub,
@@ -247,47 +250,6 @@ bool PassDileptonSelection(double eta1,double eta2,double pt1,double pt2)
 
         return true;
 }// end PassDileptonSelection()
-
-vector<double> GetVariables(double eta1,double eta2,double pt1,double pt2,double phi1,
-                            double phi2)
-{
-        TLorentzVector v1;
-        TLorentzVector v2;
-
-        v1.SetPtEtaPhiM(pt1,eta1,phi1,muMass);
-        v2.SetPtEtaPhiM(pt2,eta2,phi2,muMass);
-
-	// Dimuon invariant mass
-        double invMass = (v1+v2).M();
-
-	// Dimuon rapidity
-        double rapidity = (v1+v2).Rapidity();
-
-	// dimuon pT
-	double diPt = (v1+v2).Pt();
-
-        double ptLead;
-        double ptSub;
-
-        if(pt1>pt2){
-                ptLead = pt1;
-                ptSub  = pt2;
-        }
-        else{
-                ptLead = pt2;
-                ptSub  = pt1;
-        }
-
-        vector<double> variableReturn = {
-                invMass,        // 0
-                rapidity,       // 1
-                ptLead,         // 2
-                ptSub,          // 3
-		diPt		// 4
-        };
-
-        return variableReturn;
-}// end GetVariables()
 
 bool GetRecoLeptons(int &idxRecoLead, int &idxRecoSub)
 {
@@ -355,3 +317,37 @@ void Counter(Long64_t event,Long64_t total)
          return;
 }
 
+
+double GetVar(LepVariables var,int idxLead,int idxSub)
+{
+	double ptLead	= Muon_pT[idxLead];
+	double ptSub	= Muon_pT[idxSub];
+	double etaLead	= Muon_eta[idxLead];
+	double etaSub	= Muon_eta[idxSub];
+	double phiLead	= Muon_phi[idxLead];
+	double phiSub	= Muon_phi[idxSub];
+
+	TLorentzVector v1;
+	TLorentzVector v2;
+	v1.SetPtEtaPhiM(ptLead,etaLead,phiLead,muMass);
+	v2.SetPtEtaPhiM(ptSub,etaSub,phiSub,muMass);
+
+	double invMass	= (v1+v2).M();
+	double rapidity	= (v1+v2).Rapidity();
+	double diPt	= (v1+v2).Pt();
+
+	if(var==PT_LEAD)	return ptLead;
+	else if(var==PT_SUB)	return ptSub;
+	else if(var==ETA_LEAD)	return etaLead;
+	else if(var==ETA_SUB)	return etaSub;
+	else if(var==PHI_LEAD)	return phiLead;
+	else if(var==PHI_SUB)	return phiSub;
+	else if(var==MASS)	return invMass;
+	else if(var==RAPIDITY)	return rapidity;
+	else if(var==DI_PT)	return diPt;
+
+	else{
+		cout << "LepVariables enum not properly defined for GetVar()" << endl;
+		return -10000;
+	}
+}
